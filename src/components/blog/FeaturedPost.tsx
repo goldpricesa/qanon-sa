@@ -62,8 +62,6 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
             </Link>
 
             <div className="flex items-center gap-3 text-sm text-gray-400">
-              <span>{post.author.name}</span>
-              <span>·</span>
               <time dateTime={post.date}>{formatDate(post.date)}</time>
               <span>·</span>
               <span>{formatReadingTime(post.readingTime)}</span>

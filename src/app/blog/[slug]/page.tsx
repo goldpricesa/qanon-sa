@@ -137,18 +137,8 @@ export default function BlogPostPage({ params }: Props) {
               {post.title}
             </h1>
 
-            {/* Author row */}
+            {/* Date & reading time row */}
             <div className="flex items-center gap-4 pb-6 mb-8 border-b border-warm-200">
-              <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 font-bold text-sm">
-                  {post.author.name.charAt(0)}
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-navy-800">{post.author.name}</p>
-                  <p className="text-xs text-stone-400">{post.author.title}</p>
-                </div>
-              </div>
-              <span className="text-stone-300">|</span>
               <time dateTime={post.date} className="text-sm text-stone-400">
                 {formatDate(post.date)}
               </time>

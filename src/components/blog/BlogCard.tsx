@@ -48,8 +48,7 @@ export default function BlogCard({ post }: BlogCardProps) {
           {post.excerpt}
         </p>
 
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-warm-100">
-          <span className="text-xs font-medium text-stone-600">{post.author.name}</span>
+        <div className="flex items-center justify-end mt-4 pt-4 border-t border-warm-100">
           <span className="text-xs text-stone-400 flex items-center gap-1">
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />

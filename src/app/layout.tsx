@@ -7,8 +7,8 @@ import BackToTop from '@/components/ui/BackToTop'
 export const metadata: Metadata = {
   metadataBase: new URL('https://qanon-sa.com'),
   title: {
-    default: 'قانون | مدونة قانونية سعودية',
-    template: '%s | قانون',
+    default: 'نظرة قانونية | مدونة قانونية سعودية',
+    template: '%s | نظرة قانونية',
   },
   description:
     'مدونة قانونية متخصصة في الشأن السعودي — نظام العمل، العقارات، الشركات، والقانون الرقمي. مقالات موثوقة يكتبها محامون معتمدون.',
@@ -20,9 +20,9 @@ export const metadata: Metadata = {
     'نظام الشركات',
     'قانون عقاري',
   ],
-  authors: [{ name: 'فريق قانون', url: 'https://qanon-sa.com' }],
-  creator: 'قانون',
-  publisher: 'قانون',
+  authors: [{ name: 'نظرة قانونية', url: 'https://qanon-sa.com' }],
+  creator: 'نظرة قانونية',
+  publisher: 'نظرة قانونية',
   robots: {
     index: true,
     follow: true,
@@ -32,14 +32,14 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'ar_SA',
     url: 'https://qanon-sa.com',
-    siteName: 'قانون',
-    title: 'قانون | مدونة قانونية سعودية',
+    siteName: 'نظرة قانونية',
+    title: 'نظرة قانونية | مدونة قانونية سعودية',
     description:
       'مدونة قانونية متخصصة في الشأن السعودي — نظام العمل، العقارات، الشركات، والقانون الرقمي.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'قانون | مدونة قانونية سعودية',
+    title: 'نظرة قانونية | مدونة قانونية سعودية',
     description:
       'مدونة قانونية متخصصة في الشأن السعودي — نظام العمل، العقارات، الشركات، والقانون الرقمي.',
     creator: '@qanon_sa',
@@ -63,6 +63,12 @@ export default function RootLayout({
         <link
           href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap"
           rel="stylesheet"
+        />
+        {/* Google AdSense - تحقق من صحة publisher ID قبل النشر */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3611815443789107"
+          crossOrigin="anonymous"
         />
       </head>
       <body className="min-h-screen flex flex-col bg-warm-50 font-arabic">
