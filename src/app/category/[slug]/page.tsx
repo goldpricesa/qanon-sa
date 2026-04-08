@@ -1,0 +1,82 @@
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { getAllCategories, getPostsByCategory } from '@/lib/posts'
+import BlogGrid from '@/components/blog/BlogGrid'
+import CategoryBadge from '@/components/ui/CategoryBadge'
+
+interface Props {
+  params: { slug: string }
+}
+
+export function generateStaticParams() {
+  return getAllCategories().map((cat) => ({ slug: cat.slug }))
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const categories = getAllCategories()
+  const cat = categories.find((c) => c.slug === params.slug)
+  if (!cat) return {}
+
+  const url = `https://qanon-sa.com/category/${cat.slug}`
+  const title = `مقالات ${cat.label} | قانون`
+  const description = `تصفح جميع المقالات في تصنيف ${cat.label} على مدونة قانون — ${cat.count} مقال متخصص في القانون السعودي.`
+
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'website',
+      url,
+      title,
+      description,
+      locale: 'ar_SA',
+    },
+  }
+}
+
+export default function CategoryPage({ params }: Props) {
+  const categories = getAllCategories()
+  const cat = categories.find((c) => c.slug === params.slug)
+  if (!cat) notFound()
+
+  const posts = getPostsByCategory(params.slug)
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `مقالات ${cat.label}`,
+    description: `جميع المقالات في تصنيف ${cat.label}`,
+    url: `https://qanon-sa.com/category/${cat.slug}`,
+    inLanguage: 'ar',
+  }
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      {/* Category Header */}
+      <div className="bg-white border-b border-warm-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="flex items-center gap-3 mb-3">
+            <CategoryBadge category={cat.slug} label={cat.label} asLink={false} />
+            <span className="text-sm text-stone-400">{cat.count} مقال</span>
+          </div>
+          <h1 className="text-2xl md:text-3xl font-bold text-navy-800">
+            مقالات {cat.label}
+          </h1>
+          <p className="text-stone-500 mt-2 text-sm">
+            مقالات متخصصة في {cat.label} وفق الأنظمة واللوائح السعودية المعتمدة.
+          </p>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <BlogGrid posts={posts} />
+      </div>
+    </>
+  )
+}
