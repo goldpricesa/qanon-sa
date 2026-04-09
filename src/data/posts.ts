@@ -33,7 +33,7 @@ export const allPosts: BlogPost[] = [
       <h2>نصائح مهمة</h2>
       <p>احتفظ بجميع المراسلات والوثائق المتعلقة بعملك. لا توقع على أي مستند استقالة تحت الضغط. استشر محامياً متخصصاً في القضايا العمالية قبل اتخاذ أي إجراء. تذكر أن لديك حقوقاً محمية بالنظام ولا تتنازل عنها.</p>
     `,
-    coverImage: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&h=630&fit=crop',
+    coverImage: '/covers/labor-termination.svg',
     date: '2025-01-15',
     readingTime: 8,
     category: 'emali',
@@ -67,7 +67,7 @@ export const allPosts: BlogPost[] = [
       <h2>حماية حقوق المستثمر</h2>
       <p>يكفل النظام السعودي حماية أموال المستثمر الأجنبي من المصادرة إلا للمصلحة العامة ومقابل تعويض عادل وفوري. كما يحق للمستثمر اللجوء إلى التحكيم الدولي لحل النزاعات.</p>
     `,
-    coverImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=630&fit=crop',
+    coverImage: '/covers/foreign-investment.svg',
     date: '2025-01-10',
     readingTime: 7,
     category: 'tijari',
@@ -100,7 +100,7 @@ export const allPosts: BlogPost[] = [
       <h2>نصائح للتجار</h2>
       <p>سجل نشاطك التجاري الإلكتروني في منصة معروف، واحرص على الشفافية في عرض الأسعار والمواصفات. وفّر وسائل دفع آمنة والتزم بحماية بيانات العملاء وفق نظام حماية البيانات الشخصية.</p>
     `,
-    coverImage: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=630&fit=crop',
+    coverImage: '/covers/ecommerce-law.svg',
     date: '2025-01-05',
     readingTime: 6,
     category: 'raqami',
@@ -133,7 +133,7 @@ export const allPosts: BlogPost[] = [
       <h2>الرسوم والمتطلبات</h2>
       <p>تُفرض رسوم على بعض خدمات التوثيق العقاري حسب نوع المعاملة. ومن المتطلبات الأساسية: هوية المالك أو وكالة شرعية سارية، والصك الأصلي، وموافقة جميع الأطراف على النقل.</p>
     `,
-    coverImage: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&h=630&fit=crop',
+    coverImage: '/covers/real-estate-registration.svg',
     date: '2024-12-28',
     readingTime: 7,
     category: 'aqari',
@@ -166,7 +166,7 @@ export const allPosts: BlogPost[] = [
       <h2>النفقة والتعويض</h2>
       <p>ألزم النظام الزوج بالإنفاق على زوجته وأولاده، وحدد معايير تقدير النفقة. كما كفل حق المرأة في المتعة (تعويض الطلاق) إذا طُلقت بغير سبب منها.</p>
     `,
-    coverImage: 'https://images.unsplash.com/photo-1589578527966-fdac0f44566c?w=1200&h=630&fit=crop',
+    coverImage: '/covers/personal-status.svg',
     date: '2024-12-20',
     readingTime: 9,
     category: 'madani',
@@ -199,7 +199,7 @@ export const allPosts: BlogPost[] = [
       <h2>العقوبات</h2>
       <p>تصل الغرامات إلى 5 ملايين ريال عن كل مخالفة، مع إمكانية مضاعفتها في حالة التكرار. كما يحق للمتضررين المطالبة بالتعويض عن الأضرار الناتجة عن مخالفة النظام.</p>
     `,
-    coverImage: 'https://images.unsplash.com/photo-1563986768609-322da13575f2?w=1200&h=630&fit=crop',
+    coverImage: '/covers/data-privacy.svg',
     date: '2024-12-15',
     readingTime: 6,
     category: 'raqami',

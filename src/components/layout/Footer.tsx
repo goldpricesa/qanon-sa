@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 
 const categories = [
@@ -15,26 +16,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Brand */}
           <div>
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <svg
-                className="w-7 h-7 text-primary-400"
-                viewBox="0 0 32 32"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  d="M16 3L4 9v2h2l4 10H8l-2 4h20l-2-4h-2L26 11h2V9L16 3z"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinejoin="round"
-                />
-                <line x1="16" y1="3" x2="16" y2="28" stroke="currentColor" strokeWidth="1.5" />
-                <line x1="10" y1="28" x2="22" y2="28" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-              <span className="text-lg font-bold text-white">
-                قا<span className="text-primary-400">نون</span>
-              </span>
+            <Link href="/" className="inline-flex items-center mb-4" aria-label="العودة إلى الرئيسية">
+              <Image
+                src="/logo.png.jpeg"
+                alt="شعار نظرة قانونية"
+                width={180}
+                height={72}
+                className="h-12 w-auto rounded-md bg-white/95 p-1"
+              />
             </Link>
             <p className="text-sm leading-relaxed text-gray-400">
               مدونة قانونية متخصصة في الشأن السعودي. نقدم مقالات موثوقة وشاملة في نظام العمل، العقارات، الشركات، والقانون الرقمي.
@@ -90,7 +79,7 @@ export default function Footer() {
               المعلومات الواردة في هذه المدونة لأغراض تثقيفية عامة فقط، ولا تُعدّ استشارة قانونية. يُنصح بالتواصل مع محامٍ مرخص للحصول على مشورة قانونية متخصصة.
             </p>
             <p className="text-xs text-gray-500 mt-4">
-              © {new Date().getFullYear()} قانون. جميع الحقوق محفوظة.
+              © {new Date().getFullYear()} نظرة قانونية. جميع الحقوق محفوظة.
             </p>
           </div>
         </div>

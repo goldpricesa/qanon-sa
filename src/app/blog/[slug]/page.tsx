@@ -6,7 +6,12 @@ import { getAllPosts, getPostBySlug, getRelatedPosts } from '@/lib/posts'
 import CategoryBadge from '@/components/ui/CategoryBadge'
 import Sidebar from '@/components/sidebar/Sidebar'
 import BlogCard from '@/components/blog/BlogCard'
-import { formatDate, formatReadingTime } from '@/lib/utils'
+import {
+  formatDate,
+  formatReadingTime,
+  sanitizeArticleHtml,
+  stripHtml,
+} from '@/lib/utils'
 
 interface Props {
   params: { slug: string }
@@ -59,6 +64,7 @@ export default function BlogPostPage({ params }: Props) {
   if (!post) notFound()
 
   const related = getRelatedPosts(post)
+  const safeContent = sanitizeArticleHtml(post.content)
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -76,8 +82,12 @@ export default function BlogPostPage({ params }: Props) {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'قانون',
+      name: 'نظرة قانونية',
       url: 'https://qanon-sa.com',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://qanon-sa.com/logo.png.jpeg',
+      },
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
@@ -85,7 +95,7 @@ export default function BlogPostPage({ params }: Props) {
     },
     keywords: post.tags.join(', '),
     articleSection: post.categoryLabel,
-    wordCount: post.content.replace(/<[^>]+>/g, '').split(/\s+/).length,
+    wordCount: stripHtml(safeContent).split(/\s+/).filter(Boolean).length,
   }
 
   return (
@@ -154,7 +164,7 @@ export default function BlogPostPage({ params }: Props) {
             {/* Content */}
             <div
               className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ __html: safeContent }}
             />
 
             {/* Tags */}

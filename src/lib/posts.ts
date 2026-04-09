@@ -1,5 +1,6 @@
 import { allPosts } from '@/data/posts'
 import type { BlogPost, Category } from '@/types'
+import { stripHtml } from '@/lib/utils'
 
 export function getAllPosts(): BlogPost[] {
   return [...allPosts].sort(
@@ -57,4 +58,28 @@ export function getRelatedPosts(post: BlogPost, count = 3): BlogPost[] {
   return getAllPosts()
     .filter((p) => p.slug !== post.slug && p.category === post.category)
     .slice(0, count)
+}
+
+export function searchPosts(query: string): BlogPost[] {
+  const normalizedQuery = query.trim().toLowerCase()
+
+  if (!normalizedQuery) {
+    return getAllPosts()
+  }
+
+  return getAllPosts().filter((post) => {
+    const searchableFields = [
+      post.title,
+      post.excerpt,
+      post.categoryLabel,
+      post.author.name,
+      post.author.title,
+      stripHtml(post.content),
+      ...post.tags,
+    ]
+
+    return searchableFields.some((field) =>
+      field.toLowerCase().includes(normalizedQuery)
+    )
+  })
 }

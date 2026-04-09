@@ -18,8 +18,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!cat) return {}
 
   const url = `https://qanon-sa.com/category/${cat.slug}`
-  const title = `مقالات ${cat.label} | قانون`
-  const description = `تصفح جميع المقالات في تصنيف ${cat.label} على مدونة قانون — ${cat.count} مقال متخصص في القانون السعودي.`
+  const title = `مقالات ${cat.label}`
+  const description = `تصفح جميع المقالات في تصنيف ${cat.label} على مدونة نظرة قانونية — ${cat.count} مقال متخصص في القانون السعودي.`
 
   return {
     title,

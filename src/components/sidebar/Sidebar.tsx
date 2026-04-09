@@ -19,26 +19,13 @@ export default function Sidebar() {
       {/* Recent Posts */}
       <RecentPosts />
 
-      {/* Newsletter CTA */}
+      {/* Advisory */}
       <div className="bg-primary-50 rounded-xl p-5 border border-primary-100">
-        <h3 className="text-sm font-bold text-navy-800 mb-2">ابقَ على اطلاع</h3>
-        <p className="text-xs text-stone-500 mb-4 leading-relaxed">
-          اشترك لتصلك أحدث المقالات القانونية السعودية مباشرةً إلى بريدك.
+        <h3 className="text-sm font-bold text-navy-800 mb-2">تنبيه مهم</h3>
+        <p className="text-sm text-stone-600 leading-relaxed">
+          محتوى الموقع للتوعية العامة فقط، وقد تختلف النتيجة القانونية بحسب تفاصيل كل حالة.
+          عند وجود نزاع أو التزام مالي أو إجراء رسمي، استشر محاميًا مرخصًا قبل اتخاذ أي خطوة.
         </p>
-        <div className="flex flex-col gap-2">
-          <input
-            type="email"
-            placeholder="بريدك الإلكتروني"
-            className="w-full px-3 py-2 text-sm rounded-lg border border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white"
-            aria-label="البريد الإلكتروني"
-          />
-          <button
-            type="button"
-            className="w-full bg-primary-500 hover:bg-primary-600 text-white text-sm font-medium py-2 rounded-lg transition-colors"
-          >
-            اشتراك
-          </button>
-        </div>
       </div>
     </aside>
   )

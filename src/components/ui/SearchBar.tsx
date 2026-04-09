@@ -1,17 +1,21 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function SearchBar() {
+function SearchBarInner() {
   const [query, setQuery] = useState('')
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    setQuery(searchParams.get('q') ?? '')
+  }, [searchParams])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (query.trim()) {
-      router.push(`/?q=${encodeURIComponent(query.trim())}`)
-    }
+    const nextQuery = query.trim()
+    router.push(nextQuery ? `/?q=${encodeURIComponent(nextQuery)}` : '/')
   }
 
   return (
@@ -34,5 +38,22 @@ export default function SearchBar() {
         </svg>
       </button>
     </form>
+  )
+}
+
+export default function SearchBar() {
+  return (
+    <Suspense fallback={
+      <div className="relative">
+        <input
+          type="search"
+          placeholder="ابحث في المقالات..."
+          className="w-full pr-4 pl-10 py-2.5 text-sm rounded-lg border border-warm-200 bg-white"
+          disabled
+        />
+      </div>
+    }>
+      <SearchBarInner />
+    </Suspense>
   )
 }
