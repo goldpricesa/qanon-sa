@@ -7,6 +7,9 @@ import BackToTop from '@/components/ui/BackToTop'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://qanon-sa.com'),
+  verification: {
+    google: 'v8ablWgD-CRVtO_toxgDNiaW3UQUXPY8lNL0I4zcNTY',
+  },
   icons: {
     icon: '/logo.png.jpeg',
     shortcut: '/logo.png.jpeg',
@@ -87,6 +90,19 @@ export default function RootLayout({
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3611815443789107"
           crossOrigin="anonymous"
         />
+        {/* Google Analytics */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-84090DMG89"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-84090DMG89');
+          `}
+        </Script>
       </body>
     </html>
   )
