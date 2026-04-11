@@ -6,7 +6,18 @@ export default function BackToTop() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 400)
+    let isScheduled = false
+
+    const onScroll = () => {
+      if (!isScheduled) {
+        isScheduled = true
+        requestAnimationFrame(() => {
+          setVisible(window.scrollY > 400)
+          isScheduled = false
+        })
+      }
+    }
+
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])

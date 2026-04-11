@@ -22,6 +22,7 @@ export default function Footer() {
                 alt="شعار نظرة قانونية"
                 width={180}
                 height={72}
+                loading="lazy"
                 className="h-12 w-auto rounded-md bg-white/95 p-1"
               />
             </Link>
