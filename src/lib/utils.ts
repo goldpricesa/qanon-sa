@@ -6,10 +6,18 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function sanitizeArticleHtml(html: string): string {
+  const dangerousTags = /<(script|style|iframe|object|embed|form|input|textarea|button|select|meta|link|base)[^>]*>[\s\S]*?<\/\1>/gi
+  const selfClosingDangerous = /<(script|style|iframe|object|embed|form|input|textarea|button|select|meta|link|base)[^>]*\/?>/gi
+  const eventHandlers = /\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi
+  const dangerousProtocols = /(?:javascript|vbscript|data):/gi
+  const dangerousAttrs = /\s+(srcdoc|formaction)\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi
+
   return html
-    .replace(/<(script|style|iframe|object|embed)[^>]*>[\s\S]*?<\/\1>/gi, '')
-    .replace(/\son\w+=(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
-    .replace(/javascript:/gi, '')
+    .replace(dangerousTags, '')
+    .replace(selfClosingDangerous, '')
+    .replace(eventHandlers, '')
+    .replace(dangerousAttrs, '')
+    .replace(dangerousProtocols, '')
 }
 
 export function stripHtml(html: string): string {
@@ -26,5 +34,8 @@ export function formatDate(isoDate: string): string {
 }
 
 export function formatReadingTime(minutes: number): string {
-  return `${minutes} دقائق للقراءة`
+  if (minutes === 1) return 'دقيقة واحدة للقراءة'
+  if (minutes === 2) return 'دقيقتان للقراءة'
+  if (minutes >= 3 && minutes <= 10) return `${minutes} دقائق للقراءة`
+  return `${minutes} دقيقة للقراءة`
 }

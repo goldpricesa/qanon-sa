@@ -2,10 +2,20 @@ import { allPosts } from '@/data/posts'
 import type { BlogPost, Category } from '@/types'
 import { stripHtml } from '@/lib/utils'
 
+const sortedPosts = [...allPosts].sort(
+  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+)
+
+const strippedContentCache = new Map<string, string>()
+function getStrippedContent(post: BlogPost): string {
+  if (!strippedContentCache.has(post.id)) {
+    strippedContentCache.set(post.id, stripHtml(post.content))
+  }
+  return strippedContentCache.get(post.id)!
+}
+
 export function getAllPosts(): BlogPost[] {
-  return [...allPosts].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  )
+  return sortedPosts
 }
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
@@ -74,7 +84,7 @@ export function searchPosts(query: string): BlogPost[] {
       post.categoryLabel,
       post.author.name,
       post.author.title,
-      stripHtml(post.content),
+      getStrippedContent(post),
       ...post.tags,
     ]
 

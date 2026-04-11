@@ -3,9 +3,6 @@ const nextConfig = {
   // Enable compression for all responses
   compress: true,
 
-  // Use SWC for faster minification and smaller bundles
-  swcMinify: true,
-
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
