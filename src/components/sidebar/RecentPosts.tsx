@@ -31,7 +31,7 @@ export default function RecentPosts() {
                   {post.title}
                 </p>
               </Link>
-              <time dateTime={post.date} className="text-xs text-stone-400 mt-1 block">
+              <time dateTime={post.date} className="text-xs text-stone-700 mt-1 block">
                 {formatDate(post.date)}
               </time>
             </div>

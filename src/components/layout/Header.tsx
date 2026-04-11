@@ -38,7 +38,7 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="px-3 py-2 text-sm font-medium text-stone-600 hover:text-primary-600 hover:bg-primary-50 rounded-md transition-colors"
+                className="px-3 py-2 text-sm font-medium text-stone-700 hover:text-primary-600 hover:bg-primary-50 rounded-md transition-colors"
               >
                 {link.label}
               </Link>
@@ -47,7 +47,7 @@ export default function Header() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 rounded-md text-stone-600 hover:text-primary-600 hover:bg-primary-50"
+            className="md:hidden p-2 rounded-md text-stone-700 hover:text-primary-600 hover:bg-primary-50"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="فتح القائمة"
             aria-expanded={menuOpen}

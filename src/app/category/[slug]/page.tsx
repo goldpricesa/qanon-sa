@@ -63,12 +63,12 @@ export default function CategoryPage({ params }: Props) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex items-center gap-3 mb-3">
             <CategoryBadge category={cat.slug} label={cat.label} asLink={false} />
-            <span className="text-sm text-stone-400">{cat.count} مقال</span>
+            <span className="text-sm text-stone-700">{cat.count} مقال</span>
           </div>
           <h1 className="text-2xl md:text-3xl font-bold text-navy-800">
             مقالات {cat.label}
           </h1>
-          <p className="text-stone-500 mt-2 text-sm">
+          <p className="text-stone-700 mt-2 text-sm">
             مقالات متخصصة في {cat.label} وفق الأنظمة واللوائح السعودية المعتمدة.
           </p>
         </div>

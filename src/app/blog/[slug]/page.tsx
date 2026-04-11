@@ -107,7 +107,7 @@ export default function BlogPostPage({ params }: Props) {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-stone-400 mb-8" aria-label="مسار التنقل">
+        <nav className="flex items-center gap-2 text-sm text-stone-700 mb-8" aria-label="مسار التنقل">
           <Link href="/" className="hover:text-primary-600 transition-colors">الرئيسية</Link>
           <span>‹</span>
           <Link href={`/category/${post.category}`} className="hover:text-primary-600 transition-colors">
@@ -136,7 +136,7 @@ export default function BlogPostPage({ params }: Props) {
             <div className="flex flex-wrap items-center gap-3 mb-4">
               <CategoryBadge category={post.category} label={post.categoryLabel} />
               {post.tags.map((tag) => (
-                <span key={tag} className="text-xs text-stone-400 bg-warm-100 px-2 py-1 rounded-full">
+                <span key={tag} className="text-xs text-stone-700 bg-warm-100 px-2 py-1 rounded-full">
                   #{tag}
                 </span>
               ))}
@@ -149,11 +149,11 @@ export default function BlogPostPage({ params }: Props) {
 
             {/* Date & reading time row */}
             <div className="flex items-center gap-4 pb-6 mb-8 border-b border-warm-200">
-              <time dateTime={post.date} className="text-sm text-stone-400">
+              <time dateTime={post.date} className="text-sm text-stone-700">
                 {formatDate(post.date)}
               </time>
-              <span className="text-stone-300">|</span>
-              <span className="text-sm text-stone-400 flex items-center gap-1">
+              <span className="text-stone-600">|</span>
+              <span className="text-sm text-stone-700 flex items-center gap-1">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -169,12 +169,12 @@ export default function BlogPostPage({ params }: Props) {
 
             {/* Tags */}
             <div className="mt-10 pt-6 border-t border-warm-200">
-              <h3 className="text-sm font-semibold text-stone-500 mb-3">الوسوم:</h3>
+              <h3 className="text-sm font-semibold text-stone-700 mb-3">الوسوم:</h3>
               <div className="flex flex-wrap gap-2">
                 {post.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="text-xs text-stone-500 bg-warm-100 hover:bg-warm-200 px-3 py-1.5 rounded-full transition-colors cursor-default"
+                    className="text-xs text-stone-700 bg-warm-100 hover:bg-warm-200 px-3 py-1.5 rounded-full transition-colors cursor-default"
                   >
                     #{tag}
                   </span>

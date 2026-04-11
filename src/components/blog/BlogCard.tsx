@@ -32,7 +32,7 @@ export default function BlogCard({ post }: BlogCardProps) {
           />
           <time
             dateTime={post.date}
-            className="text-xs text-stone-400"
+            className="text-xs text-stone-700"
           >
             {formatDate(post.date)}
           </time>
@@ -44,12 +44,12 @@ export default function BlogCard({ post }: BlogCardProps) {
           </h2>
         </Link>
 
-        <p className="text-sm text-stone-500 line-clamp-3 leading-relaxed flex-1">
+        <p className="text-sm text-stone-700 line-clamp-3 leading-relaxed flex-1">
           {post.excerpt}
         </p>
 
         <div className="flex items-center justify-end mt-4 pt-4 border-t border-warm-100">
-          <span className="text-xs text-stone-400 flex items-center gap-1">
+          <span className="text-xs text-stone-700 flex items-center gap-1">
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>

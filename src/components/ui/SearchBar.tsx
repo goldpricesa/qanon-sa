@@ -30,7 +30,7 @@ function SearchBarInner() {
       />
       <button
         type="submit"
-        className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-primary-500 transition-colors"
+        className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-700 hover:text-primary-500 transition-colors"
         aria-label="بحث"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

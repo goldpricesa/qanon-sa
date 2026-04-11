@@ -42,13 +42,13 @@ export default function HomePage({ searchParams }: HomePageProps) {
                   <h2 className="text-xl font-bold text-navy-800">أحدث المقالات</h2>
                 )}
                 {query && (
-                  <p className="text-sm text-stone-500 mt-1">
+                  <p className="text-sm text-stone-700 mt-1">
                     عرض النتائج المطابقة لعبارة &quot;{query}&quot;
                   </p>
                 )}
               </div>
 
-              <div className="flex items-center gap-3 text-sm text-stone-400">
+              <div className="flex items-center gap-3 text-sm text-stone-700">
                 <span>{visiblePosts.length} مقال</span>
                 {query && (
                   <Link
