@@ -26,6 +26,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!post) return {}
 
   const url = `https://qanon-sa.com/blog/${post.slug}`
+  const ogImage = post.coverImage.endsWith('.svg')
+    ? '/logo.png.jpeg'
+    : post.coverImage
 
   return {
     title: post.title,
@@ -43,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       authors: [post.author.name],
       images: [
         {
-          url: post.coverImage,
+          url: ogImage,
           width: 1200,
           height: 630,
           alt: post.title,
@@ -54,7 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'summary_large_image',
       title: post.title,
       description: post.excerpt,
-      images: [post.coverImage],
+      images: [ogImage],
     },
   }
 }
