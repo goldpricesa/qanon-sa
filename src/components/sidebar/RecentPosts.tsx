@@ -20,6 +20,7 @@ export default function RecentPosts() {
                   src={post.coverImage}
                   alt={post.title}
                   fill
+                  loading="lazy"
                   className="object-cover group-hover:scale-105 transition-transform duration-200"
                   sizes="64px"
                 />
