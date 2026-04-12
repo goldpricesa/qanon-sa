@@ -1,6 +1,7 @@
 import SearchBar from '@/components/ui/SearchBar'
 import CategoryList from './CategoryList'
 import RecentPosts from './RecentPosts'
+import AdUnit from '@/components/ui/AdUnit'
 
 export default function Sidebar() {
   return (
@@ -18,6 +19,9 @@ export default function Sidebar() {
 
       {/* Recent Posts */}
       <RecentPosts />
+
+      {/* Ad */}
+      <AdUnit slot="REPLACE_WITH_SLOT_ID" format="rectangle" />
 
       {/* Advisory */}
       <div className="bg-primary-50 rounded-xl p-5 border border-primary-100">
