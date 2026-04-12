@@ -15,13 +15,13 @@ export default function Sidebar() {
       </div>
 
       {/* Categories */}
-      <CategoryList />
+      <CategoryList />h
 
       {/* Recent Posts */}
       <RecentPosts />
 
       {/* Ad */}
-      <AdUnit slot="REPLACE_WITH_SLOT_ID" format="rectangle" />
+      <AdUnit slot="5398524309" format="rectangle" />
 
       {/* Advisory */}
       <div className="bg-primary-50 rounded-xl p-5 border border-primary-100">
