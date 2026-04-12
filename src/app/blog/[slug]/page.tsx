@@ -166,7 +166,7 @@ export default function BlogPostPage({ params }: Props) {
             </div>
 
             {/* Ad — above content */}
-            <AdUnit slot="REPLACE_WITH_SLOT_ID" format="horizontal" className="mb-6" />
+            <AdUnit slot="1459279297" format="horizontal" className="mb-6" />
 
             {/* Content */}
             <div
@@ -197,7 +197,7 @@ export default function BlogPostPage({ params }: Props) {
         </div>
 
         {/* Ad — below article */}
-        <AdUnit slot="REPLACE_WITH_SLOT_ID" format="auto" className="mt-10" />
+        <AdUnit slot="9202037944" format="auto" className="mt-10" />
 
         {/* Related Posts */}
         {related.length > 0 && (
