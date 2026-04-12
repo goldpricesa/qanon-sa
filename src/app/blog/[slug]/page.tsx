@@ -12,6 +12,7 @@ import {
   sanitizeArticleHtml,
   stripHtml,
 } from '@/lib/utils'
+import AdUnit from '@/components/ui/AdUnit'
 
 interface Props {
   params: { slug: string }
@@ -164,6 +165,9 @@ export default function BlogPostPage({ params }: Props) {
               </span>
             </div>
 
+            {/* Ad — above content */}
+            <AdUnit slot="REPLACE_WITH_SLOT_ID" format="horizontal" className="mb-6" />
+
             {/* Content */}
             <div
               className="prose prose-lg max-w-none"
@@ -191,6 +195,9 @@ export default function BlogPostPage({ params }: Props) {
             <Sidebar />
           </div>
         </div>
+
+        {/* Ad — below article */}
+        <AdUnit slot="REPLACE_WITH_SLOT_ID" format="auto" className="mt-10" />
 
         {/* Related Posts */}
         {related.length > 0 && (
