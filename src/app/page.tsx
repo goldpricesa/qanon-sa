@@ -30,6 +30,31 @@ export default function HomePage({ searchParams }: HomePageProps) {
     <>
       {!query && <FeaturedPost post={featured} />}
 
+      {/* Calculator Banner */}
+      {!query && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+          <Link
+            href="/calculator"
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-primary-500 hover:bg-primary-600 transition-colors text-white rounded-2xl px-6 py-5"
+          >
+            <div className="flex items-center gap-4">
+              <div className="bg-white/20 rounded-xl p-3 shrink-0">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 13h.01M13 13h.01M13 17h.01M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-bold text-base">حاسبة المستحقات العمالية</p>
+                <p className="text-primary-100 text-sm mt-0.5">احسب مكافأة نهاية الخدمة ورصيد إجازاتك وفق نظام العمل السعودي</p>
+              </div>
+            </div>
+            <span className="shrink-0 bg-white text-primary-600 font-semibold text-sm px-5 py-2.5 rounded-full hover:bg-primary-50 transition-colors self-start sm:self-auto">
+              احسب الآن
+            </span>
+          </Link>
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col lg:flex-row gap-10">
           {/* Main content */}
