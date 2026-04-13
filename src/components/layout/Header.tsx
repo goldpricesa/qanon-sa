@@ -11,6 +11,7 @@ const navLinks = [
   { href: '/category/tijari', label: 'تجاري' },
   { href: '/category/raqami', label: 'رقمي' },
   { href: '/category/madani', label: 'مدني' },
+  { href: '/calculator', label: 'الحاسبة' },
 ]
 
 export default function Header() {
