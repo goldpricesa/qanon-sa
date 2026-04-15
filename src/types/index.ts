@@ -2,6 +2,10 @@ export interface Author {
   name: string
   title: string
   avatar?: string
+  credential?: string
+  expertise?: string[]
+  profileUrl?: string
+  image?: string
 }
 
 export interface BlogPost {
@@ -18,6 +22,8 @@ export interface BlogPost {
   tags: string[]
   author: Author
   featured?: boolean
+  seoTitle?: string
+  seoDescription?: string
 }
 
 export interface Category {

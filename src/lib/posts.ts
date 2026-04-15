@@ -64,7 +64,7 @@ export function getAllCategories(): Category[] {
   }))
 }
 
-export function getRelatedPosts(post: BlogPost, count = 3): BlogPost[] {
+export function getRelatedPosts(post: BlogPost, count = 6): BlogPost[] {
   return getAllPosts()
     .filter((p) => p.slug !== post.slug && p.category === post.category)
     .slice(0, count)

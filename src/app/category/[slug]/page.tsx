@@ -51,11 +51,34 @@ export default function CategoryPage({ params }: Props) {
     inLanguage: 'ar',
   }
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'الرئيسية',
+        item: 'https://qanon-sa.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: cat.label,
+        item: `https://qanon-sa.com/category/${cat.slug}`,
+      },
+    ],
+  }
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
       {/* Category Header */}

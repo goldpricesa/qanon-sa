@@ -31,17 +31,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? '/logo.png.jpeg'
     : post.coverImage
 
+  // Use SEO-optimized title and description if available
+  const metaTitle = post.seoTitle || post.title
+  const metaDescription = post.seoDescription || post.excerpt
+
   return {
-    title: post.title,
-    description: post.excerpt,
+    title: metaTitle,
+    description: metaDescription,
     keywords: post.tags,
     authors: [{ name: post.author.name }],
     alternates: { canonical: url },
     openGraph: {
       type: 'article',
       url,
-      title: post.title,
-      description: post.excerpt,
+      title: metaTitle,
+      description: metaDescription,
       locale: 'ar_SA',
       publishedTime: post.date,
       authors: [post.author.name],
@@ -50,14 +54,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           url: ogImage,
           width: 1200,
           height: 630,
-          alt: post.title,
+          alt: metaTitle,
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      title: post.title,
-      description: post.excerpt,
+      title: metaTitle,
+      description: metaDescription,
       images: [ogImage],
     },
   }
@@ -83,6 +87,7 @@ export default function BlogPostPage({ params }: Props) {
       '@type': 'Person',
       name: post.author.name,
       jobTitle: post.author.title,
+      ...(post.author.credential && { description: post.author.credential }),
     },
     publisher: {
       '@type': 'Organization',
@@ -102,11 +107,40 @@ export default function BlogPostPage({ params }: Props) {
     wordCount: stripHtml(safeContent).split(/\s+/).filter(Boolean).length,
   }
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'الرئيسية',
+        item: 'https://qanon-sa.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: post.categoryLabel,
+        item: `https://qanon-sa.com/category/${post.category}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.title,
+        item: `https://qanon-sa.com/blog/${post.slug}`,
+      },
+    ],
+  }
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
