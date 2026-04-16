@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#78350f"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <g transform="translate(600 280)" fill="none" stroke="#fde68a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M-100 -30 L100 -30 L100 70 L-100 70 Z"/>
+    <path d="M-40 -30 L-40 -60 L40 -60 L40 -30"/>
+    <path d="M-100 10 L100 10"/>
+    <circle cx="0" cy="-10" r="6" fill="#fde68a"/>
+  </g>
+  <text x="600" y="500" text-anchor="middle" font-family="'Tajawal', system-ui, sans-serif" font-size="56" font-weight="700" fill="#ffffff" direction="rtl">القانون التجاري</text>
+  <text x="600" y="560" text-anchor="middle" font-family="'Tajawal', system-ui, sans-serif" font-size="28" fill="#fde68a" direction="rtl">نظرة قانونية</text>
+</svg>
