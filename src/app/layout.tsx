@@ -1,10 +1,18 @@
 import type { Metadata } from 'next'
+import { Tajawal } from 'next/font/google'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import Script from 'next/script'
 import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import BackToTop from '@/components/ui/BackToTop'
+
+const tajawal = Tajawal({
+  subsets: ['arabic'],
+  weight: ['300', '400', '500', '700'],
+  display: 'swap',
+  variable: '--font-tajawal',
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://qanon-sa.com'),
@@ -17,35 +25,57 @@ export const metadata: Metadata = {
     apple: '/logo.png.jpeg',
   },
   title: {
-    default: 'نظرة قانونية | مدونة قانونية سعودية',
+    default: 'نظرة قانونية | مدونة قانونية سعودية متخصصة',
     template: '%s | نظرة قانونية',
   },
   description:
-    'مدونة قانونية متخصصة في الشأن السعودي — نظام العمل، العقارات، الشركات، والقانون الرقمي. مقالات موثوقة يكتبها محامون معتمدون.',
+    'مدونة قانونية سعودية متخصصة — شروحات نظام العمل، الأحوال الشخصية، العقود، الإيجار، الجرائم المعلوماتية، تأسيس الشركات. مقالات يكتبها محامون مرخصون من وزارة العدل.',
   keywords: [
     'قانون سعودي',
-    'نظام العمل',
     'محامي سعودي',
+    'محامي الرياض',
+    'استشارة قانونية مجانية',
     'استشارات قانونية',
-    'نظام الشركات',
-    'قانون عقاري',
+    'نظام العمل السعودي',
+    'الفصل التعسفي',
+    'مكافأة نهاية الخدمة',
+    'نظام الأحوال الشخصية',
+    'الحضانة في السعودية',
+    'دعوى الخلع',
+    'منصة إيجار',
+    'تأسيس شركة',
+    'الشرط الجزائي',
+    'صحيفة الدعوى',
+    'دعوى التعويض',
+    'الجرائم المعلوماتية',
+    'صك حصر الورثة',
+    'توزيع التركة',
+    'محكمة عمالية',
+    'محكمة تجارية',
   ],
+  category: 'law',
   authors: [{ name: 'نظرة قانونية', url: 'https://qanon-sa.com' }],
   creator: 'نظرة قانونية',
   publisher: 'نظرة قانونية',
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true },
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
   },
   openGraph: {
     type: 'website',
     locale: 'ar_SA',
     url: 'https://qanon-sa.com',
     siteName: 'نظرة قانونية',
-    title: 'نظرة قانونية | مدونة قانونية سعودية',
+    title: 'نظرة قانونية | مدونة قانونية سعودية متخصصة',
     description:
-      'مدونة قانونية متخصصة في الشأن السعودي — نظام العمل، العقارات، الشركات، والقانون الرقمي.',
+      'مدونة قانونية سعودية متخصصة — نظام العمل، الأحوال الشخصية، العقود، الإيجار، الجرائم المعلوماتية. يكتبها محامون مرخصون.',
     images: [
       {
         url: '/logo.png.jpeg',
@@ -57,9 +87,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'نظرة قانونية | مدونة قانونية سعودية',
+    title: 'نظرة قانونية | مدونة قانونية سعودية متخصصة',
     description:
-      'مدونة قانونية متخصصة في الشأن السعودي — نظام العمل، العقارات، الشركات، والقانون الرقمي.',
+      'محتوى قانوني سعودي موثوق يكتبه محامون مرخصون من وزارة العدل.',
     creator: '@qanon_sa',
     images: ['/logo.png.jpeg'],
   },
@@ -69,19 +99,55 @@ export const metadata: Metadata = {
   },
 }
 
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'نظرة قانونية',
+  url: 'https://qanon-sa.com',
+  inLanguage: 'ar-SA',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: 'https://qanon-sa.com/?q={search_term_string}',
+    },
+    'query-input': 'required name=search_term_string',
+  },
+}
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LegalService',
+  name: 'نظرة قانونية',
+  url: 'https://qanon-sa.com',
+  logo: 'https://qanon-sa.com/logo.png.jpeg',
+  description:
+    'مدونة قانونية سعودية متخصصة في الشأن السعودي يكتبها محامون مرخصون من وزارة العدل.',
+  areaServed: {
+    '@type': 'Country',
+    name: 'المملكة العربية السعودية',
+  },
+  knowsLanguage: ['ar', 'en'],
+}
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="ar" dir="rtl">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet" />
-      </head>
-      <body className="min-h-screen flex flex-col bg-warm-50 font-arabic">
+    <html lang="ar" dir="rtl" className={tajawal.variable}>
+      <body className={`${tajawal.className} min-h-screen flex flex-col bg-warm-50 font-arabic`}>
+        <Script
+          id="website-jsonld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        <Script
+          id="org-jsonld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

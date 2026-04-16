@@ -8,6 +8,16 @@ export interface Author {
   image?: string
 }
 
+export interface FaqItem {
+  question: string
+  answer: string
+}
+
+export interface HowToStep {
+  name: string
+  text: string
+}
+
 export interface BlogPost {
   id: string
   slug: string
@@ -16,6 +26,7 @@ export interface BlogPost {
   content: string
   coverImage: string
   date: string
+  dateModified?: string
   readingTime: number
   category: string
   categoryLabel: string
@@ -24,6 +35,8 @@ export interface BlogPost {
   featured?: boolean
   seoTitle?: string
   seoDescription?: string
+  faq?: FaqItem[]
+  howToSteps?: HowToStep[]
 }
 
 export interface Category {

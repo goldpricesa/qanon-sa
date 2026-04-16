@@ -41,6 +41,8 @@ export function getAllCategories(): Category[] {
     tijari: 'amber',
     raqami: 'purple',
     madani: 'rose',
+    ahwal: 'pink',
+    jinai: 'red',
   }
 
   const labelMap: Record<string, string> = {
@@ -49,6 +51,8 @@ export function getAllCategories(): Category[] {
     tijari: 'تجاري',
     raqami: 'رقمي',
     madani: 'مدني',
+    ahwal: 'أحوال شخصية',
+    jinai: 'جنائي',
   }
 
   const counts: Record<string, number> = {}

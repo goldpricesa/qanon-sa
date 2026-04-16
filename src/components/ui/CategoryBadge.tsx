@@ -7,6 +7,8 @@ const colorMap: Record<string, string> = {
   tijari: 'bg-amber-100 text-amber-700 hover:bg-amber-200',
   raqami: 'bg-purple-100 text-purple-700 hover:bg-purple-200',
   madani: 'bg-rose-100 text-rose-700 hover:bg-rose-200',
+  ahwal: 'bg-pink-100 text-pink-700 hover:bg-pink-200',
+  jinai: 'bg-red-100 text-red-700 hover:bg-red-200',
 }
 
 interface CategoryBadgeProps {
