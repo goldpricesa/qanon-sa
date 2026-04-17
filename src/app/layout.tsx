@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Tajawal } from 'next/font/google'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import Script from 'next/script'
@@ -14,15 +14,23 @@ const tajawal = Tajawal({
   variable: '--font-tajawal',
 })
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#0f766e' },
+    { media: '(prefers-color-scheme: dark)', color: '#0c1e3c' },
+  ],
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+}
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://qanon-sa.com'),
+  applicationName: 'نظرة قانونية',
+  referrer: 'origin-when-cross-origin',
+  formatDetection: { telephone: false, address: false, email: false },
   verification: {
     google: 'v8ablWgD-CRVtO_toxgDNiaW3UQUXPY8lNL0I4zcNTY',
-  },
-  icons: {
-    icon: '/logo.png.jpeg',
-    shortcut: '/logo.png.jpeg',
-    apple: '/logo.png.jpeg',
   },
   title: {
     default: 'نظرة قانونية | مدونة قانونية سعودية متخصصة',
@@ -76,14 +84,6 @@ export const metadata: Metadata = {
     title: 'نظرة قانونية | مدونة قانونية سعودية متخصصة',
     description:
       'مدونة قانونية سعودية متخصصة — نظام العمل، الأحوال الشخصية، العقود، الإيجار، الجرائم المعلوماتية. يكتبها محامون مرخصون.',
-    images: [
-      {
-        url: '/logo.png.jpeg',
-        width: 1200,
-        height: 630,
-        alt: 'شعار نظرة قانونية',
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
@@ -91,7 +91,7 @@ export const metadata: Metadata = {
     description:
       'محتوى قانوني سعودي موثوق يكتبه محامون مرخصون من وزارة العدل.',
     creator: '@qanon_sa',
-    images: ['/logo.png.jpeg'],
+    site: '@qanon_sa',
   },
   alternates: {
     canonical: 'https://qanon-sa.com',
@@ -102,9 +102,14 @@ export const metadata: Metadata = {
 const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
+  '@id': 'https://qanon-sa.com/#website',
   name: 'نظرة قانونية',
+  alternateName: 'Qanon SA',
   url: 'https://qanon-sa.com',
+  description:
+    'مدونة قانونية سعودية متخصصة — نظام العمل، الأحوال الشخصية، العقود، الإيجار، الجرائم المعلوماتية.',
   inLanguage: 'ar-SA',
+  publisher: { '@id': 'https://qanon-sa.com/#organization' },
   potentialAction: {
     '@type': 'SearchAction',
     target: {
@@ -117,17 +122,41 @@ const websiteJsonLd = {
 
 const organizationJsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'LegalService',
+  '@type': 'Organization',
+  '@id': 'https://qanon-sa.com/#organization',
   name: 'نظرة قانونية',
+  alternateName: 'Qanon SA',
   url: 'https://qanon-sa.com',
-  logo: 'https://qanon-sa.com/logo.png.jpeg',
+  logo: {
+    '@type': 'ImageObject',
+    url: 'https://qanon-sa.com/logo.png',
+    width: 560,
+    height: 150,
+  },
+  image: 'https://qanon-sa.com/logo.png',
   description:
     'مدونة قانونية سعودية متخصصة في الشأن السعودي يكتبها محامون مرخصون من وزارة العدل.',
   areaServed: {
     '@type': 'Country',
     name: 'المملكة العربية السعودية',
   },
-  knowsLanguage: ['ar', 'en'],
+  knowsLanguage: ['ar'],
+  knowsAbout: [
+    'نظام العمل السعودي',
+    'الأحوال الشخصية',
+    'القانون العقاري',
+    'القانون التجاري',
+    'الجرائم المعلوماتية',
+    'القانون المدني',
+  ],
+  sameAs: ['https://twitter.com/qanon_sa'],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer support',
+    email: 'contact@qanon-sa.com',
+    availableLanguage: 'Arabic',
+    areaServed: 'SA',
+  },
 }
 
 export default function RootLayout({
@@ -137,6 +166,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ar" dir="rtl" className={tajawal.variable}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+      </head>
       <body className={`${tajawal.className} min-h-screen flex flex-col bg-warm-50 font-arabic`}>
         <Script
           id="website-jsonld"

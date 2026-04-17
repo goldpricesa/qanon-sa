@@ -15,7 +15,7 @@ export default function Sidebar() {
       </div>
 
       {/* Categories */}
-      <CategoryList />h
+      <CategoryList />
 
       {/* Recent Posts */}
       <RecentPosts />
