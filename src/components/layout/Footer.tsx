@@ -9,11 +9,20 @@ const categories = [
   { href: '/category/madani', label: 'قانون مدني' },
 ]
 
+const siteLinks = [
+  { href: '/blog', label: 'المدونة' },
+  { href: '/calculator', label: 'الحاسبة القانونية' },
+  { href: '/about', label: 'من نحن' },
+  { href: '/contact', label: 'تواصل معنا' },
+  { href: '/privacy', label: 'سياسة الخصوصية' },
+  { href: '/terms', label: 'الشروط والأحكام' },
+]
+
 export default function Footer() {
   return (
     <footer className="bg-navy-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Brand */}
           <div>
             <Link href="/" className="inline-flex items-center mb-4" aria-label="العودة إلى الرئيسية">
@@ -67,6 +76,24 @@ export default function Footer() {
                   >
                     <span className="text-primary-500">‹</span>
                     {cat.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Site Links */}
+          <div>
+            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">روابط</h3>
+            <ul className="space-y-2">
+              {siteLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2"
+                  >
+                    <span className="text-primary-500">‹</span>
+                    {link.label}
                   </Link>
                 </li>
               ))}

@@ -27,10 +27,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!post) return {}
 
   const url = `https://qanon-sa.com/blog/${post.slug}`
-  const ogImage = post.coverImage.endsWith('.svg')
-    ? '/logo.png.jpeg'
-    : post.coverImage
-
   const metaTitle = post.seoTitle || post.title
   const metaDescription = post.seoDescription || post.excerpt
 
@@ -49,20 +45,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       publishedTime: post.date,
       modifiedTime: post.dateModified ?? post.date,
       authors: [post.author.name],
-      images: [
-        {
-          url: ogImage,
-          width: 1200,
-          height: 630,
-          alt: metaTitle,
-        },
-      ],
+      section: post.categoryLabel,
+      tags: post.tags,
     },
     twitter: {
       card: 'summary_large_image',
       title: metaTitle,
       description: metaDescription,
-      images: [ogImage],
     },
   }
 }
@@ -74,6 +63,10 @@ export default function BlogPostPage({ params }: Props) {
   const related = getRelatedPosts(post)
   const safeContent = sanitizeArticleHtml(post.content)
 
+  const articleImage = post.coverImage.endsWith('.svg')
+    ? `https://qanon-sa.com/blog/${post.slug}/opengraph-image`
+    : `https://qanon-sa.com${post.coverImage}`
+
   const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -81,7 +74,7 @@ export default function BlogPostPage({ params }: Props) {
     description: post.excerpt,
     datePublished: post.date,
     dateModified: post.dateModified ?? post.date,
-    image: `https://qanon-sa.com${post.coverImage}`,
+    image: articleImage,
     inLanguage: 'ar',
     author: {
       '@type': 'Person',
@@ -89,15 +82,9 @@ export default function BlogPostPage({ params }: Props) {
       jobTitle: post.author.title,
       ...(post.author.credential && { description: post.author.credential }),
     },
-    publisher: {
-      '@type': 'Organization',
-      name: 'نظرة قانونية',
-      url: 'https://qanon-sa.com',
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://qanon-sa.com/logo.png.jpeg',
-      },
-    },
+    publisher: { '@id': 'https://qanon-sa.com/#organization' },
+    isPartOf: { '@id': 'https://qanon-sa.com/#website' },
+    about: { '@type': 'Thing', name: post.categoryLabel },
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': `https://qanon-sa.com/blog/${post.slug}`,
@@ -105,6 +92,7 @@ export default function BlogPostPage({ params }: Props) {
     keywords: post.tags.join(', '),
     articleSection: post.categoryLabel,
     wordCount: stripHtml(safeContent).split(/\s+/).filter(Boolean).length,
+    timeRequired: `PT${post.readingTime}M`,
   }
 
   const breadcrumbJsonLd = {
