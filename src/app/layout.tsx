@@ -172,6 +172,12 @@ export default function RootLayout({
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="نظرة قانونية — آخر المقالات"
+          href="/feed.xml"
+        />
       </head>
       <body className={`${tajawal.className} min-h-screen flex flex-col bg-warm-50 font-arabic`}>
         <Script
@@ -189,6 +195,13 @@ export default function RootLayout({
         <Footer />
         <BackToTop />
         <GoogleAnalytics gaId="G-84090DMG89" />
+        <Script
+          id="plausible-analytics"
+          strategy="lazyOnload"
+          defer
+          data-domain="qanon-sa.com"
+          src="https://plausible.io/js/script.js"
+        />
         <Script
           strategy="lazyOnload"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3611815443789107"

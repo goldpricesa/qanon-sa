@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { getAllCategories, getPostsByCategory } from '@/lib/posts'
 import BlogGrid from '@/components/blog/BlogGrid'
 import CategoryBadge from '@/components/ui/CategoryBadge'
+import Breadcrumbs from '@/components/ui/Breadcrumbs'
 
 interface Props {
   params: { slug: string }
@@ -13,8 +14,9 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const slug = decodeURIComponent(params.slug)
   const categories = getAllCategories()
-  const cat = categories.find((c) => c.slug === params.slug)
+  const cat = categories.find((c) => c.slug === slug)
   if (!cat) return {}
 
   const url = `https://qanon-sa.com/category/${cat.slug}`
@@ -36,38 +38,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default function CategoryPage({ params }: Props) {
+  const slug = decodeURIComponent(params.slug)
   const categories = getAllCategories()
-  const cat = categories.find((c) => c.slug === params.slug)
+  const cat = categories.find((c) => c.slug === slug)
   if (!cat) notFound()
 
-  const posts = getPostsByCategory(params.slug)
+  const posts = getPostsByCategory(slug)
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: `مقالات ${cat.label}`,
     description: `جميع المقالات في تصنيف ${cat.label}`,
-    url: `https://qanon-sa.com/category/${cat.slug}`,
+    url: `https://qanon-sa.com/category/${encodeURI(cat.slug)}`,
     inLanguage: 'ar',
-  }
-
-  const breadcrumbJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'الرئيسية',
-        item: 'https://qanon-sa.com',
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: cat.label,
-        item: `https://qanon-sa.com/category/${cat.slug}`,
-      },
-    ],
   }
 
   return (
@@ -76,14 +60,17 @@ export default function CategoryPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
 
       {/* Category Header */}
       <div className="bg-white border-b border-warm-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <Breadcrumbs
+            className="mb-4"
+            items={[
+              { label: 'الرئيسية', href: '/' },
+              { label: cat.label },
+            ]}
+          />
           <div className="flex items-center gap-3 mb-3">
             <CategoryBadge category={cat.slug} label={cat.label} asLink={false} />
             <span className="text-sm text-stone-700">{cat.count} مقال</span>

@@ -2,11 +2,13 @@ import Link from 'next/link'
 import { getAllCategories } from '@/lib/posts'
 
 const colorMap: Record<string, string> = {
-  emali: 'bg-blue-100 text-blue-600',
-  aqari: 'bg-green-100 text-green-600',
-  tijari: 'bg-amber-100 text-amber-600',
-  raqami: 'bg-purple-100 text-purple-600',
-  madani: 'bg-rose-100 text-rose-600',
+  'عمالي': 'bg-blue-100 text-blue-600',
+  'جنائي': 'bg-red-100 text-red-600',
+  'عقاري': 'bg-green-100 text-green-600',
+  'تجاري': 'bg-amber-100 text-amber-600',
+  'رقمي': 'bg-purple-100 text-purple-600',
+  'مدني': 'bg-rose-100 text-rose-600',
+  'أحوال-شخصية': 'bg-pink-100 text-pink-600',
 }
 
 export default function CategoryList() {

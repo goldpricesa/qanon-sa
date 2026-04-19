@@ -1,4 +1,5 @@
 export interface Author {
+  slug?: string
   name: string
   title: string
   avatar?: string
@@ -6,6 +7,11 @@ export interface Author {
   expertise?: string[]
   profileUrl?: string
   image?: string
+  bio?: string
+  alumniOf?: string
+  sameAs?: string[]
+  email?: string
+  telephone?: string
 }
 
 export interface FaqItem {
@@ -21,6 +27,7 @@ export interface HowToStep {
 export interface BlogPost {
   id: string
   slug: string
+  legacySlugs?: string[]
   title: string
   excerpt: string
   content: string

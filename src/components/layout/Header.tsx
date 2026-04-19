@@ -6,11 +6,12 @@ import { useState } from 'react'
 
 const navLinks = [
   { href: '/', label: 'المقالات' },
-  { href: '/category/emali', label: 'عمالي' },
-  { href: '/category/aqari', label: 'عقاري' },
-  { href: '/category/tijari', label: 'تجاري' },
-  { href: '/category/raqami', label: 'رقمي' },
-  { href: '/category/madani', label: 'مدني' },
+  { href: '/category/عمالي', label: 'عمالي' },
+  { href: '/category/جنائي', label: 'جنائي' },
+  { href: '/category/عقاري', label: 'عقاري' },
+  { href: '/category/تجاري', label: 'تجاري' },
+  { href: '/category/رقمي', label: 'رقمي' },
+  { href: '/category/مدني', label: 'مدني' },
   { href: '/calculator', label: 'الحاسبة' },
 ]
 

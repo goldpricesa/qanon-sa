@@ -1,11 +1,17 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import Image from 'next/image'
-import Link from 'next/link'
-import { getAllPosts, getPostBySlug, getRelatedPosts } from '@/lib/posts'
+import { getAllPosts, getPostBySlug, getPostByAnySlug, getRelatedPosts } from '@/lib/posts'
+import { getAuthorBySlug } from '@/data/authors'
 import CategoryBadge from '@/components/ui/CategoryBadge'
 import Sidebar from '@/components/sidebar/Sidebar'
 import BlogCard from '@/components/blog/BlogCard'
+import Breadcrumbs from '@/components/ui/Breadcrumbs'
+import Faq from '@/components/blog/Faq'
+import TableOfContents from '@/components/blog/TableOfContents'
+import ReadingProgressBar from '@/components/blog/ReadingProgressBar'
+import ShareButtons from '@/components/blog/ShareButtons'
+import AuthorCard from '@/components/blog/AuthorCard'
 import {
   formatDate,
   formatReadingTime,
@@ -23,7 +29,8 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = getPostBySlug(params.slug)
+  const slug = decodeURIComponent(params.slug)
+  const post = getPostBySlug(slug)
   if (!post) return {}
 
   const url = `https://qanon-sa.com/blog/${post.slug}`
@@ -57,15 +64,41 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default function BlogPostPage({ params }: Props) {
-  const post = getPostBySlug(params.slug)
-  if (!post) notFound()
+  const slug = decodeURIComponent(params.slug)
+  let post = getPostBySlug(slug)
+  if (!post) {
+    const legacyMatch = getPostByAnySlug(slug)
+    if (legacyMatch && legacyMatch.slug !== slug) {
+      redirect(`/blog/${legacyMatch.slug}`)
+    }
+    notFound()
+  }
 
   const related = getRelatedPosts(post)
   const safeContent = sanitizeArticleHtml(post.content)
+  const canonicalAuthor =
+    (post.author.slug && getAuthorBySlug(post.author.slug)) || post.author
+  const articleUrl = `https://qanon-sa.com/blog/${post.slug}`
 
   const articleImage = post.coverImage.endsWith('.svg')
     ? `https://qanon-sa.com/blog/${post.slug}/opengraph-image`
     : `https://qanon-sa.com${post.coverImage}`
+
+  const authorJsonLd: Record<string, unknown> = {
+    '@type': 'Person',
+    name: canonicalAuthor.name,
+    jobTitle: canonicalAuthor.title,
+  }
+  if (canonicalAuthor.slug) {
+    authorJsonLd['@id'] = `https://qanon-sa.com/author/${canonicalAuthor.slug}#person`
+    authorJsonLd.url = `https://qanon-sa.com/author/${canonicalAuthor.slug}`
+  }
+  if (canonicalAuthor.credential) {
+    authorJsonLd.description = canonicalAuthor.credential
+  }
+  if (canonicalAuthor.sameAs && canonicalAuthor.sameAs.length > 0) {
+    authorJsonLd.sameAs = canonicalAuthor.sameAs
+  }
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
@@ -76,64 +109,19 @@ export default function BlogPostPage({ params }: Props) {
     dateModified: post.dateModified ?? post.date,
     image: articleImage,
     inLanguage: 'ar',
-    author: {
-      '@type': 'Person',
-      name: post.author.name,
-      jobTitle: post.author.title,
-      ...(post.author.credential && { description: post.author.credential }),
-    },
+    author: authorJsonLd,
     publisher: { '@id': 'https://qanon-sa.com/#organization' },
     isPartOf: { '@id': 'https://qanon-sa.com/#website' },
     about: { '@type': 'Thing', name: post.categoryLabel },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://qanon-sa.com/blog/${post.slug}`,
+      '@id': articleUrl,
     },
     keywords: post.tags.join(', '),
     articleSection: post.categoryLabel,
     wordCount: stripHtml(safeContent).split(/\s+/).filter(Boolean).length,
     timeRequired: `PT${post.readingTime}M`,
   }
-
-  const breadcrumbJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'الرئيسية',
-        item: 'https://qanon-sa.com',
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: post.categoryLabel,
-        item: `https://qanon-sa.com/category/${post.category}`,
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: post.title,
-        item: `https://qanon-sa.com/blog/${post.slug}`,
-      },
-    ],
-  }
-
-  const faqJsonLd = post.faq && post.faq.length > 0
-    ? {
-        '@context': 'https://schema.org',
-        '@type': 'FAQPage',
-        mainEntity: post.faq.map((item) => ({
-          '@type': 'Question',
-          name: item.question,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: item.answer,
-          },
-        })),
-      }
-    : null
 
   const howToJsonLd = post.howToSteps && post.howToSteps.length > 0
     ? {
@@ -154,20 +142,11 @@ export default function BlogPostPage({ params }: Props) {
 
   return (
     <>
+      <ReadingProgressBar />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
-      {faqJsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-        />
-      )}
       {howToJsonLd && (
         <script
           type="application/ld+json"
@@ -176,16 +155,14 @@ export default function BlogPostPage({ params }: Props) {
       )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-stone-700 mb-8" aria-label="مسار التنقل">
-          <Link href="/" className="hover:text-primary-600 transition-colors">الرئيسية</Link>
-          <span>‹</span>
-          <Link href={`/category/${post.category}`} className="hover:text-primary-600 transition-colors">
-            {post.categoryLabel}
-          </Link>
-          <span>‹</span>
-          <span className="text-stone-600 line-clamp-1">{post.title}</span>
-        </nav>
+        <Breadcrumbs
+          className="mb-8"
+          items={[
+            { label: 'الرئيسية', href: '/' },
+            { label: post.categoryLabel, href: `/category/${post.category}` },
+            { label: post.title },
+          ]}
+        />
 
         <div className="flex flex-col lg:flex-row gap-10">
           {/* Article */}
@@ -218,7 +195,7 @@ export default function BlogPostPage({ params }: Props) {
             </h1>
 
             {/* Date & reading time row */}
-            <div className="flex items-center gap-4 pb-6 mb-8 border-b border-warm-200">
+            <div className="flex items-center gap-4 pb-6 mb-6 border-b border-warm-200 flex-wrap">
               <time dateTime={post.date} className="text-sm text-stone-700">
                 {formatDate(post.date)}
               </time>
@@ -236,38 +213,29 @@ export default function BlogPostPage({ params }: Props) {
               </span>
             </div>
 
+            {/* Share */}
+            <ShareButtons url={articleUrl} title={post.title} />
+
+            {/* Table of Contents */}
+            <div className="mt-6">
+              <TableOfContents />
+            </div>
+
             {/* Ad — above content */}
             <AdUnit slot="1459279297" format="horizontal" className="mb-6" />
 
             {/* Content */}
             <div
+              data-article-content
               className="prose prose-lg max-w-none"
               dangerouslySetInnerHTML={{ __html: safeContent }}
             />
 
             {/* FAQ Section */}
-            {post.faq && post.faq.length > 0 && (
-              <section className="mt-12 pt-8 border-t border-warm-200">
-                <h2 className="text-2xl font-bold text-navy-800 mb-6">الأسئلة الشائعة</h2>
-                <div className="space-y-4">
-                  {post.faq.map((item, idx) => (
-                    <details
-                      key={idx}
-                      className="group bg-warm-50 rounded-xl p-5 border border-warm-200"
-                    >
-                      <summary className="font-semibold text-navy-800 cursor-pointer flex items-center justify-between">
-                        <span>{item.question}</span>
-                        <span className="text-primary-600 group-open:rotate-180 transition-transform">▼</span>
-                      </summary>
-                      <p className="mt-3 text-stone-700 leading-relaxed">{item.answer}</p>
-                    </details>
-                  ))}
-                </div>
-              </section>
-            )}
+            {post.faq && post.faq.length > 0 && <Faq items={post.faq} />}
 
             {/* Tags */}
-            <div className="mt-10 pt-6 border-t border-warm-200">
+            <div className="mt-10 pt-6 border-t border-warm-200 print:hidden">
               <h3 className="text-sm font-semibold text-stone-700 mb-3">الوسوم:</h3>
               <div className="flex flex-wrap gap-2">
                 {post.tags.map((tag) => (
@@ -280,10 +248,13 @@ export default function BlogPostPage({ params }: Props) {
                 ))}
               </div>
             </div>
+
+            {/* Author Card */}
+            <AuthorCard author={canonicalAuthor} />
           </article>
 
           {/* Sidebar */}
-          <div className="lg:w-80 shrink-0">
+          <div className="lg:w-80 shrink-0 print:hidden">
             <Sidebar />
           </div>
         </div>
@@ -293,7 +264,7 @@ export default function BlogPostPage({ params }: Props) {
 
         {/* Related Posts */}
         {related.length > 0 && (
-          <section className="mt-16">
+          <section className="mt-16 print:hidden">
             <h2 className="text-xl font-bold text-navy-800 mb-8">مقالات ذات صلة</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {related.map((rp) => (
