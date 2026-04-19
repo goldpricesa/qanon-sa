@@ -2,13 +2,13 @@ import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
 const colorMap: Record<string, string> = {
-  emali: 'bg-blue-100 text-blue-700 hover:bg-blue-200',
-  aqari: 'bg-green-100 text-green-700 hover:bg-green-200',
-  tijari: 'bg-amber-100 text-amber-700 hover:bg-amber-200',
-  raqami: 'bg-purple-100 text-purple-700 hover:bg-purple-200',
-  madani: 'bg-rose-100 text-rose-700 hover:bg-rose-200',
-  ahwal: 'bg-pink-100 text-pink-700 hover:bg-pink-200',
-  jinai: 'bg-red-100 text-red-700 hover:bg-red-200',
+  'عمالي': 'bg-blue-100 text-blue-700 hover:bg-blue-200',
+  'عقاري': 'bg-green-100 text-green-700 hover:bg-green-200',
+  'تجاري': 'bg-amber-100 text-amber-700 hover:bg-amber-200',
+  'رقمي': 'bg-purple-100 text-purple-700 hover:bg-purple-200',
+  'مدني': 'bg-rose-100 text-rose-700 hover:bg-rose-200',
+  'أحوال شخصية': 'bg-pink-100 text-pink-700 hover:bg-pink-200',
+  'جنائي': 'bg-red-100 text-red-700 hover:bg-red-200',
 }
 
 interface CategoryBadgeProps {

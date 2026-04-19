@@ -66,3 +66,45 @@ body {
   background: #14b8a6;
   border-radius: 3px;
 }
+
+/* Print styles — clean print-out of the article without chrome */
+@media print {
+  header,
+  footer,
+  aside,
+  nav,
+  .print\:hidden,
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  main {
+    display: block !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 12pt;
+  }
+
+  a {
+    color: #000 !important;
+    text-decoration: underline;
+  }
+
+  .prose a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    word-break: break-all;
+  }
+
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+}

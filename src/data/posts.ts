@@ -3,7 +3,8 @@ import type { BlogPost } from '@/types'
 export const allPosts: BlogPost[] = [
   {
     id: '1',
-    slug: 'alfasl-altasawwuri-fi-nizaam-alaamal',
+    slug: 'الفصل-التعسفي-في-نظام-العمل',
+    legacySlugs: ['alfasl-altasawwuri-fi-nizaam-alaamal'],
     title: 'الفصل التعسفي في نظام العمل السعودي — الحقوق والتعويض',
     excerpt:
       'يُعدّ الفصل التعسفي من أبرز النزاعات العمالية في المملكة العربية السعودية. تعرّف على الحالات النظامية لإنهاء عقد العمل، حقوق العامل والمفصول تعسفياً، والتعويضات المستحقة وفق المواد 74 و77 و80 و81 من نظام العمل الصادر بالمرسوم الملكي م/51.',
@@ -75,10 +76,11 @@ export const allPosts: BlogPost[] = [
     coverImage: '/covers/labor-termination.svg',
     date: '2025-01-15',
     readingTime: 10,
-    category: 'emali',
+    category: 'عمالي',
     categoryLabel: 'عمالي',
     tags: ['فصل تعسفي', 'نظام العمل', 'حقوق العامل', 'التعويض', 'المادة 77', 'المادة 80', 'المادة 81', 'الفصل التعسفي السعودي'],
     author: {
+      slug: 'abdulrhman-almutlaq',
       name: 'أ. عبدالرحمن المطلق',
       title: 'محامٍ متخصص في القضايا العمالية والاستشارات القانونية',
       credential: 'محامي مرخص — وزارة العدل السعودية',
@@ -90,7 +92,8 @@ export const allPosts: BlogPost[] = [
   },
   {
     id: '2',
-    slug: 'huquq-almuwaddaf-fi-alqitaa-alkhass',
+    slug: 'حقوق-الموظف-في-القطاع-الخاص',
+    legacySlugs: ['huquq-almuwaddaf-fi-alqitaa-alkhass'],
     title: 'حقوق الموظف في القطاع الخاص في السعودية: دليل شامل وفق نظام العمل',
     excerpt:
       'تعرف على حقوق الموظف في القطاع الخاص في السعودية بالتفصيل: ساعات العمل، الإجازات، الفصل، ومكافأة نهاية الخدمة وفق نظام العمل السعودي.',
@@ -240,7 +243,7 @@ export const allPosts: BlogPost[] = [
     coverImage: '/covers/emali-cover.svg',
     date: '2026-04-17',
     readingTime: 9,
-    category: 'emali',
+    category: 'عمالي',
     categoryLabel: 'عمالي',
     tags: [
       'حقوق الموظف',
@@ -252,6 +255,7 @@ export const allPosts: BlogPost[] = [
       'الفصل التعسفي',
     ],
     author: {
+      slug: 'abdulrhman-almutlaq',
       name: 'أ. عبدالرحمن المطلق',
       title: 'محامٍ متخصص في القضايا العمالية والاستشارات القانونية',
       credential: 'محامي مرخص — وزارة العدل السعودية',
@@ -286,7 +290,8 @@ export const allPosts: BlogPost[] = [
   },
   {
     id: '3',
-    slug: 'uqubat-alsab-walshatm-fi-alsaudia',
+    slug: 'عقوبة-السب-والشتم-في-السعودية',
+    legacySlugs: ['uqubat-alsab-walshatm-fi-alsaudia'],
     title: 'عقوبة السب والشتم في السعودية 1447هـ: متى تُعدّ جريمة وما العقوبة؟',
     excerpt:
       'يظنّ كثيرون أن السب والشتم خلاف عابر لا يستوجب المساءلة، غير أن النظام السعودي يتعامل معها باعتبارها جريمة معاقَباً عليها تصل عقوبتها إلى السجن وغرامة نصف مليون ريال. تعرّف على الإطار القانوني كاملاً.',
@@ -432,7 +437,7 @@ export const allPosts: BlogPost[] = [
     coverImage: '/covers/jinai-cover.svg',
     date: '2026-04-18',
     readingTime: 10,
-    category: 'jinai',
+    category: 'جنائي',
     categoryLabel: 'جنائي',
     tags: [
       'عقوبة السب والشتم في السعودية',
@@ -443,6 +448,7 @@ export const allPosts: BlogPost[] = [
       'التشهير',
     ],
     author: {
+      slug: 'abdulrhman-almutlaq',
       name: 'أ. عبدالرحمن المطلق',
       title: 'مستشار قانوني متخصص في القضايا الجزائية والمعلوماتية',
       credential: 'محامي مرخص — وزارة العدل السعودية',
@@ -481,7 +487,8 @@ export const allPosts: BlogPost[] = [
   },
   {
     id: '4',
-    slug: 'uqubat-altahdid-fi-alsaudia',
+    slug: 'عقوبة-التهديد-في-السعودية',
+    legacySlugs: ['uqubat-altahdid-fi-alsaudia'],
     title: 'عقوبة التهديد في السعودية 1447هـ: متى يُعتبر جريمة وما هي العقوبة؟',
     excerpt:
       'يعتقد كثيرون أن التهديد مجرد كلام عابر، غير أن النظام السعودي يعدّه جريمة معاقباً عليها حتى لو لم يُنفَّذ. تعرّف على عقوبة التهديد وفق نظام مكافحة جرائم المعلوماتية، ونظام الحماية من الإيذاء، ونظام مكافحة التحرش، ونظام مكافحة جرائم الإرهاب، مع الفرق بين التهديد والابتزاز وخطوات التبليغ.',
@@ -668,7 +675,7 @@ export const allPosts: BlogPost[] = [
     coverImage: '/covers/jinai-cover.svg',
     date: '2026-04-18',
     readingTime: 11,
-    category: 'jinai',
+    category: 'جنائي',
     categoryLabel: 'جنائي',
     tags: [
       'عقوبة التهديد في السعودية',
@@ -682,6 +689,7 @@ export const allPosts: BlogPost[] = [
       'القضايا الجنائية',
     ],
     author: {
+      slug: 'abdulrhman-almutlaq',
       name: 'أ. عبدالرحمن المطلق',
       title: 'مستشار قانوني متخصص في القضايا الجزائية والمعلوماتية',
       credential: 'محامي مرخص — وزارة العدل السعودية',

@@ -2,11 +2,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 const categories = [
-  { href: '/category/emali', label: 'قانون عمالي' },
-  { href: '/category/aqari', label: 'قانون عقاري' },
-  { href: '/category/tijari', label: 'قانون تجاري' },
-  { href: '/category/raqami', label: 'قانون رقمي' },
-  { href: '/category/madani', label: 'قانون مدني' },
+  { href: '/category/عمالي', label: 'قانون عمالي' },
+  { href: '/category/جنائي', label: 'قانون جنائي' },
+  { href: '/category/عقاري', label: 'قانون عقاري' },
+  { href: '/category/تجاري', label: 'قانون تجاري' },
+  { href: '/category/رقمي', label: 'قانون رقمي' },
+  { href: '/category/مدني', label: 'قانون مدني' },
 ]
 
 const siteLinks = [

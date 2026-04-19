@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default async function OGImage({ params }: Props) {
-  const post = getPostBySlug(params.slug)
+  const post = getPostBySlug(decodeURIComponent(params.slug))
   const title = post?.title ?? 'نظرة قانونية'
   const category = post?.categoryLabel ?? 'مدونة قانونية'
 
