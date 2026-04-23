@@ -62,7 +62,7 @@ export default function ContactPage() {
           <span className="text-stone-600">تواصل معنا</span>
         </nav>
 
-        <h1 className="text-3xl font-bold text-navy-800 mb-4">تواصل معنا</h1>
+        <h1 className="font-display text-3xl font-bold text-navy-800 mb-4">تواصل معنا</h1>
         <p className="text-stone-700 mb-10 leading-relaxed">
           يسعدنا تلقّي ملاحظاتكم واقتراحاتكم حول المحتوى أو تصحيح معلومة أو اقتراح موضوع جديد.
           نقرأ كل رسالة ونردّ خلال ٣–٥ أيام عمل.

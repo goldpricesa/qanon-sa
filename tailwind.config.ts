@@ -34,18 +34,20 @@ const config: Config = {
         },
       },
       fontFamily: {
-        arabic: ['Tajawal', 'Cairo', 'sans-serif'],
+        sans: ['var(--font-thmanyah-sans)', 'sans-serif'],
+        arabic: ['var(--font-thmanyah-sans)', 'sans-serif'],
+        display: ['var(--font-thmanyah-display)', 'var(--font-thmanyah-sans)', 'serif'],
       },
       typography: () => ({
         DEFAULT: {
           css: {
-            fontFamily: 'Tajawal, Cairo, sans-serif',
+            fontFamily: 'var(--font-thmanyah-sans), sans-serif',
             fontSize: '1.0625rem',
             lineHeight: '1.875',
             direction: 'rtl',
             textAlign: 'right',
             'h1, h2, h3, h4': {
-              fontFamily: 'Tajawal, Cairo, sans-serif',
+              fontFamily: 'var(--font-thmanyah-sans), sans-serif',
               fontWeight: '700',
             },
             blockquote: {

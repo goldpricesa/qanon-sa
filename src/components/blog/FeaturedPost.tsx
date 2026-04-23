@@ -40,7 +40,7 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
             </span>
           </div>
 
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-relaxed mb-4">
+          <h1 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-relaxed mb-4">
             <Link href={`/blog/${post.slug}`} className="hover:text-primary-300 transition-colors">
               {post.title}
             </Link>

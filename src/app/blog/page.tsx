@@ -99,7 +99,7 @@ export default function BlogIndexPage() {
             <span>‹</span>
             <span className="text-stone-600">المدونة</span>
           </nav>
-          <h1 className="text-2xl md:text-3xl font-bold text-navy-800 mb-3">
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-navy-800 mb-3">
             المدونة القانونية
           </h1>
           <p className="text-stone-700 text-sm md:text-base leading-relaxed max-w-3xl">

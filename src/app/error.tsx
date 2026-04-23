@@ -8,7 +8,7 @@ export default function Error({
 }) {
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 text-center">
-      <h1 className="text-4xl font-bold text-navy-800 mb-4">حدث خطأ</h1>
+      <h1 className="font-display text-4xl font-bold text-navy-800 mb-4">حدث خطأ</h1>
       <p className="text-lg text-stone-700 mb-8">
         عذراً، حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.
       </p>

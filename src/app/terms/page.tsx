@@ -40,7 +40,7 @@ export default function TermsPage() {
           <span className="text-stone-600">الشروط والأحكام</span>
         </nav>
 
-        <h1 className="text-3xl font-bold text-navy-800 mb-4">الشروط والأحكام</h1>
+        <h1 className="font-display text-3xl font-bold text-navy-800 mb-4">الشروط والأحكام</h1>
         <p className="text-sm text-stone-600 mb-8">آخر تحديث: 17 أبريل 2026</p>
 
         <div className="prose prose-lg max-w-none text-stone-800 leading-relaxed">
