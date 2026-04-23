@@ -56,7 +56,7 @@ export default function CalculatorPage() {
             <span>/</span>
             <span className="text-primary-600 font-medium">الحاسبة</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-navy-800 mb-3">
+          <h1 className="font-display text-2xl sm:text-3xl font-bold text-navy-800 mb-3">
             حاسبة مكافآت ومستحقات نهاية الخدمة
           </h1>
           <p className="text-stone-600 leading-relaxed max-w-2xl">

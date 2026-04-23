@@ -37,7 +37,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
             <div className="flex flex-col gap-3 mb-8 md:flex-row md:items-end md:justify-between">
               <div>
                 {query ? (
-                  <h1 className="text-2xl font-bold text-navy-800">نتائج البحث</h1>
+                  <h1 className="font-display text-2xl font-bold text-navy-800">نتائج البحث</h1>
                 ) : (
                   <h2 className="text-xl font-bold text-navy-800">أحدث المقالات</h2>
                 )}

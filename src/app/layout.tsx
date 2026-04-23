@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Tajawal } from 'next/font/google'
+import localFont from 'next/font/local'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import Script from 'next/script'
 import './globals.css'
@@ -7,11 +7,25 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import BackToTop from '@/components/ui/BackToTop'
 
-const tajawal = Tajawal({
-  subsets: ['arabic'],
-  weight: ['300', '400', '500', '700'],
+const thmanyahSans = localFont({
+  src: [
+    { path: '../../public/fonts/thmanyah/thmanyahsans-Light.woff2', weight: '300', style: 'normal' },
+    { path: '../../public/fonts/thmanyah/thmanyahsans-Regular.woff2', weight: '400', style: 'normal' },
+    { path: '../../public/fonts/thmanyah/thmanyahsans-Medium.woff2', weight: '500', style: 'normal' },
+    { path: '../../public/fonts/thmanyah/thmanyahsans-Bold.woff2', weight: '700', style: 'normal' },
+    { path: '../../public/fonts/thmanyah/thmanyahsans-Black.woff2', weight: '900', style: 'normal' },
+  ],
   display: 'swap',
-  variable: '--font-tajawal',
+  variable: '--font-thmanyah-sans',
+})
+
+const thmanyahDisplay = localFont({
+  src: [
+    { path: '../../public/fonts/thmanyah/thmanyahserifdisplay-Bold.woff2', weight: '700', style: 'normal' },
+    { path: '../../public/fonts/thmanyah/thmanyahserifdisplay-Black.woff2', weight: '900', style: 'normal' },
+  ],
+  display: 'swap',
+  variable: '--font-thmanyah-display',
 })
 
 export const viewport: Viewport = {
@@ -165,10 +179,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ar" dir="rtl" className={tajawal.variable}>
+    <html lang="ar" dir="rtl" className={`${thmanyahSans.variable} ${thmanyahDisplay.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
@@ -179,7 +191,7 @@ export default function RootLayout({
           href="/feed.xml"
         />
       </head>
-      <body className={`${tajawal.className} min-h-screen flex flex-col bg-warm-50 font-arabic`}>
+      <body className={`${thmanyahSans.className} min-h-screen flex flex-col bg-warm-50 font-arabic`}>
         <Script
           id="website-jsonld"
           type="application/ld+json"

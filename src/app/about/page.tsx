@@ -59,7 +59,7 @@ export default function AboutPage() {
           <span className="text-stone-600">من نحن</span>
         </nav>
 
-        <h1 className="text-3xl font-bold text-navy-800 mb-6">من نحن</h1>
+        <h1 className="font-display text-3xl font-bold text-navy-800 mb-6">من نحن</h1>
 
         <div className="prose prose-lg max-w-none text-stone-800 leading-relaxed">
           <p>

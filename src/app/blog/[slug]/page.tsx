@@ -190,7 +190,7 @@ export default function BlogPostPage({ params }: Props) {
             </div>
 
             {/* Title */}
-            <h1 className="text-2xl md:text-3xl font-bold text-navy-800 leading-relaxed mb-5">
+            <h1 className="font-display text-2xl md:text-3xl font-bold text-navy-800 leading-relaxed mb-5">
               {post.title}
             </h1>
 

@@ -75,7 +75,7 @@ export default function CategoryPage({ params }: Props) {
             <CategoryBadge category={cat.slug} label={cat.label} asLink={false} />
             <span className="text-sm text-stone-700">{cat.count} مقال</span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold text-navy-800">
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-navy-800">
             مقالات {cat.label}
           </h1>
           <p className="text-stone-700 mt-2 text-sm">
