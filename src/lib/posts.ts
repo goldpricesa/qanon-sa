@@ -82,6 +82,22 @@ export function getRelatedPosts(post: BlogPost, count = 6): BlogPost[] {
     .slice(0, count)
 }
 
+export function getAdjacentPosts(post: BlogPost): {
+  previous?: BlogPost
+  next?: BlogPost
+} {
+  const posts = getAllPosts()
+  const idx = posts.findIndex((p) => p.slug === post.slug)
+  if (idx === -1) return {}
+  // posts are sorted newest-first, so:
+  //   "next"     (newer) is at idx-1
+  //   "previous" (older) is at idx+1
+  return {
+    next: idx > 0 ? posts[idx - 1] : undefined,
+    previous: idx < posts.length - 1 ? posts[idx + 1] : undefined,
+  }
+}
+
 export function searchPosts(query: string): BlogPost[] {
   const normalizedQuery = query.trim().toLowerCase()
 
