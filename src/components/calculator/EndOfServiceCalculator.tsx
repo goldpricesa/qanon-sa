@@ -17,24 +17,20 @@ function formatArabic(amount: number): string {
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type EosReason =
+  | 'legit_74'
+  | 'legit_80'
+  | 'legit_81'
   | 'resign'
-  | 'employer_legit'
   | 'wrongful'
-  | 'force_majeure'
-  | 'marriage_birth'
-  | 'art_81'
-  | 'retirement'
 
 type ContractType = 'fixed' | 'indefinite'
 
 const REASON_OPTIONS: { id: EosReason; label: string }[] = [
-  { id: 'resign', label: 'استقالة' },
-  { id: 'employer_legit', label: 'إنهاء من صاحب العمل (سبب مشروع)' },
-  { id: 'wrongful', label: 'فصل تعسفي / إنهاء غير مشروع' },
-  { id: 'force_majeure', label: 'قوة قاهرة (م. 87)' },
-  { id: 'marriage_birth', label: 'إنهاء من الموظفة (زواج/وضع — م. 87)' },
-  { id: 'art_81', label: 'إنهاء من الموظف وفق المادة 81' },
-  { id: 'retirement', label: 'بلوغ سن التقاعد' },
+  { id: 'resign', label: 'استقالة (م. 85)' },
+  { id: 'legit_74', label: 'إنهاء مشروع للطرفين (م. 74)' },
+  { id: 'legit_80', label: 'إنهاء مشروع لصاحب العمل — خطأ العامل (م. 80)' },
+  { id: 'legit_81', label: 'إنهاء مشروع للعامل — خطأ صاحب العمل (م. 81)' },
+  { id: 'wrongful', label: 'إنهاء غير مشروع / فصل تعسفي (م. 77)' },
 ]
 
 // ─── Stepper Input ────────────────────────────────────────────────────────────
@@ -247,11 +243,11 @@ function ResultRow({
 // ─── Main Calculator ──────────────────────────────────────────────────────────
 
 export default function EndOfServiceCalculator() {
-  const [salary, setSalary] = useState(8000)
-  const [years, setYears] = useState(5)
-  const [extraMonths, setExtraMonths] = useState(3)
+  const [salary, setSalary] = useState(0)
+  const [years, setYears] = useState(0)
+  const [extraMonths, setExtraMonths] = useState(0)
   const [reason, setReason] = useState<EosReason>('resign')
-  const [vacationDays, setVacationDays] = useState(12)
+  const [vacationDays, setVacationDays] = useState(0)
   const [remainingSalary, setRemainingSalary] = useState(0)
   const [ticketAllowance, setTicketAllowance] = useState(0)
 
@@ -275,9 +271,14 @@ export default function EndOfServiceCalculator() {
       gross = safeSalary * 0.5 * 5 + safeSalary * 1.0 * (totalYears - 5)
     }
 
-    // المادة 87 (استقالة) → متدرّج، باقي الأسباب → كامل
+    // معامل المكافأة:
+    // - م. 80 (خطأ العامل) → صفر، لا مكافأة
+    // - م. 85 (استقالة) → متدرّج 0/⅓/⅔/كامل حسب السنوات
+    // - م. 74 / 81 / 77 (غير مشروع) → كامل
     let factor = 1
-    if (reason === 'resign') {
+    if (reason === 'legit_80') {
+      factor = 0
+    } else if (reason === 'resign') {
       if (totalYears < 2) factor = 0
       else if (totalYears < 5) factor = 1 / 3
       else if (totalYears < 10) factor = 2 / 3
@@ -451,7 +452,7 @@ export default function EndOfServiceCalculator() {
             </span>
           </p>
           <p className="mt-3 text-xs leading-relaxed" style={{ color: '#9AA5BA' }}>
-            تقدير مبدئي وفق المواد 77، 84، 85، 87 من نظام العمل.
+            تقدير مبدئي وفق المواد 74، 77، 80، 81، 84، 85 من نظام العمل.
           </p>
         </div>
 
