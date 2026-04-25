@@ -33,7 +33,6 @@ export default function Footer() {
               {[
                 { name: 'twitter', href: 'https://twitter.com/qanon_sa' },
                 { name: 'linkedin', href: 'https://linkedin.com' },
-                { name: 'rss', href: '/feed.xml' },
               ].map((s) => (
                 <a
                   key={s.name}
@@ -52,12 +51,6 @@ export default function Footer() {
                   {s.name === 'linkedin' && (
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z" />
-                    </svg>
-                  )}
-                  {s.name === 'rss' && (
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                      <circle cx="6" cy="18" r="2.5" />
-                      <path d="M3 9.5a10.5 10.5 0 0 1 10.5 10.5h-3A7.5 7.5 0 0 0 3 12.5zM3 3a17 17 0 0 1 17 17h-3A14 14 0 0 0 3 6z" />
                     </svg>
                   )}
                 </a>
