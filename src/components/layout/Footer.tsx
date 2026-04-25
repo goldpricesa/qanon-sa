@@ -38,7 +38,7 @@ export default function Footer() {
                 <a
                   key={s.name}
                   href={s.href}
-                  target={s.name === 'rss' ? undefined : '_blank'}
+                  target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.name}
                   className="w-9 h-9 rounded-lg flex items-center justify-center text-stone-300 transition-colors"
