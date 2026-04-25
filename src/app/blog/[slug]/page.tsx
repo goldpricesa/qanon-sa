@@ -1,7 +1,13 @@
 import type { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import Image from 'next/image'
-import { getAllPosts, getPostBySlug, getPostByAnySlug, getRelatedPosts } from '@/lib/posts'
+import {
+  getAllPosts,
+  getPostBySlug,
+  getPostByAnySlug,
+  getRelatedPosts,
+  getAdjacentPosts,
+} from '@/lib/posts'
 import { getAuthorBySlug } from '@/data/authors'
 import CategoryBadge from '@/components/ui/CategoryBadge'
 import Sidebar from '@/components/sidebar/Sidebar'
@@ -12,6 +18,7 @@ import TableOfContents from '@/components/blog/TableOfContents'
 import ReadingProgressBar from '@/components/blog/ReadingProgressBar'
 import ShareButtons from '@/components/blog/ShareButtons'
 import AuthorCard from '@/components/blog/AuthorCard'
+import PostNavigation from '@/components/blog/PostNavigation'
 import {
   formatDate,
   formatReadingTime,
@@ -75,6 +82,7 @@ export default function BlogPostPage({ params }: Props) {
   }
 
   const related = getRelatedPosts(post)
+  const adjacent = getAdjacentPosts(post)
   const safeContent = sanitizeArticleHtml(post.content)
   const canonicalAuthor =
     (post.author.slug && getAuthorBySlug(post.author.slug)) || post.author
@@ -251,6 +259,9 @@ export default function BlogPostPage({ params }: Props) {
 
             {/* Author Card */}
             <AuthorCard author={canonicalAuthor} />
+
+            {/* Prev / Next */}
+            <PostNavigation previous={adjacent.previous} next={adjacent.next} />
           </article>
 
           {/* Sidebar */}

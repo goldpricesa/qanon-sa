@@ -4,6 +4,7 @@ import { getFeaturedPost, searchPosts } from '@/lib/posts'
 import FeaturedPost from '@/components/blog/FeaturedPost'
 import BlogGrid from '@/components/blog/BlogGrid'
 import Sidebar from '@/components/sidebar/Sidebar'
+import TrustStrip from '@/components/blog/TrustStrip'
 
 export const metadata: Metadata = {
   title: 'الرئيسية',
@@ -28,7 +29,12 @@ export default function HomePage({ searchParams }: HomePageProps) {
 
   return (
     <>
-      {!query && <FeaturedPost post={featured} />}
+      {!query && (
+        <>
+          <FeaturedPost post={featured} />
+          <TrustStrip />
+        </>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col lg:flex-row gap-10">
@@ -39,7 +45,10 @@ export default function HomePage({ searchParams }: HomePageProps) {
                 {query ? (
                   <h1 className="font-display text-2xl font-bold text-navy-800">نتائج البحث</h1>
                 ) : (
-                  <h2 className="text-xl font-bold text-navy-800">أحدث المقالات</h2>
+                  <div className="flex items-center gap-3">
+                    <span aria-hidden="true" className="block w-1 h-7 rounded-full bg-gold-500" />
+                    <h2 className="font-display text-2xl font-bold text-navy-800">أحدث المقالات</h2>
+                  </div>
                 )}
                 {query && (
                   <p className="text-sm text-stone-700 mt-1">

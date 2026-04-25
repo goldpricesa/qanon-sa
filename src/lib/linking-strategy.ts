@@ -6,42 +6,43 @@ import { allPosts } from '@/data/posts'
  * Helps identify relevant internal links for articles based on topic clusters
  */
 
-// Define topical clusters for better linking strategy
+// Define topical clusters for better linking strategy.
+// Category slugs match the canonical Arabic slugs used in URLs.
 const TOPICAL_CLUSTERS = {
   labour: {
     name: 'نظام العمل',
     keywords: ['عمالي', 'عقد عمل', 'فصل تعسفي', 'مكافأة', 'حقوق عامل', 'إجازات', 'استقالة'],
-    category: 'emali',
+    category: 'عمالي',
   },
   realEstate: {
     name: 'القانون العقاري',
     keywords: ['عقاري', 'عقار', 'ملكية', 'توثيق', 'سجل عقاري', 'إيجار', 'منصة إيجار', 'إخلاء'],
-    category: 'aqari',
+    category: 'عقاري',
   },
   commercial: {
     name: 'القانون التجاري',
     keywords: ['تجاري', 'استثمار', 'شركات', 'عقود تجارية', 'شرط جزائي', 'تأسيس شركة'],
-    category: 'tijari',
+    category: 'تجاري',
   },
   digital: {
     name: 'القانون الرقمي',
     keywords: ['رقمي', 'بيانات', 'إلكترونية', 'خصوصية', 'تجارة إلكترونية', 'جرائم معلوماتية'],
-    category: 'raqami',
+    category: 'رقمي',
   },
   civil: {
     name: 'القانون المدني والمرافعات',
     keywords: ['مدني', 'حقوق', 'مسؤولية', 'عقود', 'صحيفة دعوى', 'تعويض', 'نقض'],
-    category: 'madani',
+    category: 'مدني',
   },
   personalStatus: {
     name: 'الأحوال الشخصية',
     keywords: ['أحوال شخصية', 'حضانة', 'خلع', 'ولاية', 'تركة', 'حصر ورثة', 'نفقة'],
-    category: 'ahwal',
+    category: 'أحوال-شخصية',
   },
   criminal: {
     name: 'القانون الجنائي',
     keywords: ['جنائي', 'عقوبة', 'سرقة', 'سب وقذف', 'جرائم معلوماتية', 'عنف أسري'],
-    category: 'jinai',
+    category: 'جنائي',
   },
 }
 
