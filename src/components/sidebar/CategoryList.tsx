@@ -6,9 +6,8 @@ const colorMap: Record<string, string> = {
   'جنائي': 'bg-red-100 text-red-600',
   'عقاري': 'bg-green-100 text-green-600',
   'تجاري': 'bg-amber-100 text-amber-600',
-  'رقمي': 'bg-purple-100 text-purple-600',
   'مدني': 'bg-rose-100 text-rose-600',
-  'أحوال-شخصية': 'bg-pink-100 text-pink-600',
+  'أحوال-شخصية': 'bg-purple-100 text-purple-600',
 }
 
 export default function CategoryList() {

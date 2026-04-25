@@ -10,8 +10,8 @@ const navLinks = [
   { href: '/category/جنائي', label: 'جنائي' },
   { href: '/category/عقاري', label: 'عقاري' },
   { href: '/category/تجاري', label: 'تجاري' },
-  { href: '/category/رقمي', label: 'رقمي' },
   { href: '/category/مدني', label: 'مدني' },
+  { href: '/category/أحوال-شخصية', label: 'أحوال شخصية' },
   { href: '/calculator', label: 'الحاسبة' },
 ]
 
