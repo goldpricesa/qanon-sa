@@ -137,7 +137,9 @@ const websiteJsonLd = {
 
 const organizationJsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
+  // Use both Organization and LegalService so the entity is recognized
+  // both as the publisher and as a legal-information service.
+  '@type': ['Organization', 'LegalService'],
   '@id': 'https://qanon-sa.com/#organization',
   name: 'نظرة قانونية',
   alternateName: 'Qanon SA',
@@ -164,6 +166,7 @@ const organizationJsonLd = {
     'الجرائم المعلوماتية',
     'القانون المدني',
   ],
+  serviceType: 'محتوى قانوني تثقيفي',
   sameAs: ['https://twitter.com/qanon_sa'],
   contactPoint: {
     '@type': 'ContactPoint',
