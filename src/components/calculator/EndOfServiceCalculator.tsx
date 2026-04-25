@@ -243,11 +243,11 @@ function ResultRow({
 // ─── Main Calculator ──────────────────────────────────────────────────────────
 
 export default function EndOfServiceCalculator() {
-  const [salary, setSalary] = useState(8000)
-  const [years, setYears] = useState(5)
-  const [extraMonths, setExtraMonths] = useState(3)
+  const [salary, setSalary] = useState(0)
+  const [years, setYears] = useState(0)
+  const [extraMonths, setExtraMonths] = useState(0)
   const [reason, setReason] = useState<EosReason>('resign')
-  const [vacationDays, setVacationDays] = useState(12)
+  const [vacationDays, setVacationDays] = useState(0)
   const [remainingSalary, setRemainingSalary] = useState(0)
   const [ticketAllowance, setTicketAllowance] = useState(0)
 
