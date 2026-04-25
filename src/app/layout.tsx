@@ -5,7 +5,6 @@ import Script from 'next/script'
 import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
-import BackToTop from '@/components/ui/BackToTop'
 
 const thmanyahSans = localFont({
   src: [
@@ -209,7 +208,6 @@ export default function RootLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
-        <BackToTop />
         <GoogleAnalytics gaId="G-84090DMG89" />
         <Script
           id="plausible-analytics"

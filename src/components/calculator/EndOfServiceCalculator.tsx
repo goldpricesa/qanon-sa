@@ -1,509 +1,480 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { cn } from '@/lib/utils'
 
-// ─── Utility ──────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function formatSAR(amount: number): string {
-  return new Intl.NumberFormat('ar-SA', {
-    style: 'currency',
-    currency: 'SAR',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount)
-}
+const arabicNumberFormatter = new Intl.NumberFormat('ar-EG', {
+  maximumFractionDigits: 0,
+  minimumFractionDigits: 0,
+})
 
-function round2(n: number): number {
-  return Math.round(n * 100) / 100
+function formatArabic(amount: number): string {
+  return arabicNumberFormatter.format(Math.round(amount))
 }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type TabId = 'eos' | 'vacation' | 'salary' | 'tickets'
-type EosReason = 'terminate' | 'resign' | 'forcemajeure' | 'female'
+type EosReason =
+  | 'resign'
+  | 'employer_legit'
+  | 'wrongful'
+  | 'force_majeure'
+  | 'marriage_birth'
+  | 'art_81'
+  | 'retirement'
 
-interface EosResult {
-  yearsDisplay: string
-  grossBenefit: number
-  factor: number
-  finalBenefit: number
-  breakdown: { label: string; value: string }[]
-}
+type ContractType = 'fixed' | 'indefinite'
 
-interface VacationResult {
-  annualEntitlement: number
-  dailyRate: number
-  totalAmount: number
-}
+const REASON_OPTIONS: { id: EosReason; label: string }[] = [
+  { id: 'resign', label: 'استقالة' },
+  { id: 'employer_legit', label: 'إنهاء من صاحب العمل (سبب مشروع)' },
+  { id: 'wrongful', label: 'فصل تعسفي / إنهاء غير مشروع' },
+  { id: 'force_majeure', label: 'قوة قاهرة (م. 87)' },
+  { id: 'marriage_birth', label: 'إنهاء من الموظفة (زواج/وضع — م. 87)' },
+  { id: 'art_81', label: 'إنهاء من الموظف وفق المادة 81' },
+  { id: 'retirement', label: 'بلوغ سن التقاعد' },
+]
 
-interface SalaryResult {
-  daysWorked: number
-  dailyRate: number
-  amount: number
-}
+// ─── Stepper Input ────────────────────────────────────────────────────────────
 
-interface TicketResult {
-  totalAmount: number
-}
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-function InputField({
+function Stepper({
   id,
   label,
-  type = 'number',
   value,
   onChange,
-  placeholder,
-  error,
-  min,
-  step,
+  min = 0,
+  max,
+  step = 1,
 }: {
   id: string
   label: string
-  type?: 'number' | 'date'
-  value: string
-  onChange: (v: string) => void
-  placeholder?: string
-  error?: string
-  min?: string
-  step?: string
+  value: number
+  onChange: (v: number) => void
+  min?: number
+  max?: number
+  step?: number
 }) {
+  const dec = () => onChange(Math.max(min, value - step))
+  const inc = () => onChange(max != null ? Math.min(max, value + step) : value + step)
+
   return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-navy-800">
+    <div className="flex flex-col gap-2">
+      <label htmlFor={id} className="text-sm font-medium text-ink">
         {label}
       </label>
-      <input
-        id={id}
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        min={min ?? '0'}
-        step={step}
-        dir={type === 'date' ? 'ltr' : undefined}
-        className="w-full px-4 py-2.5 text-sm rounded-lg border border-warm-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-colors"
-      />
-      {error && <p className="text-xs text-red-500">{error}</p>}
+      <div className="flex items-stretch rounded-xl bg-white border border-line overflow-hidden focus-within:ring-2 focus-within:ring-primary-300 focus-within:border-primary-400 transition-shadow">
+        <button
+          type="button"
+          onClick={inc}
+          aria-label={`زيادة ${label}`}
+          className="px-4 text-lg font-medium text-ink-3 hover:bg-paper-2 transition-colors select-none"
+        >
+          +
+        </button>
+        <input
+          id={id}
+          type="number"
+          inputMode="numeric"
+          value={Number.isFinite(value) ? value : 0}
+          onChange={(e) => {
+            const raw = e.target.value
+            if (raw === '') {
+              onChange(min)
+              return
+            }
+            const n = Number(raw)
+            if (!Number.isNaN(n)) onChange(n)
+          }}
+          min={min}
+          max={max}
+          step={step}
+          className="flex-1 min-w-0 text-center bg-transparent border-0 outline-none text-base font-semibold text-ink py-3"
+          dir="ltr"
+        />
+        <button
+          type="button"
+          onClick={dec}
+          aria-label={`تقليل ${label}`}
+          className="px-4 text-lg font-medium text-ink-3 hover:bg-paper-2 transition-colors select-none"
+        >
+          −
+        </button>
+      </div>
     </div>
   )
 }
 
-function ResultCard({ items, total, totalLabel }: {
-  items: { label: string; value: string }[]
-  total: string
-  totalLabel: string
+// ─── Reason Select ────────────────────────────────────────────────────────────
+
+function ReasonSelect({
+  value,
+  onChange,
+}: {
+  value: EosReason
+  onChange: (v: EosReason) => void
 }) {
   return (
-    <div className="mt-6 bg-primary-50 border border-primary-100 rounded-xl p-6">
-      <h3 className="text-base font-bold text-navy-800 mb-4 flex items-center gap-2">
-        <span className="inline-flex w-6 h-6 bg-primary-500 text-white rounded-full items-center justify-center text-xs">✓</span>
-        نتيجة الحساب
-      </h3>
-      <dl className="space-y-2">
-        {items.map((item) => (
-          <div key={item.label} className="flex justify-between items-center py-2 border-b border-primary-100 last:border-0">
-            <dt className="text-sm text-stone-600">{item.label}</dt>
-            <dd className="text-sm font-semibold text-navy-800">{item.value}</dd>
-          </div>
-        ))}
-      </dl>
-      <div className="mt-4 p-4 bg-primary-500 text-white rounded-lg flex justify-between items-center">
-        <span className="text-sm font-medium">{totalLabel}</span>
-        <span className="text-lg font-bold">{total}</span>
-      </div>
-    </div>
-  )
-}
-
-function ActionButtons({ onCalculate, onReset }: { onCalculate: () => void; onReset: () => void }) {
-  return (
-    <div className="mt-6 flex flex-col gap-2">
-      <button
-        type="button"
-        onClick={onCalculate}
-        className="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 rounded-lg font-medium text-sm transition-colors"
-      >
-        احسب الآن
-      </button>
-      <button
-        type="button"
-        onClick={onReset}
-        className="w-full bg-white border border-warm-200 hover:bg-warm-50 text-stone-700 py-2.5 rounded-lg font-medium text-sm transition-colors"
-      >
-        مسح البيانات
-      </button>
-    </div>
-  )
-}
-
-// ─── EOS Calculator ───────────────────────────────────────────────────────────
-
-function EosCalculator() {
-  const [salary, setSalary] = useState('')
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
-  const [reason, setReason] = useState<EosReason>('terminate')
-  const [result, setResult] = useState<EosResult | null>(null)
-  const [errors, setErrors] = useState<Record<string, string>>({})
-
-  function handleCalculate() {
-    const errs: Record<string, string> = {}
-    const sal = parseFloat(salary)
-    if (!salary || isNaN(sal) || sal <= 0) errs.salary = 'يرجى إدخال راتب صحيح'
-    if (!startDate) errs.startDate = 'يرجى تحديد تاريخ بدء الخدمة'
-    if (!endDate) errs.endDate = 'يرجى تحديد تاريخ انهاء الخدمة'
-    if (startDate && endDate && new Date(startDate) >= new Date(endDate))
-      errs.endDate = 'تاريخ الانتهاء يجب أن يكون بعد تاريخ البدء'
-    setErrors(errs)
-    if (Object.keys(errs).length > 0) return
-
-    const start = new Date(startDate)
-    const end = new Date(endDate)
-    const totalDays = (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
-    const totalYears = totalDays / 365.25
-
-    const wholeYears = Math.floor(totalYears)
-    const remainderMonths = Math.round((totalYears - wholeYears) * 12)
-    const yearsDisplay =
-      remainderMonths > 0
-        ? `${wholeYears} سنة و${remainderMonths} شهر`
-        : `${wholeYears} سنة`
-
-    // Gross benefit (المادة 84)
-    let grossBenefit: number
-    if (totalYears <= 5) {
-      grossBenefit = sal * 0.5 * totalYears
-    } else {
-      grossBenefit = sal * 0.5 * 5 + sal * 1.0 * (totalYears - 5)
-    }
-    grossBenefit = round2(grossBenefit)
-
-    // Factor (المادة 85 + 87)
-    let factor = 1
-    let factorLabel = '100٪ (كامل المكافأة)'
-    if (reason === 'resign') {
-      if (totalYears < 2) {
-        factor = 0
-        factorLabel = '0٪ — أقل من سنتين لا يستحق مكافأة'
-      } else if (totalYears < 5) {
-        factor = 1 / 3
-        factorLabel = '٪33.33 — الثلث (استقالة بعد 2–5 سنوات)'
-      } else if (totalYears < 10) {
-        factor = 2 / 3
-        factorLabel = '٪66.67 — الثلثان (استقالة بعد 5–10 سنوات)'
-      } else {
-        factor = 1
-        factorLabel = '100٪ — كامل المكافأة (استقالة بعد 10 سنوات فأكثر)'
-      }
-    } else if (reason === 'terminate') {
-      factorLabel = '100٪ — كامل المكافأة (فصل من صاحب العمل)'
-    } else if (reason === 'forcemajeure') {
-      factorLabel = '100٪ — كامل المكافأة (قوة قاهرة — م.87)'
-    } else if (reason === 'female') {
-      factorLabel = '100٪ — كامل المكافأة (زواج/وضع — م.87)'
-    }
-
-    const finalBenefit = round2(grossBenefit * factor)
-
-    const breakdown: { label: string; value: string }[] = [
-      { label: 'مدة الخدمة', value: yearsDisplay },
-      { label: 'الاستحقاق عن الخمس سنوات الأولى', value: formatSAR(round2(sal * 0.5 * Math.min(totalYears, 5))) },
-    ]
-    if (totalYears > 5) {
-      breakdown.push({ label: 'الاستحقاق عن السنوات التالية', value: formatSAR(round2(sal * (totalYears - 5))) })
-    }
-    breakdown.push(
-      { label: 'إجمالي الاستحقاق (قبل سبب الإنهاء)', value: formatSAR(grossBenefit) },
-      { label: 'نسبة الاستحقاق', value: factorLabel },
-    )
-
-    setResult({ yearsDisplay, grossBenefit, factor, finalBenefit, breakdown })
-  }
-
-  function handleReset() {
-    setSalary(''); setStartDate(''); setEndDate(''); setReason('terminate')
-    setResult(null); setErrors({})
-  }
-
-  return (
-    <div>
-      <p className="text-sm text-stone-600 mb-6 leading-relaxed">
-        تحسب وفق <strong>المادة 84 و85 و87</strong> من نظام العمل السعودي — نصف شهر عن كل سنة من الخمس الأولى، وشهر كامل عن كل سنة تالية.
-      </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <InputField id="eos-salary" label="الراتب الأساسي الشهري (ريال)" value={salary} onChange={setSalary} placeholder="مثال: 5000" error={errors.salary} />
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="eos-reason" className="text-sm font-medium text-navy-800">سبب إنهاء الخدمة</label>
-          <select
-            id="eos-reason"
-            value={reason}
-            onChange={(e) => setReason(e.target.value as EosReason)}
-            className="w-full px-4 py-2.5 text-sm rounded-lg border border-warm-200 bg-white focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-colors"
-          >
-            <option value="terminate">فصل من قِبَل صاحب العمل</option>
-            <option value="resign">استقالة</option>
-            <option value="forcemajeure">قوة قاهرة (م.87)</option>
-            <option value="female">إنهاء عقد بسبب الزواج أو الوضع (م.87)</option>
-          </select>
-        </div>
-        <InputField id="eos-start" label="تاريخ بدء الخدمة" type="date" value={startDate} onChange={setStartDate} error={errors.startDate} />
-        <InputField id="eos-end" label="تاريخ انتهاء الخدمة" type="date" value={endDate} onChange={setEndDate} error={errors.endDate} />
-      </div>
-      <ActionButtons onCalculate={handleCalculate} onReset={handleReset} />
-      {result && (
-        <ResultCard
-          items={result.breakdown}
-          total={formatSAR(result.finalBenefit)}
-          totalLabel="صافي مكافأة نهاية الخدمة"
-        />
-      )}
-    </div>
-  )
-}
-
-// ─── Vacation Calculator ──────────────────────────────────────────────────────
-
-function VacationCalculator() {
-  const [salary, setSalary] = useState('')
-  const [years, setYears] = useState('')
-  const [days, setDays] = useState('')
-  const [result, setResult] = useState<VacationResult | null>(null)
-  const [errors, setErrors] = useState<Record<string, string>>({})
-
-  function handleCalculate() {
-    const errs: Record<string, string> = {}
-    const sal = parseFloat(salary)
-    const yrs = parseFloat(years)
-    const d = parseFloat(days)
-    if (!salary || isNaN(sal) || sal <= 0) errs.salary = 'يرجى إدخال راتب صحيح'
-    if (!years || isNaN(yrs) || yrs < 0) errs.years = 'يرجى إدخال سنوات الخدمة'
-    if (!days || isNaN(d) || d < 0) errs.days = 'يرجى إدخال رصيد الإجازات'
-    setErrors(errs)
-    if (Object.keys(errs).length > 0) return
-
-    const annualEntitlement = yrs >= 5 ? 30 : 21
-    const dailyRate = round2(sal / 30)
-    const totalAmount = round2(d * dailyRate)
-    setResult({ annualEntitlement, dailyRate, totalAmount })
-  }
-
-  function handleReset() {
-    setSalary(''); setYears(''); setDays('')
-    setResult(null); setErrors({})
-  }
-
-  return (
-    <div>
-      <p className="text-sm text-stone-600 mb-6 leading-relaxed">
-        الإجازة السنوية: <strong>21 يوماً</strong> لمن خدمته أقل من 5 سنوات، و<strong>30 يوماً</strong> لمن خدمته 5 سنوات فأكثر. الأجر اليومي = الراتب ÷ 30.
-      </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <InputField id="vac-salary" label="الراتب الشهري (ريال)" value={salary} onChange={setSalary} placeholder="مثال: 5000" error={errors.salary} />
-        <InputField id="vac-years" label="سنوات الخدمة" value={years} onChange={setYears} placeholder="مثال: 3" error={errors.years} step="0.5" />
-        <InputField id="vac-days" label="رصيد الإجازات المتبقي (أيام)" value={days} onChange={setDays} placeholder="مثال: 25" error={errors.days} />
-      </div>
-      <ActionButtons onCalculate={handleCalculate} onReset={handleReset} />
-      {result && (
-        <ResultCard
-          items={[
-            { label: 'الإجازة السنوية المستحقة', value: `${result.annualEntitlement} يوماً في السنة` },
-            { label: 'الأجر اليومي', value: formatSAR(result.dailyRate) },
-            { label: 'رصيد الإجازات المتبقي', value: `${days} يوم` },
-          ]}
-          total={formatSAR(result.totalAmount)}
-          totalLabel="إجمالي بدل رصيد الإجازات"
-        />
-      )}
-    </div>
-  )
-}
-
-// ─── Salary Calculator ────────────────────────────────────────────────────────
-
-function SalaryCalculator() {
-  const [salary, setSalary] = useState('')
-  const [monthStart, setMonthStart] = useState('')
-  const [lastDay, setLastDay] = useState('')
-  const [result, setResult] = useState<SalaryResult | null>(null)
-  const [errors, setErrors] = useState<Record<string, string>>({})
-
-  function handleCalculate() {
-    const errs: Record<string, string> = {}
-    const sal = parseFloat(salary)
-    if (!salary || isNaN(sal) || sal <= 0) errs.salary = 'يرجى إدخال راتب صحيح'
-    if (!monthStart) errs.monthStart = 'يرجى تحديد تاريخ بداية الشهر'
-    if (!lastDay) errs.lastDay = 'يرجى تحديد آخر يوم عمل'
-    if (monthStart && lastDay && new Date(lastDay) < new Date(monthStart))
-      errs.lastDay = 'آخر يوم عمل يجب أن يكون بعد بداية الشهر'
-    setErrors(errs)
-    if (Object.keys(errs).length > 0) return
-
-    const start = new Date(monthStart)
-    const end = new Date(lastDay)
-    const daysWorked = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1
-    const dailyRate = round2(sal / 30)
-    const amount = round2(daysWorked * dailyRate)
-    setResult({ daysWorked, dailyRate, amount })
-  }
-
-  function handleReset() {
-    setSalary(''); setMonthStart(''); setLastDay('')
-    setResult(null); setErrors({})
-  }
-
-  return (
-    <div>
-      <p className="text-sm text-stone-600 mb-6 leading-relaxed">
-        يُحسب الأجر اليومي بقسمة الراتب على <strong>30 يوماً</strong> وفق نظام العمل السعودي، بصرف النظر عن عدد أيام الشهر الفعلية.
-      </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <InputField id="sal-salary" label="الراتب الشهري (ريال)" value={salary} onChange={setSalary} placeholder="مثال: 5000" error={errors.salary} />
-        <InputField id="sal-start" label="تاريخ بداية الراتب (أول الشهر)" type="date" value={monthStart} onChange={setMonthStart} error={errors.monthStart} />
-        <InputField id="sal-end" label="آخر يوم عمل" type="date" value={lastDay} onChange={setLastDay} error={errors.lastDay} />
-      </div>
-      <ActionButtons onCalculate={handleCalculate} onReset={handleReset} />
-      {result && (
-        <ResultCard
-          items={[
-            { label: 'عدد أيام العمل', value: `${result.daysWorked} يوم` },
-            { label: 'الأجر اليومي', value: formatSAR(result.dailyRate) },
-          ]}
-          total={formatSAR(result.amount)}
-          totalLabel="الراتب المستحق عن الفترة"
-        />
-      )}
-    </div>
-  )
-}
-
-// ─── Tickets Calculator ───────────────────────────────────────────────────────
-
-function TicketsCalculator() {
-  const [ticketValue, setTicketValue] = useState('')
-  const [members, setMembers] = useState('')
-  const [yearsStr, setYearsStr] = useState('')
-  const [result, setResult] = useState<TicketResult | null>(null)
-  const [errors, setErrors] = useState<Record<string, string>>({})
-
-  function handleCalculate() {
-    const errs: Record<string, string> = {}
-    const tv = parseFloat(ticketValue)
-    const m = parseInt(members)
-    const y = Math.floor(parseFloat(yearsStr))
-    if (!ticketValue || isNaN(tv) || tv <= 0) errs.ticketValue = 'يرجى إدخال قيمة التذكرة'
-    if (!members || isNaN(m) || m < 1) errs.members = 'العدد يجب أن يكون 1 على الأقل'
-    if (!yearsStr || isNaN(y) || y < 0) errs.years = 'يرجى إدخال عدد السنوات'
-    setErrors(errs)
-    if (Object.keys(errs).length > 0) return
-
-    const totalAmount = round2(tv * m * y)
-    setResult({ totalAmount })
-  }
-
-  function handleReset() {
-    setTicketValue(''); setMembers(''); setYearsStr('')
-    setResult(null); setErrors({})
-  }
-
-  const wholeYears = Math.floor(parseFloat(yearsStr) || 0)
-
-  return (
-    <div>
-      <p className="text-sm text-stone-600 mb-6 leading-relaxed">
-        يُحسب بدل تذاكر السفر بضرب قيمة التذكرة في عدد الأفراد المشمولين وعدد السنوات المستحقة. تُحتسب <strong>السنوات الكاملة فقط</strong>.
-      </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <InputField id="tkt-value" label="قيمة تذكرة السفر للفرد (ريال)" value={ticketValue} onChange={setTicketValue} placeholder="مثال: 1500" error={errors.ticketValue} />
-        <InputField id="tkt-members" label="عدد الأفراد المشمولين (يشمل الموظف)" value={members} onChange={setMembers} placeholder="مثال: 3" min="1" error={errors.members} />
-        <div className="flex flex-col gap-1.5">
-          <InputField id="tkt-years" label="عدد السنوات منذ آخر استخدام للتذكرة" value={yearsStr} onChange={setYearsStr} placeholder="مثال: 2" step="0.5" error={errors.years} />
-          {yearsStr && parseFloat(yearsStr) !== wholeYears && (
-            <p className="text-xs text-amber-600">سيُحتسب {wholeYears} سنة كاملة فقط</p>
-          )}
-        </div>
-      </div>
-      <ActionButtons onCalculate={handleCalculate} onReset={handleReset} />
-      {result && (
-        <ResultCard
-          items={[
-            { label: 'قيمة التذكرة للفرد', value: formatSAR(parseFloat(ticketValue)) },
-            { label: 'عدد الأفراد', value: `${members} أفراد` },
-            { label: 'عدد السنوات المستحقة', value: `${wholeYears} سنة` },
-          ]}
-          total={formatSAR(result.totalAmount)}
-          totalLabel="إجمالي بدل تذاكر السفر"
-        />
-      )}
-    </div>
-  )
-}
-
-// ─── Disclaimer ───────────────────────────────────────────────────────────────
-
-function Disclaimer() {
-  return (
-    <div className="mt-10 p-5 bg-amber-50 border border-amber-200 rounded-xl">
-      <div className="flex gap-3">
-        <svg className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+    <div className="flex flex-col gap-2">
+      <label htmlFor="reason" className="text-sm font-medium text-ink">
+        سبب إنهاء الخدمة
+      </label>
+      <div className="relative">
+        <select
+          id="reason"
+          value={value}
+          onChange={(e) => onChange(e.target.value as EosReason)}
+          className="w-full px-4 py-3 pl-10 rounded-xl bg-white border border-line text-sm font-medium text-ink focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-shadow appearance-none cursor-pointer"
+        >
+          {REASON_OPTIONS.map((opt) => (
+            <option key={opt.id} value={opt.id}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        <svg
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-3 pointer-events-none"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
-        <div>
-          <h4 className="text-sm font-bold text-amber-800 mb-1">تنبيه قانوني هام</h4>
-          <p className="text-sm text-amber-700 leading-relaxed">
-            هذه الحاسبة توفر تقديرات تقريبية استرشادية وفق نظام العمل السعودي. قد تتأثر النتائج الفعلية بشروط العقد الفردي ولوائح الجهة المختصة والمستجدات التشريعية. لا تُعدّ هذه النتائج استشارة قانونية. يُنصح بمراجعة محامٍ مرخص أو مستشار قانوني عمالي للحصول على رأي متخصص.
+      </div>
+    </div>
+  )
+}
+
+// ─── Mini Toggle (generic 2-option pill) ──────────────────────────────────────
+
+function MiniToggle<T extends string>({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string
+  value: T
+  onChange: (v: T) => void
+  options: { id: T; label: string }[]
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <span className="text-sm font-medium text-ink">{label}</span>
+      <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-white border border-line">
+        {options.map((opt) => {
+          const active = value === opt.id
+          return (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => onChange(opt.id)}
+              className={cn(
+                'py-2.5 rounded-lg text-sm font-medium transition-all',
+                active
+                  ? 'bg-primary-50 text-primary-700 ring-1 ring-primary-300 shadow-sm'
+                  : 'text-ink-3 hover:bg-paper-2'
+              )}
+              aria-pressed={active}
+            >
+              {opt.label}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+// ─── Section Card ─────────────────────────────────────────────────────────────
+
+function SectionCard({
+  title,
+  children,
+}: {
+  title: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="rounded-2xl bg-paper-2 border border-line p-5 sm:p-6">
+      <h3 className="text-base font-bold text-ink mb-5">{title}</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{children}</div>
+    </div>
+  )
+}
+
+// ─── Result Row ───────────────────────────────────────────────────────────────
+
+function ResultRow({
+  label,
+  value,
+  emphasized = false,
+  separator = false,
+}: {
+  label: string
+  value: string
+  emphasized?: boolean
+  separator?: boolean
+}) {
+  return (
+    <div
+      className={cn(
+        'flex items-center justify-between py-3',
+        separator && 'border-t border-line-2 mt-1 pt-4'
+      )}
+    >
+      <span
+        className={cn(
+          'text-sm',
+          emphasized ? 'font-bold text-ink' : 'text-ink-3'
+        )}
+      >
+        {label}
+      </span>
+      <span
+        className={cn(
+          'text-sm tabular-nums',
+          emphasized ? 'font-bold text-primary-700' : 'font-semibold text-primary-700'
+        )}
+      >
+        {value} ريال
+      </span>
+    </div>
+  )
+}
+
+// ─── Main Calculator ──────────────────────────────────────────────────────────
+
+export default function EndOfServiceCalculator() {
+  const [salary, setSalary] = useState(8000)
+  const [years, setYears] = useState(5)
+  const [extraMonths, setExtraMonths] = useState(3)
+  const [reason, setReason] = useState<EosReason>('resign')
+  const [vacationDays, setVacationDays] = useState(12)
+  const [remainingSalary, setRemainingSalary] = useState(0)
+  const [ticketAllowance, setTicketAllowance] = useState(0)
+
+  // فصل تعسفي — حقول إضافية
+  const [hasPenaltyClause, setHasPenaltyClause] = useState(false)
+  const [penaltyAmount, setPenaltyAmount] = useState(0)
+  const [contractType, setContractType] = useState<ContractType>('indefinite')
+  const [remainingMonths, setRemainingMonths] = useState(0)
+
+  const calc = useMemo(() => {
+    const safeSalary = Math.max(0, salary)
+    const safeYears = Math.max(0, years)
+    const safeMonths = Math.max(0, Math.min(11, extraMonths))
+    const totalYears = safeYears + safeMonths / 12
+
+    // المادة 84: نصف شهر للخمس سنوات الأولى، شهر كامل لما بعدها
+    let gross: number
+    if (totalYears <= 5) {
+      gross = safeSalary * 0.5 * totalYears
+    } else {
+      gross = safeSalary * 0.5 * 5 + safeSalary * 1.0 * (totalYears - 5)
+    }
+
+    // المادة 87 (استقالة) → متدرّج، باقي الأسباب → كامل
+    let factor = 1
+    if (reason === 'resign') {
+      if (totalYears < 2) factor = 0
+      else if (totalYears < 5) factor = 1 / 3
+      else if (totalYears < 10) factor = 2 / 3
+      else factor = 1
+    }
+
+    const eos = gross * factor
+    const dailyRate = safeSalary / 30
+    const vacationValue = Math.max(0, vacationDays) * dailyRate
+    const remaining = Math.max(0, remainingSalary)
+    const ticket = Math.max(0, ticketAllowance)
+
+    // المادة 77: تعويض الفصل التعسفي مع حد أدنى = أجر شهرَين
+    let wrongfulComp = 0
+    if (reason === 'wrongful') {
+      const base = hasPenaltyClause
+        ? Math.max(0, penaltyAmount)
+        : contractType === 'fixed'
+        ? Math.max(0, remainingMonths) * safeSalary
+        : 15 * dailyRate * totalYears
+      const minimum = 2 * safeSalary
+      wrongfulComp = Math.max(base, minimum)
+    }
+
+    const total = eos + vacationValue + remaining + ticket + wrongfulComp
+
+    return {
+      eos: Math.round(eos),
+      vacationValue: Math.round(vacationValue),
+      remaining: Math.round(remaining),
+      ticket: Math.round(ticket),
+      wrongfulComp: Math.round(wrongfulComp),
+      total: Math.round(total),
+    }
+  }, [
+    salary,
+    years,
+    extraMonths,
+    reason,
+    vacationDays,
+    remainingSalary,
+    ticketAllowance,
+    hasPenaltyClause,
+    penaltyAmount,
+    contractType,
+    remainingMonths,
+  ])
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+      {/* ── Inputs (right side in RTL) ────────────────────────────── */}
+      <div className="flex flex-col gap-5 order-2 lg:order-1">
+        <SectionCard title="بيانات الخدمة">
+          <div className="sm:col-span-2">
+            <Stepper
+              id="salary"
+              label="الراتب الإجمالي (ريال / شهرياً)"
+              value={salary}
+              onChange={setSalary}
+              min={0}
+              step={100}
+            />
+            <p className="mt-1.5 text-xs text-stone-500">
+              الأجر الشامل = الراتب الأساسي + البدلات الثابتة (سكن، نقل…) — وفق المادة 2 من نظام العمل.
+            </p>
+          </div>
+          <Stepper id="years" label="سنوات الخدمة" value={years} onChange={setYears} min={0} max={60} />
+          <Stepper id="months" label="أشهر إضافية" value={extraMonths} onChange={setExtraMonths} min={0} max={11} />
+          <div className="sm:col-span-2">
+            <ReasonSelect value={reason} onChange={setReason} />
+          </div>
+
+          {reason === 'wrongful' && (
+            <div className="sm:col-span-2 rounded-xl bg-paper-3/40 border border-line p-4 flex flex-col gap-4">
+              <p className="text-xs leading-relaxed text-ink-3">
+                التعويض وفق <strong className="text-ink">المادة 77</strong> من نظام العمل، بحدّ أدنى أجر شهرَين.
+              </p>
+
+              <MiniToggle<'yes' | 'no'>
+                label="هل يوجد شرط جزائي في العقد؟"
+                value={hasPenaltyClause ? 'yes' : 'no'}
+                onChange={(v) => setHasPenaltyClause(v === 'yes')}
+                options={[
+                  { id: 'no', label: 'لا' },
+                  { id: 'yes', label: 'نعم' },
+                ]}
+              />
+
+              {hasPenaltyClause ? (
+                <Stepper
+                  id="penalty"
+                  label="قيمة الشرط الجزائي (ريال)"
+                  value={penaltyAmount}
+                  onChange={setPenaltyAmount}
+                  min={0}
+                  step={500}
+                />
+              ) : (
+                <>
+                  <MiniToggle<ContractType>
+                    label="نوع العقد"
+                    value={contractType}
+                    onChange={setContractType}
+                    options={[
+                      { id: 'indefinite', label: 'غير محدد المدة' },
+                      { id: 'fixed', label: 'محدد المدة' },
+                    ]}
+                  />
+                  {contractType === 'fixed' && (
+                    <Stepper
+                      id="remaining-months"
+                      label="الأشهر المتبقية في العقد"
+                      value={remainingMonths}
+                      onChange={setRemainingMonths}
+                      min={0}
+                    />
+                  )}
+                </>
+              )}
+            </div>
+          )}
+        </SectionCard>
+
+        <SectionCard title="مستحقات إضافية">
+          <Stepper
+            id="vacation"
+            label="رصيد إجازات (بالأيام)"
+            value={vacationDays}
+            onChange={setVacationDays}
+            min={0}
+          />
+          <Stepper
+            id="remaining"
+            label="راتب متبقٍّ (ريال)"
+            value={remainingSalary}
+            onChange={setRemainingSalary}
+            min={0}
+            step={100}
+          />
+          <div className="sm:col-span-2">
+            <Stepper
+              id="ticket"
+              label="بدل تذكرة سفر (ريال)"
+              value={ticketAllowance}
+              onChange={setTicketAllowance}
+              min={0}
+              step={100}
+            />
+          </div>
+        </SectionCard>
+      </div>
+
+      {/* ── Results (left side in RTL) ────────────────────────────── */}
+      <div className="flex flex-col gap-5 order-1 lg:order-2">
+        {/* Hero total card */}
+        <div
+          className="rounded-2xl p-7 text-center shadow-editorial-md"
+          style={{
+            background: 'linear-gradient(165deg, #0A1628 0%, #162D4A 100%)',
+          }}
+        >
+          <p className="text-sm font-medium" style={{ color: '#E4CE9E' }}>
+            إجمالي مستحقاتك
+          </p>
+          <p className="mt-3 flex items-baseline justify-center gap-2 text-white">
+            <span className="font-display font-black text-5xl sm:text-6xl tabular-nums tracking-tight">
+              {formatArabic(calc.total)}
+            </span>
+            <span className="text-lg" style={{ color: '#9AA5BA' }}>
+              ريال
+            </span>
+          </p>
+          <p className="mt-3 text-xs leading-relaxed" style={{ color: '#9AA5BA' }}>
+            تقدير مبدئي وفق المواد 77، 84، 85، 87 من نظام العمل.
+          </p>
+        </div>
+
+        {/* Breakdown card */}
+        <div className="rounded-2xl bg-paper-2 border border-line p-5 sm:p-6">
+          <ResultRow label="مكافأة نهاية الخدمة" value={formatArabic(calc.eos)} />
+          <ResultRow label="قيمة الإجازات غير المستخدمة" value={formatArabic(calc.vacationValue)} />
+          <ResultRow label="الراتب المتبقي" value={formatArabic(calc.remaining)} />
+          <ResultRow label="بدل تذكرة السفر" value={formatArabic(calc.ticket)} />
+          {calc.wrongfulComp > 0 && (
+            <ResultRow label="تعويض الفصل التعسفي (م. 77)" value={formatArabic(calc.wrongfulComp)} />
+          )}
+          <ResultRow label="الإجمالي" value={formatArabic(calc.total)} emphasized separator />
+        </div>
+
+        {/* Disclaimer */}
+        <div className="rounded-2xl bg-amber-50 border border-amber-200 p-5">
+          <p className="text-xs leading-relaxed text-amber-800">
+            <strong className="font-bold">تنبيه:</strong> هذه الحاسبة للاسترشاد العام. قد تؤثر بنود العقد الفردية وشروط العمل
+            الإضافية على المبلغ النهائي.
           </p>
         </div>
       </div>
-    </div>
-  )
-}
-
-// ─── Main Component ───────────────────────────────────────────────────────────
-
-const TABS: { id: TabId; label: string }[] = [
-  { id: 'eos', label: 'مكافأة نهاية الخدمة' },
-  { id: 'vacation', label: 'رصيد الإجازات' },
-  { id: 'salary', label: 'الراتب المتبقي' },
-  { id: 'tickets', label: 'تذاكر السفر' },
-]
-
-export default function EndOfServiceCalculator() {
-  const [activeTab, setActiveTab] = useState<TabId>('eos')
-
-  return (
-    <div>
-      {/* Tab bar */}
-      <div className="flex overflow-x-auto border-b border-warm-200 mb-8 gap-1" role="tablist">
-        {TABS.map((tab) => (
-          <button
-            key={tab.id}
-            role="tab"
-            aria-selected={activeTab === tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={cn(
-              'flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap',
-              activeTab === tab.id
-                ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-stone-600 hover:text-primary-500 hover:border-primary-200'
-            )}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Calculator panels */}
-      <div className="bg-white rounded-xl border border-warm-200 shadow-sm p-6">
-        {activeTab === 'eos' && <EosCalculator />}
-        {activeTab === 'vacation' && <VacationCalculator />}
-        {activeTab === 'salary' && <SalaryCalculator />}
-        {activeTab === 'tickets' && <TicketsCalculator />}
-      </div>
-
-      <Disclaimer />
     </div>
   )
 }
