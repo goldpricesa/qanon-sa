@@ -49,9 +49,8 @@ const CATEGORY_META: Record<string, CategoryMeta> = {
   'عمالي': { label: 'عمالي', color: 'blue' },
   'عقاري': { label: 'عقاري', color: 'green' },
   'تجاري': { label: 'تجاري', color: 'amber' },
-  'رقمي': { label: 'رقمي', color: 'purple' },
   'مدني': { label: 'مدني', color: 'rose' },
-  'أحوال-شخصية': { label: 'أحوال شخصية', color: 'pink' },
+  'أحوال-شخصية': { label: 'أحوال شخصية', color: 'purple' },
   'جنائي': { label: 'جنائي', color: 'red' },
 }
 

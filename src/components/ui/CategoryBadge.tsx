@@ -6,9 +6,9 @@ const colorMap: Record<string, { color: string; bg: string; border: string }> = 
   'جنائي':       { color: '#B45A3C', bg: 'rgba(180, 90, 60, 0.12)',   border: 'rgba(180, 90, 60, 0.24)' },
   'عقاري':       { color: '#8A6A2E', bg: 'rgba(138, 106, 46, 0.12)',  border: 'rgba(138, 106, 46, 0.24)' },
   'تجاري':       { color: '#2E5F8A', bg: 'rgba(46, 95, 138, 0.12)',   border: 'rgba(46, 95, 138, 0.24)' },
-  'رقمي':        { color: '#5E3A8A', bg: 'rgba(94, 58, 138, 0.12)',   border: 'rgba(94, 58, 138, 0.24)' },
   'مدني':        { color: '#3A6B5C', bg: 'rgba(58, 107, 92, 0.12)',   border: 'rgba(58, 107, 92, 0.24)' },
-  'أحوال شخصية': { color: '#9E2A6B', bg: 'rgba(158, 42, 107, 0.12)',  border: 'rgba(158, 42, 107, 0.24)' },
+  'أحوال شخصية': { color: '#5E3A8A', bg: 'rgba(94, 58, 138, 0.12)',   border: 'rgba(94, 58, 138, 0.24)' },
+  'أحوال-شخصية': { color: '#5E3A8A', bg: 'rgba(94, 58, 138, 0.12)',   border: 'rgba(94, 58, 138, 0.24)' },
 }
 
 interface CategoryBadgeProps {

@@ -9,7 +9,7 @@ import CategoryGrid from '@/components/home/CategoryGrid'
 export const metadata: Metadata = {
   title: 'الرئيسية',
   description:
-    'مدونة قانونية متخصصة في الشأن السعودي — نظام العمل، العقارات، الشركات، والقانون الرقمي. مقالات موثوقة يكتبها محامون معتمدون.',
+    'مدونة قانونية متخصصة في الشأن السعودي — نظام العمل، العقارات، الشركات، والأحوال الشخصية. مقالات موثوقة يكتبها محامون معتمدون.',
   alternates: { canonical: 'https://qanon-sa.com' },
 }
 
