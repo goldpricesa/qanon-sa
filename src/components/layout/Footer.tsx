@@ -21,7 +21,7 @@ const siteLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-navy-900 text-gray-300">
+    <footer className="bg-navy-900 text-gray-300 border-t-4 border-gold-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Brand */}
@@ -67,15 +67,18 @@ export default function Footer() {
 
           {/* Categories */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">التصنيفات</h3>
+            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider flex items-center gap-2">
+              <span aria-hidden="true" className="block w-6 h-0.5 bg-gold-500" />
+              التصنيفات
+            </h3>
             <ul className="space-y-2">
               {categories.map((cat) => (
                 <li key={cat.href}>
                   <Link
                     href={cat.href}
-                    className="text-sm text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2"
+                    className="text-sm text-gray-400 hover:text-gold-300 transition-colors flex items-center gap-2"
                   >
-                    <span className="text-primary-500">‹</span>
+                    <span className="text-gold-500">‹</span>
                     {cat.label}
                   </Link>
                 </li>
@@ -85,15 +88,18 @@ export default function Footer() {
 
           {/* Site Links */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">روابط</h3>
+            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider flex items-center gap-2">
+              <span aria-hidden="true" className="block w-6 h-0.5 bg-gold-500" />
+              روابط
+            </h3>
             <ul className="space-y-2">
               {siteLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2"
+                    className="text-sm text-gray-400 hover:text-gold-300 transition-colors flex items-center gap-2"
                   >
-                    <span className="text-primary-500">‹</span>
+                    <span className="text-gold-500">‹</span>
                     {link.label}
                   </Link>
                 </li>
@@ -103,14 +109,33 @@ export default function Footer() {
 
           {/* Disclaimer */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">إخلاء المسؤولية</h3>
+            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider flex items-center gap-2">
+              <span aria-hidden="true" className="block w-6 h-0.5 bg-gold-500" />
+              إخلاء المسؤولية
+            </h3>
             <p className="text-sm text-gray-400 leading-relaxed">
               المعلومات الواردة في هذه المدونة لأغراض تثقيفية عامة فقط، ولا تُعدّ استشارة قانونية. يُنصح بالتواصل مع محامٍ مرخص للحصول على مشورة قانونية متخصصة.
             </p>
-            <p className="text-xs text-gray-500 mt-4">
-              © {new Date().getFullYear()} نظرة قانونية. جميع الحقوق محفوظة.
-            </p>
+            <a
+              href="mailto:contact@qanon-sa.com"
+              className="inline-flex items-center gap-2 mt-4 text-sm text-gold-300 hover:text-gold-200 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              contact@qanon-sa.com
+            </a>
           </div>
+        </div>
+
+        <div className="mt-10 pt-6 border-t border-navy-800 flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-xs text-gray-500">
+          <p>
+            © {new Date().getFullYear()} نظرة قانونية. جميع الحقوق محفوظة.
+          </p>
+          <p className="flex items-center gap-2">
+            <span aria-hidden="true" className="inline-block w-1.5 h-1.5 rounded-full bg-gold-500" />
+            محتوى يكتبه محامون مرخصون من وزارة العدل بالمملكة العربية السعودية
+          </p>
         </div>
       </div>
     </footer>
