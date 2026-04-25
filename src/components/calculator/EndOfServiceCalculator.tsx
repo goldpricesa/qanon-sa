@@ -16,7 +16,26 @@ function formatArabic(amount: number): string {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type EosReason = 'resign' | 'employer'
+type EosReason =
+  | 'resign'
+  | 'employer_legit'
+  | 'wrongful'
+  | 'force_majeure'
+  | 'marriage_birth'
+  | 'art_81'
+  | 'retirement'
+
+type ContractType = 'fixed' | 'indefinite'
+
+const REASON_OPTIONS: { id: EosReason; label: string }[] = [
+  { id: 'resign', label: 'استقالة' },
+  { id: 'employer_legit', label: 'إنهاء من صاحب العمل (سبب مشروع)' },
+  { id: 'wrongful', label: 'فصل تعسفي / إنهاء غير مشروع' },
+  { id: 'force_majeure', label: 'قوة قاهرة (م. 87)' },
+  { id: 'marriage_birth', label: 'إنهاء من الموظفة (زواج/وضع — م. 87)' },
+  { id: 'art_81', label: 'إنهاء من الموظف وفق المادة 81' },
+  { id: 'retirement', label: 'بلوغ سن التقاعد' },
+]
 
 // ─── Stepper Input ────────────────────────────────────────────────────────────
 
@@ -87,22 +106,62 @@ function Stepper({
   )
 }
 
-// ─── Reason Toggle ────────────────────────────────────────────────────────────
+// ─── Reason Select ────────────────────────────────────────────────────────────
 
-function ReasonToggle({
+function ReasonSelect({
   value,
   onChange,
 }: {
   value: EosReason
   onChange: (v: EosReason) => void
 }) {
-  const options: { id: EosReason; label: string }[] = [
-    { id: 'resign', label: 'استقالة' },
-    { id: 'employer', label: 'من صاحب العمل' },
-  ]
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium text-ink">سبب إنهاء الخدمة</label>
+      <label htmlFor="reason" className="text-sm font-medium text-ink">
+        سبب إنهاء الخدمة
+      </label>
+      <div className="relative">
+        <select
+          id="reason"
+          value={value}
+          onChange={(e) => onChange(e.target.value as EosReason)}
+          className="w-full px-4 py-3 pl-10 rounded-xl bg-white border border-line text-sm font-medium text-ink focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 transition-shadow appearance-none cursor-pointer"
+        >
+          {REASON_OPTIONS.map((opt) => (
+            <option key={opt.id} value={opt.id}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        <svg
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-3 pointer-events-none"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+    </div>
+  )
+}
+
+// ─── Mini Toggle (generic 2-option pill) ──────────────────────────────────────
+
+function MiniToggle<T extends string>({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string
+  value: T
+  onChange: (v: T) => void
+  options: { id: T; label: string }[]
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <span className="text-sm font-medium text-ink">{label}</span>
       <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-white border border-line">
         {options.map((opt) => {
           const active = value === opt.id
@@ -196,6 +255,12 @@ export default function EndOfServiceCalculator() {
   const [remainingSalary, setRemainingSalary] = useState(0)
   const [ticketAllowance, setTicketAllowance] = useState(0)
 
+  // فصل تعسفي — حقول إضافية
+  const [hasPenaltyClause, setHasPenaltyClause] = useState(false)
+  const [penaltyAmount, setPenaltyAmount] = useState(0)
+  const [contractType, setContractType] = useState<ContractType>('indefinite')
+  const [remainingMonths, setRemainingMonths] = useState(0)
+
   const calc = useMemo(() => {
     const safeSalary = Math.max(0, salary)
     const safeYears = Math.max(0, years)
@@ -210,7 +275,7 @@ export default function EndOfServiceCalculator() {
       gross = safeSalary * 0.5 * 5 + safeSalary * 1.0 * (totalYears - 5)
     }
 
-    // المادة 85 (إنهاء من صاحب العمل) → كامل / المادة 87 (استقالة) → متدرّج
+    // المادة 87 (استقالة) → متدرّج، باقي الأسباب → كامل
     let factor = 1
     if (reason === 'resign') {
       if (totalYears < 2) factor = 0
@@ -224,16 +289,42 @@ export default function EndOfServiceCalculator() {
     const vacationValue = Math.max(0, vacationDays) * dailyRate
     const remaining = Math.max(0, remainingSalary)
     const ticket = Math.max(0, ticketAllowance)
-    const total = eos + vacationValue + remaining + ticket
+
+    // المادة 77: تعويض الفصل التعسفي مع حد أدنى = أجر شهرَين
+    let wrongfulComp = 0
+    if (reason === 'wrongful') {
+      const base = hasPenaltyClause
+        ? Math.max(0, penaltyAmount)
+        : contractType === 'fixed'
+        ? Math.max(0, remainingMonths) * safeSalary
+        : 15 * dailyRate * totalYears
+      const minimum = 2 * safeSalary
+      wrongfulComp = Math.max(base, minimum)
+    }
+
+    const total = eos + vacationValue + remaining + ticket + wrongfulComp
 
     return {
       eos: Math.round(eos),
       vacationValue: Math.round(vacationValue),
       remaining: Math.round(remaining),
       ticket: Math.round(ticket),
+      wrongfulComp: Math.round(wrongfulComp),
       total: Math.round(total),
     }
-  }, [salary, years, extraMonths, reason, vacationDays, remainingSalary, ticketAllowance])
+  }, [
+    salary,
+    years,
+    extraMonths,
+    reason,
+    vacationDays,
+    remainingSalary,
+    ticketAllowance,
+    hasPenaltyClause,
+    penaltyAmount,
+    contractType,
+    remainingMonths,
+  ])
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
@@ -256,8 +347,58 @@ export default function EndOfServiceCalculator() {
           <Stepper id="years" label="سنوات الخدمة" value={years} onChange={setYears} min={0} max={60} />
           <Stepper id="months" label="أشهر إضافية" value={extraMonths} onChange={setExtraMonths} min={0} max={11} />
           <div className="sm:col-span-2">
-            <ReasonToggle value={reason} onChange={setReason} />
+            <ReasonSelect value={reason} onChange={setReason} />
           </div>
+
+          {reason === 'wrongful' && (
+            <div className="sm:col-span-2 rounded-xl bg-paper-3/40 border border-line p-4 flex flex-col gap-4">
+              <p className="text-xs leading-relaxed text-ink-3">
+                التعويض وفق <strong className="text-ink">المادة 77</strong> من نظام العمل، بحدّ أدنى أجر شهرَين.
+              </p>
+
+              <MiniToggle<'yes' | 'no'>
+                label="هل يوجد شرط جزائي في العقد؟"
+                value={hasPenaltyClause ? 'yes' : 'no'}
+                onChange={(v) => setHasPenaltyClause(v === 'yes')}
+                options={[
+                  { id: 'no', label: 'لا' },
+                  { id: 'yes', label: 'نعم' },
+                ]}
+              />
+
+              {hasPenaltyClause ? (
+                <Stepper
+                  id="penalty"
+                  label="قيمة الشرط الجزائي (ريال)"
+                  value={penaltyAmount}
+                  onChange={setPenaltyAmount}
+                  min={0}
+                  step={500}
+                />
+              ) : (
+                <>
+                  <MiniToggle<ContractType>
+                    label="نوع العقد"
+                    value={contractType}
+                    onChange={setContractType}
+                    options={[
+                      { id: 'indefinite', label: 'غير محدد المدة' },
+                      { id: 'fixed', label: 'محدد المدة' },
+                    ]}
+                  />
+                  {contractType === 'fixed' && (
+                    <Stepper
+                      id="remaining-months"
+                      label="الأشهر المتبقية في العقد"
+                      value={remainingMonths}
+                      onChange={setRemainingMonths}
+                      min={0}
+                    />
+                  )}
+                </>
+              )}
+            </div>
+          )}
         </SectionCard>
 
         <SectionCard title="مستحقات إضافية">
@@ -320,6 +461,9 @@ export default function EndOfServiceCalculator() {
           <ResultRow label="قيمة الإجازات غير المستخدمة" value={formatArabic(calc.vacationValue)} />
           <ResultRow label="الراتب المتبقي" value={formatArabic(calc.remaining)} />
           <ResultRow label="بدل تذكرة السفر" value={formatArabic(calc.ticket)} />
+          {calc.wrongfulComp > 0 && (
+            <ResultRow label="تعويض الفصل التعسفي (م. 77)" value={formatArabic(calc.wrongfulComp)} />
+          )}
           <ResultRow label="الإجمالي" value={formatArabic(calc.total)} emphasized separator />
         </div>
 
