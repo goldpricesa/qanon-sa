@@ -26,7 +26,7 @@ type EosReason =
 type ContractType = 'fixed' | 'indefinite'
 
 const REASON_OPTIONS: { id: EosReason; label: string }[] = [
-  { id: 'resign', label: 'استقالة (م. 85)' },
+  { id: 'resign', label: 'استقالة' },
   { id: 'legit_74', label: 'إنهاء مشروع للطرفين (م. 74)' },
   { id: 'legit_80', label: 'إنهاء مشروع لصاحب العمل — خطأ العامل (م. 80)' },
   { id: 'legit_81', label: 'إنهاء مشروع للعامل — خطأ صاحب العمل (م. 81)' },
