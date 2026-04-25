@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { getFeaturedPost, searchPosts } from '@/lib/posts'
+import { getFeaturedPost, searchPosts, getAllPosts } from '@/lib/posts'
 import FeaturedPost from '@/components/blog/FeaturedPost'
 import BlogGrid from '@/components/blog/BlogGrid'
 import Sidebar from '@/components/sidebar/Sidebar'
-import TrustStrip from '@/components/blog/TrustStrip'
+import CategoryGrid from '@/components/home/CategoryGrid'
 
 export const metadata: Metadata = {
   title: 'الرئيسية',
@@ -14,9 +14,7 @@ export const metadata: Metadata = {
 }
 
 interface HomePageProps {
-  searchParams?: {
-    q?: string
-  }
+  searchParams?: { q?: string }
 }
 
 export default function HomePage({ searchParams }: HomePageProps) {
@@ -27,43 +25,37 @@ export default function HomePage({ searchParams }: HomePageProps) {
     ? allPosts
     : allPosts.filter((post) => post.slug !== featured.slug)
 
+  const counts: Record<string, number> = {}
+  for (const p of getAllPosts()) {
+    counts[p.category] = (counts[p.category] ?? 0) + 1
+  }
+
   return (
     <>
-      {!query && (
-        <>
-          <FeaturedPost post={featured} />
-          <TrustStrip />
-        </>
-      )}
+      {!query && <FeaturedPost post={featured} />}
+      {!query && <CategoryGrid counts={counts} />}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="flex flex-col lg:flex-row gap-10">
-          {/* Main content */}
           <div className="flex-1 min-w-0">
-            <div className="flex flex-col gap-3 mb-8 md:flex-row md:items-end md:justify-between">
+            <div className="flex flex-col gap-3 mb-6 md:flex-row md:items-end md:justify-between">
               <div>
                 {query ? (
-                  <h1 className="font-display text-2xl font-bold text-navy-800">نتائج البحث</h1>
+                  <h1 className="font-display text-2xl font-black text-ink-2 tracking-tight">نتائج البحث</h1>
                 ) : (
-                  <div className="flex items-center gap-3">
-                    <span aria-hidden="true" className="block w-1 h-7 rounded-full bg-gold-500" />
-                    <h2 className="font-display text-2xl font-bold text-navy-800">أحدث المقالات</h2>
-                  </div>
+                  <h2 className="font-display text-[26px] font-black text-ink-2 tracking-tight">أحدث المقالات</h2>
                 )}
                 {query && (
-                  <p className="text-sm text-stone-700 mt-1">
+                  <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>
                     عرض النتائج المطابقة لعبارة &quot;{query}&quot;
                   </p>
                 )}
               </div>
 
-              <div className="flex items-center gap-3 text-sm text-stone-700">
+              <div className="flex items-center gap-3 text-sm" style={{ color: 'var(--muted)' }}>
                 <span>{visiblePosts.length} مقال</span>
                 {query && (
-                  <Link
-                    href="/"
-                    className="font-medium text-primary-600 hover:text-primary-700 transition-colors"
-                  >
+                  <Link href="/" className="font-medium text-primary-700 hover:text-primary-800 transition-colors">
                     مسح البحث
                   </Link>
                 )}
@@ -72,7 +64,6 @@ export default function HomePage({ searchParams }: HomePageProps) {
             <BlogGrid posts={visiblePosts} />
           </div>
 
-          {/* Sidebar */}
           <div className="lg:w-80 shrink-0">
             <Sidebar />
           </div>
