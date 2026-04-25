@@ -291,16 +291,21 @@ export default function EndOfServiceCalculator() {
     const remaining = Math.max(0, remainingSalary)
     const ticket = Math.max(0, ticketAllowance)
 
-    // المادة 77: تعويض الفصل التعسفي مع حد أدنى = أجر شهرَين
+    // المادة 77: تعويض الفصل التعسفي
+    // - إذا وُجد شرط جزائي مكتوب → القيمة المتفق عليها هي المعتمدة
+    // - إذا لم يوجد → 15 يوم لكل سنة (غير محدد) / المدة المتبقية (محدد)، بحدّ أدنى أجر شهرَين
     let wrongfulComp = 0
     if (reason === 'wrongful') {
-      const base = hasPenaltyClause
-        ? Math.max(0, penaltyAmount)
-        : contractType === 'fixed'
-        ? Math.max(0, remainingMonths) * safeSalary
-        : 15 * dailyRate * totalYears
-      const minimum = 2 * safeSalary
-      wrongfulComp = Math.max(base, minimum)
+      if (hasPenaltyClause) {
+        wrongfulComp = Math.max(0, penaltyAmount)
+      } else {
+        const base =
+          contractType === 'fixed'
+            ? Math.max(0, remainingMonths) * safeSalary
+            : 15 * dailyRate * totalYears
+        const minimum = 2 * safeSalary
+        wrongfulComp = Math.max(base, minimum)
+      }
     }
 
     const total = eos + vacationValue + remaining + ticket + wrongfulComp
@@ -354,7 +359,8 @@ export default function EndOfServiceCalculator() {
           {reason === 'wrongful' && (
             <div className="sm:col-span-2 rounded-xl bg-paper-3/40 border border-line p-4 flex flex-col gap-4">
               <p className="text-xs leading-relaxed text-ink-3">
-                التعويض وفق <strong className="text-ink">المادة 77</strong> من نظام العمل، بحدّ أدنى أجر شهرَين.
+                التعويض وفق <strong className="text-ink">المادة 77</strong> من نظام العمل. إذا وُجد شرط جزائي
+                مكتوب فهو المعتمد؛ وإلّا فحدّ أدنى أجر شهرَين.
               </p>
 
               <MiniToggle<'yes' | 'no'>

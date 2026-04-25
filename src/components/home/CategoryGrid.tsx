@@ -14,7 +14,7 @@ const categories: Category[] = [
   { slug: 'جنائي', label: 'جنائي', count: 0, color: '#B45A3C', icon: 'shield',    desc: 'الجرائم، العقوبات، التهديد، السب، الاحتيال' },
   { slug: 'عقاري', label: 'عقاري', count: 0, color: '#8A6A2E', icon: 'home',      desc: 'الإيجار، التسجيل العيني، الملكية، النزاعات' },
   { slug: 'تجاري', label: 'تجاري', count: 0, color: '#2E5F8A', icon: 'chart',     desc: 'الشركات، العقود، الشرط الجزائي، الإفلاس' },
-  { slug: 'رقمي',  label: 'رقمي',  count: 0, color: '#5E3A8A', icon: 'chip',      desc: 'الجرائم المعلوماتية، الخصوصية، التجارة الإلكترونية' },
+  { slug: 'أحوال-شخصية', label: 'أحوال شخصية', count: 0, color: '#5E3A8A', icon: 'scale', desc: 'الزواج، الطلاق، الحضانة، النفقة، الميراث، الولاية' },
   { slug: 'مدني',  label: 'مدني',  count: 0, color: '#3A6B5C', icon: 'scale',     desc: 'الالتزامات، التعويض، الأحوال الشخصية، الميراث' },
 ]
 
