@@ -25,6 +25,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = `${author.name} — ${author.title}`
   const description = author.bio ?? `مقالات الكاتب ${author.name} — ${author.title} على مدونة نظرة قانونية.`
 
+  const ogImageUrl = `${url}/opengraph-image`
+
   return {
     title,
     description,
@@ -35,11 +37,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       locale: 'ar_SA',
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: title }],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title,
       description,
+      images: [ogImageUrl],
     },
   }
 }

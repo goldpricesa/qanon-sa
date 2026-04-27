@@ -23,6 +23,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = `مقالات ${cat.label}`
   const description = `تصفح جميع المقالات في تصنيف ${cat.label} على مدونة نظرة قانونية — ${cat.count} مقال متخصص في القانون السعودي.`
 
+  const ogImageUrl = `${url}/opengraph-image`
+
   return {
     title,
     description,
@@ -33,6 +35,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       locale: 'ar_SA',
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImageUrl],
     },
   }
 }
