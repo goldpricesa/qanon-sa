@@ -35,15 +35,18 @@ interface CategoryGridProps {
 }
 
 export default function CategoryGrid({ counts = {} }: CategoryGridProps) {
+  const visible = categories.filter((c) => (counts[c.slug] ?? 0) > 0)
+  if (visible.length === 0) return null
+
   return (
     <section className="pt-14 pb-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
           <h2 className="font-display text-[26px] font-black text-ink-2 tracking-tight">تصفّح حسب التخصص</h2>
-          <p className="text-sm mt-1.5" style={{ color: 'var(--muted)' }}>ستة مجالات قانونية رئيسية، يغطّيها محامون مرخصون</p>
+          <p className="text-sm mt-1.5" style={{ color: 'var(--muted)' }}>مجالات قانونية متخصصة، يغطّيها محامون مرخصون</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {categories.map((c) => {
+          {visible.map((c) => {
             const count = counts[c.slug] ?? c.count
             return (
               <Link

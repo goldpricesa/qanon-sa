@@ -6,7 +6,8 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: 'نظرة قانونية',
     description:
       'مدونة قانونية سعودية متخصصة — شروحات نظام العمل، الأحوال الشخصية، العقود، الإيجار، الجرائم المعلوماتية، تأسيس الشركات.',
-    start_url: '/',
+    start_url: '/?utm_source=pwa',
+    scope: '/',
     display: 'standalone',
     background_color: '#fdfaf4',
     theme_color: '#0f766e',
@@ -32,6 +33,20 @@ export default function manifest(): MetadataRoute.Manifest {
         sizes: '512x512',
         type: 'image/png',
         purpose: 'maskable',
+      },
+    ],
+    shortcuts: [
+      {
+        name: 'الحاسبة القانونية',
+        short_name: 'الحاسبة',
+        description: 'حاسبة مكافأة نهاية الخدمة وفق نظام العمل السعودي',
+        url: '/calculator',
+      },
+      {
+        name: 'المدونة',
+        short_name: 'المدونة',
+        description: 'جميع المقالات القانونية',
+        url: '/blog',
       },
     ],
   }

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { getFeaturedPost, searchPosts, getAllPosts } from '@/lib/posts'
+import { getFeaturedPost, searchPosts, getCategoryCounts } from '@/lib/posts'
 import FeaturedPost from '@/components/blog/FeaturedPost'
 import BlogGrid from '@/components/blog/BlogGrid'
 import Sidebar from '@/components/sidebar/Sidebar'
@@ -25,10 +25,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
     ? allPosts
     : allPosts.filter((post) => post.slug !== featured.slug)
 
-  const counts: Record<string, number> = {}
-  for (const p of getAllPosts()) {
-    counts[p.category] = (counts[p.category] ?? 0) + 1
-  }
+  const counts = getCategoryCounts()
 
   return (
     <>
@@ -61,7 +58,18 @@ export default function HomePage({ searchParams }: HomePageProps) {
                 )}
               </div>
             </div>
-            <BlogGrid posts={visiblePosts} />
+            {query && visiblePosts.length === 0 ? (
+              <div className="rounded-2xl border border-warm-200 bg-white p-10 text-center text-stone-700">
+                <p className="text-base font-medium text-navy-800 mb-2">
+                  لا توجد نتائج مطابقة
+                </p>
+                <p className="text-sm" style={{ color: 'var(--muted)' }}>
+                  جرّب كلمات أخرى أو تصفّح <Link href="/blog" className="text-primary-700 hover:text-primary-800 underline">المدونة</Link> أو <Link href="/" className="text-primary-700 hover:text-primary-800 underline">الرئيسية</Link>.
+                </p>
+              </div>
+            ) : (
+              <BlogGrid posts={visiblePosts} />
+            )}
           </div>
 
           <div className="lg:w-80 shrink-0">

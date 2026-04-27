@@ -6,13 +6,20 @@ export default function ReadingProgressBar() {
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    const handler = () => {
+    let ticking = false
+    const compute = () => {
       const scrollTop = window.scrollY
       const docHeight = document.documentElement.scrollHeight - window.innerHeight
       const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0
       setProgress(Math.min(100, Math.max(0, pct)))
+      ticking = false
     }
-    handler()
+    const handler = () => {
+      if (ticking) return
+      ticking = true
+      window.requestAnimationFrame(compute)
+    }
+    compute()
     window.addEventListener('scroll', handler, { passive: true })
     window.addEventListener('resize', handler)
     return () => {

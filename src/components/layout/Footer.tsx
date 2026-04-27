@@ -1,14 +1,6 @@
 import Link from 'next/link'
 import Logo from '@/components/ui/Logo'
-
-const categories = [
-  { href: '/category/عمالي', label: 'قانون عمالي' },
-  { href: '/category/جنائي', label: 'قانون جنائي' },
-  { href: '/category/عقاري', label: 'قانون عقاري' },
-  { href: '/category/تجاري', label: 'قانون تجاري' },
-  { href: '/category/مدني', label: 'قانون مدني' },
-  { href: '/category/أحوال-شخصية', label: 'الأحوال الشخصية' },
-]
+import type { Category } from '@/types'
 
 const siteLinks = [
   { href: '/blog', label: 'المدونة' },
@@ -19,7 +11,11 @@ const siteLinks = [
   { href: '/terms', label: 'الشروط والأحكام' },
 ]
 
-export default function Footer() {
+interface FooterProps {
+  categories: Category[]
+}
+
+export default function Footer({ categories }: FooterProps) {
   return (
     <footer className="mt-20 text-stone-300" style={{ background: '#0A1628' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -71,10 +67,10 @@ export default function Footer() {
             </h3>
             <ul className="space-y-3">
               {categories.map((cat) => (
-                <li key={cat.href}>
-                  <Link href={cat.href} className="text-sm flex items-center gap-2 hover:text-white transition-colors" style={{ color: '#B9C2D4' }}>
+                <li key={cat.slug}>
+                  <Link href={`/category/${cat.slug}`} className="text-sm flex items-center gap-2 hover:text-white transition-colors" style={{ color: '#B9C2D4' }}>
                     <span style={{ color: '#E4CE9E' }}>›</span>
-                    {cat.label}
+                    قانون {cat.label}
                   </Link>
                 </li>
               ))}

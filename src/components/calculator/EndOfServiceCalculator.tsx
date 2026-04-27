@@ -344,13 +344,14 @@ export default function EndOfServiceCalculator() {
               value={salary}
               onChange={setSalary}
               min={0}
+              max={500_000}
               step={100}
             />
             <p className="mt-1.5 text-xs text-stone-500">
               الأجر الشامل = الراتب الأساسي + البدلات الثابتة (سكن، نقل…) — وفق المادة 2 من نظام العمل.
             </p>
           </div>
-          <Stepper id="years" label="سنوات الخدمة" value={years} onChange={setYears} min={0} max={60} />
+          <Stepper id="years" label="سنوات الخدمة" value={years} onChange={setYears} min={0} max={50} />
           <Stepper id="months" label="أشهر إضافية" value={extraMonths} onChange={setExtraMonths} min={0} max={11} />
           <div className="sm:col-span-2">
             <ReasonSelect value={reason} onChange={setReason} />
@@ -380,6 +381,7 @@ export default function EndOfServiceCalculator() {
                   value={penaltyAmount}
                   onChange={setPenaltyAmount}
                   min={0}
+                  max={10_000_000}
                   step={500}
                 />
               ) : (
@@ -400,6 +402,7 @@ export default function EndOfServiceCalculator() {
                       value={remainingMonths}
                       onChange={setRemainingMonths}
                       min={0}
+                      max={120}
                     />
                   )}
                 </>
@@ -415,6 +418,7 @@ export default function EndOfServiceCalculator() {
             value={vacationDays}
             onChange={setVacationDays}
             min={0}
+            max={365}
           />
           <Stepper
             id="remaining"
@@ -422,6 +426,7 @@ export default function EndOfServiceCalculator() {
             value={remainingSalary}
             onChange={setRemainingSalary}
             min={0}
+            max={1_000_000}
             step={100}
           />
           <div className="sm:col-span-2">
@@ -431,6 +436,7 @@ export default function EndOfServiceCalculator() {
               value={ticketAllowance}
               onChange={setTicketAllowance}
               min={0}
+              max={50_000}
               step={100}
             />
           </div>

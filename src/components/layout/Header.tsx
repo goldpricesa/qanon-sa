@@ -3,19 +3,14 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import Logo from '@/components/ui/Logo'
+import SearchBar from '@/components/ui/SearchBar'
+import type { Category } from '@/types'
 
-const navLinks = [
-  { href: '/', label: 'المقالات' },
-  { href: '/category/عمالي', label: 'عمالي' },
-  { href: '/category/جنائي', label: 'جنائي' },
-  { href: '/category/عقاري', label: 'عقاري' },
-  { href: '/category/تجاري', label: 'تجاري' },
-  { href: '/category/مدني', label: 'مدني' },
-  { href: '/category/أحوال-شخصية', label: 'أحوال شخصية' },
-  { href: '/calculator', label: 'الحاسبة' },
-]
+interface HeaderProps {
+  categories: Category[]
+}
 
-export default function Header() {
+export default function Header({ categories }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -24,6 +19,12 @@ export default function Header() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  const navLinks = [
+    { href: '/', label: 'المقالات' },
+    ...categories.map((c) => ({ href: `/category/${c.slug}`, label: c.label })),
+    { href: '/calculator', label: 'الحاسبة' },
+  ]
 
   return (
     <header
@@ -53,16 +54,8 @@ export default function Header() {
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-2.5 bg-paper-2 border border-line rounded-lg px-3 py-1.5 min-w-[220px]">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5B6577" strokeWidth="2" strokeLinecap="round">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m21 21-4.3-4.3" />
-            </svg>
-            <input
-              type="text"
-              placeholder="ابحث في المقالات…"
-              className="bg-transparent border-0 outline-none w-full text-sm text-ink"
-            />
+          <div className="hidden md:block min-w-[220px]">
+            <SearchBar />
           </div>
 
           <button
@@ -85,6 +78,9 @@ export default function Header() {
 
         {menuOpen && (
           <nav className="lg:hidden pb-4 pt-2 border-t border-line">
+            <div className="px-2 py-2 md:hidden">
+              <SearchBar />
+            </div>
             {navLinks.map((link) => (
               <Link
                 key={link.href}

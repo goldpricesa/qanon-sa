@@ -43,6 +43,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const url = `https://qanon-sa.com/blog/${post.slug}`
   const metaTitle = post.seoTitle || post.title
   const metaDescription = post.seoDescription || post.excerpt
+  // SVG covers do not render reliably in social previews; fall back to the
+  // dynamically generated /opengraph-image PNG sibling route.
+  const ogImageUrl = post.coverImage.endsWith('.svg')
+    ? `${url}/opengraph-image`
+    : `https://qanon-sa.com${post.coverImage}`
+  const ogImage = {
+    url: ogImageUrl,
+    width: 1200,
+    height: 630,
+    alt: post.title,
+  }
 
   return {
     title: metaTitle,
@@ -61,11 +72,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       authors: [post.author.name],
       section: post.categoryLabel,
       tags: post.tags,
+      images: [ogImage],
     },
     twitter: {
       card: 'summary_large_image',
       title: metaTitle,
       description: metaDescription,
+      images: [ogImageUrl],
     },
   }
 }

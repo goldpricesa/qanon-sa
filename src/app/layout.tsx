@@ -5,6 +5,7 @@ import Script from 'next/script'
 import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import { getAllCategories } from '@/lib/posts'
 
 const thmanyahSans = localFont({
   src: [
@@ -181,6 +182,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const categories = getAllCategories()
   return (
     <html lang="ar" dir="rtl" className={`${thmanyahSans.variable} ${thmanyahDisplay.variable}`}>
       <head>
@@ -205,9 +207,9 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
-        <Header />
+        <Header categories={categories} />
         <main className="flex-1">{children}</main>
-        <Footer />
+        <Footer categories={categories} />
         <GoogleAnalytics gaId="G-84090DMG89" />
         <Script
           id="plausible-analytics"

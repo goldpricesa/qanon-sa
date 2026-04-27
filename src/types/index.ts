@@ -2,11 +2,8 @@ export interface Author {
   slug?: string
   name: string
   title: string
-  avatar?: string
   credential?: string
   expertise?: string[]
-  profileUrl?: string
-  image?: string
   bio?: string
   alumniOf?: string
   sameAs?: string[]
