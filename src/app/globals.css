@@ -57,9 +57,9 @@ body > * { position: relative; z-index: 2; }
 .prose h2 {
   font-family: var(--font-thmanyah-display), var(--font-thmanyah-sans), serif;
   font-weight: 900;
-  scroll-margin-top: 100px;
   position: relative;
 }
+.prose h2, .prose h3 { scroll-margin-top: 100px; }
 .prose h2::before {
   content: '';
   display: inline-block;

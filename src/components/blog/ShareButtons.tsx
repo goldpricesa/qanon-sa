@@ -8,7 +8,7 @@ interface ShareButtonsProps {
 }
 
 export default function ShareButtons({ url, title }: ShareButtonsProps) {
-  const [copied, setCopied] = useState(false)
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>('idle')
 
   const encodedUrl = encodeURIComponent(url)
   const encodedTitle = encodeURIComponent(title)
@@ -16,10 +16,11 @@ export default function ShareButtons({ url, title }: ShareButtonsProps) {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(url)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      setCopyState('copied')
+      setTimeout(() => setCopyState('idle'), 2000)
     } catch {
-      // ignore
+      setCopyState('error')
+      setTimeout(() => setCopyState('idle'), 3000)
     }
   }
 
@@ -64,8 +65,13 @@ export default function ShareButtons({ url, title }: ShareButtonsProps) {
         onClick={handleCopy}
         className={`${btn} bg-white text-navy-800 border-warm-300 hover:bg-warm-100`}
         aria-label="نسخ الرابط"
+        aria-live="polite"
       >
-        {copied ? 'تم النسخ ✓' : 'نسخ الرابط'}
+        {copyState === 'copied'
+          ? 'تم النسخ ✓'
+          : copyState === 'error'
+            ? 'تعذر النسخ — انسخه يدوياً'
+            : 'نسخ الرابط'}
       </button>
       <button
         type="button"

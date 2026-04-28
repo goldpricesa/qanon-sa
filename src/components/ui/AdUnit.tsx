@@ -25,9 +25,22 @@ const RESERVED_HEIGHT: Record<NonNullable<AdUnitProps['format']>, number> = {
 
 export default function AdUnit({ slot, format = 'auto', className = '' }: AdUnitProps) {
   useEffect(() => {
-    try {
-      ;(window.adsbygoogle = window.adsbygoogle || []).push({})
-    } catch {}
+    let cancelled = false
+    const tryPush = () => {
+      if (cancelled) return
+      try {
+        ;(window.adsbygoogle = window.adsbygoogle || []).push({})
+      } catch {}
+    }
+    if (document.readyState === 'complete') {
+      tryPush()
+    } else {
+      window.addEventListener('load', tryPush, { once: true })
+    }
+    return () => {
+      cancelled = true
+      window.removeEventListener('load', tryPush)
+    }
   }, [])
 
   const minHeight = RESERVED_HEIGHT[format]

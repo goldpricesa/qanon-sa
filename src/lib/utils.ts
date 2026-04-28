@@ -42,7 +42,7 @@ export function stripHtml(html: string): string {
 
 export function formatDate(isoDate: string): string {
   const date = new Date(isoDate)
-  return date.toLocaleDateString('ar-SA', {
+  return date.toLocaleDateString('ar-SA-u-ca-gregory-nu-latn', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

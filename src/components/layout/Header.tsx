@@ -61,8 +61,9 @@ export default function Header({ categories }: HeaderProps) {
           <button
             className="lg:hidden p-2 rounded-md text-ink-3 hover:text-primary-700 hover:bg-primary-50"
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="فتح القائمة"
+            aria-label={menuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
             aria-expanded={menuOpen}
+            aria-controls="mobile-nav"
           >
             {menuOpen ? (
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -77,7 +78,7 @@ export default function Header({ categories }: HeaderProps) {
         </div>
 
         {menuOpen && (
-          <nav className="lg:hidden pb-4 pt-2 border-t border-line">
+          <nav id="mobile-nav" className="lg:hidden pb-4 pt-2 border-t border-line">
             <div className="px-2 py-2 md:hidden">
               <SearchBar />
             </div>

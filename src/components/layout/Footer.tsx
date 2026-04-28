@@ -22,7 +22,7 @@ export default function Footer({ categories }: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr] gap-12">
           <div>
             <Logo invert />
-            <p className="text-sm leading-relaxed mt-5 max-w-xs" style={{ color: '#9AA5BA' }}>
+            <p className="text-sm leading-relaxed mt-5 max-w-xs" style={{ color: '#B9C2D4' }}>
               مدونة قانونية متخصصة في الشأن السعودي. نقدم مقالات موثوقة وشاملة يكتبها محامون مرخصون من وزارة العدل.
             </p>
             <div className="flex items-center gap-2 mt-6">
@@ -97,17 +97,17 @@ export default function Footer({ categories }: FooterProps) {
             <h3 className="font-semibold mb-4 text-xs uppercase tracking-[0.18em]" style={{ color: '#E4CE9E' }}>
               إخلاء المسؤولية
             </h3>
-            <p className="text-sm leading-relaxed" style={{ color: '#9AA5BA' }}>
+            <p className="text-sm leading-relaxed" style={{ color: '#B9C2D4' }}>
               المعلومات الواردة في هذه المدونة لأغراض تثقيفية عامة فقط، ولا تُعدّ استشارة قانونية. يُنصح بالتواصل مع محامٍ مرخص للحصول على مشورة قانونية متخصصة.
             </p>
           </div>
         </div>
 
         <div className="mt-12 pt-6 flex flex-wrap justify-between gap-3" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-          <p className="text-xs m-0" style={{ color: '#6F7A8E' }}>
+          <p className="text-xs m-0" style={{ color: '#A0AABE' }}>
             © {new Date().getFullYear()} نظرة قانونية. جميع الحقوق محفوظة.
           </p>
-          <p className="text-xs m-0" style={{ color: '#6F7A8E' }}>
+          <p className="text-xs m-0" style={{ color: '#A0AABE' }}>
             صُنع بعناية في المملكة العربية السعودية
           </p>
         </div>
