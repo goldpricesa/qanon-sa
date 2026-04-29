@@ -9,7 +9,6 @@ import { getAllCategories } from '@/lib/posts'
 
 const thmanyahSans = localFont({
   src: [
-    { path: '../../public/fonts/thmanyah/thmanyahsans-Light.woff2', weight: '300', style: 'normal' },
     { path: '../../public/fonts/thmanyah/thmanyahsans-Regular.woff2', weight: '400', style: 'normal' },
     { path: '../../public/fonts/thmanyah/thmanyahsans-Medium.woff2', weight: '500', style: 'normal' },
     { path: '../../public/fonts/thmanyah/thmanyahsans-Bold.woff2', weight: '700', style: 'normal' },
@@ -30,10 +29,7 @@ const thmanyahDisplay = localFont({
 })
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#0f766e' },
-    { media: '(prefers-color-scheme: dark)', color: '#0c1e3c' },
-  ],
+  themeColor: '#0f766e',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
@@ -55,26 +51,13 @@ export const metadata: Metadata = {
     'مدونة قانونية سعودية متخصصة — شروحات نظام العمل، الأحوال الشخصية، العقود، الإيجار، الجرائم المعلوماتية، تأسيس الشركات. مقالات يكتبها محامون مرخصون من وزارة العدل.',
   keywords: [
     'قانون سعودي',
-    'محامي سعودي',
-    'محامي الرياض',
-    'استشارة قانونية مجانية',
     'استشارات قانونية',
     'نظام العمل السعودي',
-    'الفصل التعسفي',
-    'مكافأة نهاية الخدمة',
-    'نظام الأحوال الشخصية',
-    'الحضانة في السعودية',
-    'دعوى الخلع',
-    'منصة إيجار',
-    'تأسيس شركة',
-    'الشرط الجزائي',
-    'صحيفة الدعوى',
-    'دعوى التعويض',
+    'الأحوال الشخصية',
     'الجرائم المعلوماتية',
-    'صك حصر الورثة',
-    'توزيع التركة',
-    'محكمة عمالية',
-    'محكمة تجارية',
+    'القانون التجاري',
+    'محامي سعودي',
+    'مدونة قانونية',
   ],
   category: 'law',
   authors: [{ name: 'نظرة قانونية', url: 'https://qanon-sa.com' }],
@@ -110,7 +93,10 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: 'https://qanon-sa.com',
-    languages: { 'ar-SA': 'https://qanon-sa.com' },
+    languages: {
+      'ar-SA': 'https://qanon-sa.com',
+      'x-default': 'https://qanon-sa.com',
+    },
   },
 }
 
@@ -208,7 +194,13 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
         <Header categories={categories} />
-        <main className="flex-1">{children}</main>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary-700 focus:text-white focus:rounded-md"
+        >
+          انتقل إلى المحتوى الرئيسي
+        </a>
+        <main id="main" className="flex-1">{children}</main>
         <Footer categories={categories} />
         <GoogleAnalytics gaId="G-84090DMG89" />
         <Script
@@ -219,7 +211,7 @@ export default function RootLayout({
           src="https://plausible.io/js/script.js"
         />
         <Script
-          strategy="lazyOnload"
+          strategy="afterInteractive"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3611815443789107"
           crossOrigin="anonymous"
         />

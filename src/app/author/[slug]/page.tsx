@@ -11,6 +11,8 @@ interface Props {
   params: { slug: string }
 }
 
+export const revalidate = 86400
+
 export function generateStaticParams() {
   return getAllAuthors()
     .filter((a) => a.slug)

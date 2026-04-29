@@ -49,6 +49,16 @@ const config: Config = {
         gold: {
           DEFAULT: '#C8A45C',
           soft: '#E4CE9E',
+          50:  '#FBF6EB',
+          100: '#F5EAD0',
+          200: '#EAD7A6',
+          300: '#DEC179',
+          400: '#D3AE60',
+          500: '#C8A45C',
+          600: '#A8843B',
+          700: '#7E632C',
+          800: '#54421D',
+          900: '#2A210F',
         },
       },
       fontFamily: {

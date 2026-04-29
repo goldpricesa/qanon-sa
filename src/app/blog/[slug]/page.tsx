@@ -31,6 +31,8 @@ interface Props {
   params: { slug: string }
 }
 
+export const revalidate = 86400
+
 export function generateStaticParams() {
   return getAllPosts().map((post) => ({ slug: post.slug }))
 }
@@ -124,6 +126,8 @@ export default function BlogPostPage({ params }: Props) {
   const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
+    '@id': `${articleUrl}#article`,
+    url: articleUrl,
     headline: post.title,
     description: post.excerpt,
     datePublished: post.date,

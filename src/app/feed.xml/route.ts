@@ -1,6 +1,8 @@
 import { getAllPosts } from '@/lib/posts'
 import { stripHtml } from '@/lib/utils'
 
+export const revalidate = 86400
+
 const SITE_URL = 'https://qanon-sa.com'
 const SITE_TITLE = 'نظرة قانونية'
 const SITE_DESCRIPTION =
