@@ -81,7 +81,9 @@ function Stepper({
               return
             }
             const n = Number(raw)
-            if (!Number.isNaN(n)) onChange(n)
+            if (Number.isNaN(n)) return
+            const upper = max ?? Number.POSITIVE_INFINITY
+            onChange(Math.min(upper, Math.max(min, n)))
           }}
           min={min}
           max={max}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 declare global {
   interface Window {
@@ -24,10 +24,15 @@ const RESERVED_HEIGHT: Record<NonNullable<AdUnitProps['format']>, number> = {
 }
 
 export default function AdUnit({ slot, format = 'auto', className = '' }: AdUnitProps) {
+  const insRef = useRef<HTMLModElement>(null)
+
   useEffect(() => {
     let cancelled = false
     const tryPush = () => {
       if (cancelled) return
+      // AdSense throws "already have ads" if the same <ins> is pushed twice
+      // (e.g. on remount in dev or after client navigation back to the page).
+      if (insRef.current?.getAttribute('data-adsbygoogle-status')) return
       try {
         ;(window.adsbygoogle = window.adsbygoogle || []).push({})
       } catch {}
@@ -48,6 +53,7 @@ export default function AdUnit({ slot, format = 'auto', className = '' }: AdUnit
   return (
     <div className={className} style={{ minHeight }} aria-label="إعلان">
       <ins
+        ref={insRef}
         className="adsbygoogle"
         style={{ display: 'block', minHeight }}
         data-ad-client="ca-pub-3611815443789107"

@@ -132,11 +132,11 @@ const organizationJsonLd = {
   url: 'https://qanon-sa.com',
   logo: {
     '@type': 'ImageObject',
-    url: 'https://qanon-sa.com/logo.png',
-    width: 560,
-    height: 150,
+    url: 'https://qanon-sa.com/icon-512',
+    width: 512,
+    height: 512,
   },
-  image: 'https://qanon-sa.com/logo.png',
+  image: 'https://qanon-sa.com/icon-512',
   description:
     'مدونة قانونية سعودية متخصصة في الشأن السعودي يكتبها محامون مرخصون من وزارة العدل.',
   areaServed: {
