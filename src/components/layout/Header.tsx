@@ -28,13 +28,8 @@ export default function Header({ categories }: HeaderProps) {
 
   return (
     <header
-      className="sticky top-0 z-50 transition-all duration-200"
-      style={{
-        background: scrolled ? 'rgba(250, 247, 241, 0.88)' : 'rgba(250, 247, 241, 0.6)',
-        backdropFilter: 'saturate(150%) blur(12px)',
-        WebkitBackdropFilter: 'saturate(150%) blur(12px)',
-        borderBottom: scrolled ? '1px solid var(--line)' : '1px solid transparent',
-      }}
+      className="sticky top-0 z-50 transition-all duration-200 site-header"
+      data-scrolled={scrolled ? 'true' : 'false'}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-[72px] gap-4">

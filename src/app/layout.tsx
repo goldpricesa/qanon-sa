@@ -12,20 +12,20 @@ const thmanyahSans = localFont({
     { path: '../../public/fonts/thmanyah/thmanyahsans-Regular.woff2', weight: '400', style: 'normal' },
     { path: '../../public/fonts/thmanyah/thmanyahsans-Medium.woff2', weight: '500', style: 'normal' },
     { path: '../../public/fonts/thmanyah/thmanyahsans-Bold.woff2', weight: '700', style: 'normal' },
-    { path: '../../public/fonts/thmanyah/thmanyahsans-Black.woff2', weight: '900', style: 'normal' },
   ],
   display: 'swap',
   variable: '--font-thmanyah-sans',
+  preload: true,
 })
 
 const thmanyahDisplay = localFont({
   src: [
-    { path: '../../public/fonts/thmanyah/thmanyahserifdisplay-Regular.woff2', weight: '400', style: 'normal' },
     { path: '../../public/fonts/thmanyah/thmanyahserifdisplay-Bold.woff2', weight: '700', style: 'normal' },
     { path: '../../public/fonts/thmanyah/thmanyahserifdisplay-Black.woff2', weight: '900', style: 'normal' },
   ],
   display: 'swap',
   variable: '--font-thmanyah-display',
+  preload: false,
 })
 
 export const viewport: Viewport = {
@@ -172,7 +172,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={`${thmanyahSans.variable} ${thmanyahDisplay.variable}`}>
       <head>
-        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link
@@ -211,7 +211,7 @@ export default function RootLayout({
           src="https://plausible.io/js/script.js"
         />
         <Script
-          strategy="afterInteractive"
+          strategy="lazyOnload"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3611815443789107"
           crossOrigin="anonymous"
         />
