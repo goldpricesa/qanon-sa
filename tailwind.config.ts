@@ -9,8 +9,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Refined teal scale (kept for backward compat)
         primary: {
-          50:  '#E6FAF7',
+          50: '#E6FAF7',
           100: '#CCF5EF',
           200: '#99F6E4',
           300: '#5EEAD4',
@@ -21,6 +22,7 @@ const config: Config = {
           800: '#0A3B37',
           900: '#072724',
         },
+        // Editorial navy/ink
         navy: {
           700: '#1E3A5F',
           800: '#162D4A',
@@ -31,13 +33,14 @@ const config: Config = {
           2: '#162D4A',
           3: '#1E3A5F',
         },
+        // Paper / warm neutrals
         paper: {
           DEFAULT: '#FAF7F1',
           2: '#F3EEE4',
           3: '#E8E2D4',
         },
         warm: {
-          50:  '#FAF7F1',
+          50: '#FAF7F1',
           100: '#F3EEE4',
           200: '#E8E2D4',
           300: '#D8CFBC',
@@ -46,19 +49,10 @@ const config: Config = {
           DEFAULT: '#E5DFD1',
           2: '#D8CFBC',
         },
+        // Editorial gold accent
         gold: {
           DEFAULT: '#C8A45C',
           soft: '#E4CE9E',
-          50:  '#FBF6EB',
-          100: '#F5EAD0',
-          200: '#EAD7A6',
-          300: '#DEC179',
-          400: '#D3AE60',
-          500: '#C8A45C',
-          600: '#A8843B',
-          700: '#7E632C',
-          800: '#54421D',
-          900: '#2A210F',
         },
       },
       fontFamily: {
