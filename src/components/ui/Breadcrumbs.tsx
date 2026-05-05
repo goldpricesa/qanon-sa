@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { SITE_URL } from '@/lib/site'
 
 export interface BreadcrumbItem {
   label: string
@@ -9,8 +10,6 @@ interface BreadcrumbsProps {
   items: BreadcrumbItem[]
   className?: string
 }
-
-const SITE_URL = 'https://qanon-sa.com'
 
 export default function Breadcrumbs({ items, className }: BreadcrumbsProps) {
   if (!items || items.length === 0) return null

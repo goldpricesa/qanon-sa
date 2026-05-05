@@ -61,7 +61,7 @@ export default function OpenGraphImage() {
               maxWidth: 900,
             }}
           >
-            نظام العمل · العقارات · الشركات · القانون الجنائي · الأحوال الشخصية
+            نظام العمل · العقارات · الشركات · القانون الرقمي · الأحوال الشخصية
           </div>
           <div
             style={{
@@ -73,7 +73,7 @@ export default function OpenGraphImage() {
               border: '2px solid rgba(255,255,255,0.3)',
             }}
           >
-            qanon-sa.com
+            www.qanon-sa.com
           </div>
         </div>
       </div>

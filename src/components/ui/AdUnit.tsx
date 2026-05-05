@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
+import { useConsent } from '@/components/consent/ConsentProvider'
 
 declare global {
   interface Window {
@@ -14,48 +15,28 @@ interface AdUnitProps {
   className?: string
 }
 
-// Reserve vertical space per format so the inserted iframe doesn't
-// shift surrounding content (CLS). Heights match AdSense recommended
-// responsive ranges for each format.
-const RESERVED_HEIGHT: Record<NonNullable<AdUnitProps['format']>, number> = {
-  rectangle: 280,
-  horizontal: 100,
-  auto: 250,
-}
-
 export default function AdUnit({ slot, format = 'auto', className = '' }: AdUnitProps) {
-  const insRef = useRef<HTMLModElement>(null)
+  const { preferences } = useConsent()
 
   useEffect(() => {
-    let cancelled = false
-    const tryPush = () => {
-      if (cancelled) return
-      // AdSense throws "already have ads" if the same <ins> is pushed twice
-      // (e.g. on remount in dev or after client navigation back to the page).
-      if (insRef.current?.getAttribute('data-adsbygoogle-status')) return
-      try {
-        ;(window.adsbygoogle = window.adsbygoogle || []).push({})
-      } catch {}
+    if (!preferences?.ads) {
+      return
     }
-    if (document.readyState === 'complete') {
-      tryPush()
-    } else {
-      window.addEventListener('load', tryPush, { once: true })
-    }
-    return () => {
-      cancelled = true
-      window.removeEventListener('load', tryPush)
-    }
-  }, [])
 
-  const minHeight = RESERVED_HEIGHT[format]
+    try {
+      ;(window.adsbygoogle = window.adsbygoogle || []).push({})
+    } catch {}
+  }, [preferences?.ads])
+
+  if (!preferences?.ads) {
+    return null
+  }
 
   return (
-    <div className={className} style={{ minHeight }} aria-label="إعلان">
+    <div className={className}>
       <ins
-        ref={insRef}
         className="adsbygoogle"
-        style={{ display: 'block', minHeight }}
+        style={{ display: 'block' }}
         data-ad-client="ca-pub-3611815443789107"
         data-ad-slot={slot}
         data-ad-format={format}

@@ -1,10 +1,18 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { formatDate } from '@/lib/utils'
+import {
+  SITE_LOGO_URL,
+  SITE_NAME,
+  SITE_URL,
+  STATIC_PAGE_LAST_MODIFIED,
+  getAbsoluteUrl,
+} from '@/lib/site'
 
-const url = 'https://qanon-sa.com/about'
+const url = getAbsoluteUrl('/about')
 const title = 'من نحن'
 const description =
-  'نظرة قانونية — منصة محتوى قانوني سعودي متخصص. نبسّط الأنظمة واللوائح السعودية ونقدّم شروحات موثوقة يكتبها ويراجعها مختصون في القانون.'
+  'نظرة قانونية منصة محتوى قانوني سعودي متخصصة، تشرح الأنظمة السعودية بلغة عملية مع إحالات واضحة إلى المصادر الرسمية في الموضوعات عالية الحساسية.'
 
 export const metadata: Metadata = {
   title,
@@ -29,9 +37,9 @@ export default function AboutPage() {
     inLanguage: 'ar-SA',
     mainEntity: {
       '@type': 'Organization',
-      name: 'نظرة قانونية',
-      url: 'https://qanon-sa.com',
-      logo: 'https://qanon-sa.com/logo.png',
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: SITE_LOGO_URL,
       description,
       areaServed: { '@type': 'Country', name: 'المملكة العربية السعودية' },
       knowsLanguage: ['ar'],
@@ -42,8 +50,8 @@ export default function AboutPage() {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'الرئيسية', item: 'https://qanon-sa.com' },
-      { '@type': 'ListItem', position: 2, name: 'من نحن', item: url },
+      { '@type': 'ListItem', position: 1, name: 'الرئيسية', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: title, item: url },
     ],
   }
 
@@ -53,55 +61,62 @@ export default function AboutPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <nav className="flex items-center gap-2 text-sm text-stone-700 mb-6" aria-label="مسار التنقل">
-          <Link href="/" className="hover:text-primary-600 transition-colors">الرئيسية</Link>
+        <nav className="mb-6 flex items-center gap-2 text-sm text-stone-700" aria-label="مسار التنقل">
+          <Link href="/" className="transition-colors hover:text-primary-600">الرئيسية</Link>
           <span>‹</span>
-          <span className="text-stone-600">من نحن</span>
+          <span className="text-stone-600">{title}</span>
         </nav>
 
-        <h1 className="font-display text-3xl font-bold text-navy-800 mb-6">من نحن</h1>
+        <h1 className="font-display text-3xl font-bold text-navy-800 mb-4">{title}</h1>
+        <p className="mb-8 text-sm text-stone-600">
+          آخر تحديث: {formatDate(STATIC_PAGE_LAST_MODIFIED.about)}
+        </p>
 
         <div className="prose prose-lg max-w-none text-stone-800 leading-relaxed">
           <p>
-            <strong>نظرة قانونية</strong> منصة محتوى قانوني سعودي متخصص، تهدف إلى تبسيط الأنظمة واللوائح
-            المعمول بها في المملكة العربية السعودية، وتقديم شروحات دقيقة وموثوقة تساعد الأفراد والشركات
-            على فهم حقوقهم والتزاماتهم القانونية.
+            <strong>{SITE_NAME}</strong> منصة محتوى قانوني سعودي متخصصة تهدف إلى تبسيط
+            الأنظمة واللوائح السعودية بلغة واضحة وعملية دون أن تدّعي تقديم استشارة قانونية
+            شخصية لكل حالة.
           </p>
 
-          <h2>رسالتنا</h2>
+          <h2>ما الذي ننشره؟</h2>
           <p>
-            نؤمن أن الوعي القانوني حق لكل فرد. نسعى إلى ردم الفجوة بين النصوص النظامية المعقدة والمستخدم
-            العادي، عبر تقديم مقالات واضحة تستند إلى الأنظمة الرسمية الصادرة من الجهات المختصة في المملكة،
-            كوزارة العدل، وزارة الموارد البشرية، هيئة السوق المالية، وهيئة العقار.
+            ننشر مقالات وشروحات عملية عن نظام العمل، الأحوال الشخصية، العقود، العقارات،
+            القانون التجاري، والجرائم المعلوماتية. تركيزنا الأساسي هو تمكين القارئ من فهم
+            القاعدة النظامية ومسارها العملي، مع إظهار حدود ما يمكن استخلاصه من النص العام.
           </p>
 
-          <h2>مجالات تغطيتنا</h2>
-          <ul>
-            <li><strong>القانون العمالي</strong> — نظام العمل، نهاية الخدمة، الفصل التعسفي.</li>
-            <li><strong>الأحوال الشخصية</strong> — الزواج، الطلاق، الحضانة، التركات.</li>
-            <li><strong>العقارات والإيجار</strong> — منصة إيجار، عقود البيع، التوثيق.</li>
-            <li><strong>القانون التجاري</strong> — تأسيس الشركات، العقود التجارية، المنازعات.</li>
-            <li><strong>القانون المدني والجنائي</strong> — العقود المدنية، التعويضات، الجرائم المعلوماتية، حماية البيانات.</li>
-          </ul>
-
-          <h2>منهجيتنا في إعداد المحتوى</h2>
+          <h2>كيف نعدّ المحتوى؟</h2>
           <ol>
-            <li>البحث في مصادر أولية: الأنظمة الرسمية، اللوائح التنفيذية، قرارات المحاكم.</li>
-            <li>الصياغة بلغة مبسّطة مع الحفاظ على الدقة القانونية.</li>
-            <li>المراجعة من مختصين قبل النشر.</li>
-            <li>التحديث الدوري عند صدور أي تعديل نظامي.</li>
+            <li>نبدأ من النصوص الرسمية والجهات الحكومية والمنصات التنظيمية المعتمدة.</li>
+            <li>نعيد صياغة المادة القانونية بلغة عملية مع الاحتفاظ بالمعنى النظامي.</li>
+            <li>نضيف بطاقات مراجعة وروابط مصدر في المواد الأعلى حساسية والحاسبة القانونية.</li>
+            <li>نراجع المواد دوريًا عند وجود تحديثات تنظيمية أو ملاحظات تصحيح موثقة.</li>
           </ol>
 
-          <h2>تنبيه مهم</h2>
-          <p className="bg-primary-50 border border-primary-100 p-4 rounded-lg">
-            محتوى الموقع للتوعية العامة فقط، ولا يُعدّ استشارة قانونية شخصية. قد تختلف النتيجة القانونية
-            بحسب تفاصيل كل حالة. عند وجود نزاع، التزام مالي، أو إجراء رسمي، ننصح بشدة باستشارة
-            محامٍ مرخّص من وزارة العدل قبل اتخاذ أي قرار.
+          <h2>ما الذي لا يقدمه الموقع؟</h2>
+          <p className="rounded-lg border border-primary-100 bg-primary-50 p-4">
+            المحتوى المنشور للتوعية العامة فقط، ولا يُعد استشارة قانونية شخصية أو بديلاً عن
+            التقييم المهني لملفك أو مستنداتك أو وقائعك الخاصة.
           </p>
 
-          <h2>تواصل معنا</h2>
+          <h2>الثقة التحريرية</h2>
           <p>
-            نرحّب بملاحظاتكم واقتراحاتكم عبر <Link href="/contact" className="text-primary-600 hover:underline">صفحة التواصل</Link>.
+            في المواد النظامية عالية الأثر نعرض تاريخ آخر مراجعة تحريرية وروابط إلى المصادر
+            الرسمية المستخدمة في التحديث. كما نتيح استقبال طلبات التصحيح أو التحديث من خلال{' '}
+            <Link href="/contact" className="text-primary-600 hover:underline">
+              صفحة التواصل
+            </Link>
+            .
+          </p>
+
+          <h2>التواصل</h2>
+          <p>
+            لاستفسارات التحرير أو طلبات التصحيح أو اقتراح موضوعات جديدة، تفضل بزيارة{' '}
+            <Link href="/contact" className="text-primary-600 hover:underline">
+              صفحة التواصل
+            </Link>
+            .
           </p>
         </div>
       </div>

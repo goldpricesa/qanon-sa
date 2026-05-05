@@ -70,7 +70,7 @@ export default async function OGImage({ params }: Props) {
           <div style={{ fontSize: 26, opacity: 0.85 }}>
             مدونة قانونية سعودية متخصصة
           </div>
-          <div style={{ fontSize: 26, fontWeight: 600 }}>qanon-sa.com</div>
+          <div style={{ fontSize: 26, fontWeight: 600 }}>www.qanon-sa.com</div>
         </div>
       </div>
     ),

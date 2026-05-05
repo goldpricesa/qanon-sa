@@ -2,13 +2,14 @@ export interface Author {
   slug?: string
   name: string
   title: string
+  avatar?: string
   credential?: string
   expertise?: string[]
+  profileUrl?: string
+  image?: string
   bio?: string
   alumniOf?: string
   sameAs?: string[]
-  email?: string
-  telephone?: string
 }
 
 export interface FaqItem {
@@ -31,11 +32,13 @@ export interface BlogPost {
   coverImage: string
   date: string
   dateModified?: string
+  reviewedAt?: string
   readingTime: number
   category: string
   categoryLabel: string
   tags: string[]
   author: Author
+  sources?: { title: string; url: string }[]
   featured?: boolean
   seoTitle?: string
   seoDescription?: string

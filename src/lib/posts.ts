@@ -49,44 +49,31 @@ const CATEGORY_META: Record<string, CategoryMeta> = {
   'عمالي': { label: 'عمالي', color: 'blue' },
   'عقاري': { label: 'عقاري', color: 'green' },
   'تجاري': { label: 'تجاري', color: 'amber' },
+  'رقمي': { label: 'رقمي', color: 'purple' },
   'مدني': { label: 'مدني', color: 'rose' },
-  'أحوال-شخصية': { label: 'أحوال شخصية', color: 'purple' },
+  'أحوال-شخصية': { label: 'أحوال شخصية', color: 'pink' },
   'جنائي': { label: 'جنائي', color: 'red' },
 }
-
-// Canonical display order, used for nav/footer/grid.
-const CATEGORY_ORDER = ['عمالي', 'جنائي', 'عقاري', 'تجاري', 'مدني', 'أحوال-شخصية']
 
 export function getCategoryMeta(slug: string): CategoryMeta {
   return CATEGORY_META[slug] ?? { label: slug, color: 'gray' }
 }
 
-const categoryCounts: Record<string, number> = (() => {
+export function getAllCategories(): Category[] {
   const counts: Record<string, number> = {}
   for (const post of allPosts) {
     counts[post.category] = (counts[post.category] ?? 0) + 1
   }
-  return counts
-})()
 
-const allCategories: Category[] = CATEGORY_ORDER
-  .filter((slug) => (categoryCounts[slug] ?? 0) > 0)
-  .map((slug) => {
+  return Object.entries(counts).map(([slug, count]) => {
     const meta = getCategoryMeta(slug)
     return {
       slug,
       label: meta.label,
-      count: categoryCounts[slug] ?? 0,
+      count,
       color: meta.color,
     }
   })
-
-export function getAllCategories(): Category[] {
-  return allCategories
-}
-
-export function getCategoryCounts(): Record<string, number> {
-  return categoryCounts
 }
 
 export function getRelatedPosts(post: BlogPost, count = 6): BlogPost[] {
@@ -95,40 +82,6 @@ export function getRelatedPosts(post: BlogPost, count = 6): BlogPost[] {
     .slice(0, count)
 }
 
-export function getAdjacentPosts(post: BlogPost): {
-  previous?: BlogPost
-  next?: BlogPost
-} {
-  const posts = getAllPosts()
-  const idx = posts.findIndex((p) => p.slug === post.slug)
-  if (idx === -1) return {}
-  // posts are sorted newest-first, so:
-  //   "next"     (newer) is at idx-1
-  //   "previous" (older) is at idx+1
-  return {
-    next: idx > 0 ? posts[idx - 1] : undefined,
-    previous: idx < posts.length - 1 ? posts[idx + 1] : undefined,
-  }
-}
-
-// Pre-built search index: lowercased haystack per post, content stripped once.
-const searchIndex: Array<{ post: BlogPost; haystack: string }> = sortedPosts.map(
-  (post) => ({
-    post,
-    haystack: [
-      post.title,
-      post.excerpt,
-      post.categoryLabel,
-      post.author.name,
-      post.author.title,
-      getStrippedContent(post),
-      post.tags.join(' '),
-    ]
-      .join(' ')
-      .toLowerCase(),
-  })
-)
-
 export function searchPosts(query: string): BlogPost[] {
   const normalizedQuery = query.trim().toLowerCase()
 
@@ -136,7 +89,19 @@ export function searchPosts(query: string): BlogPost[] {
     return getAllPosts()
   }
 
-  return searchIndex
-    .filter((entry) => entry.haystack.includes(normalizedQuery))
-    .map((entry) => entry.post)
+  return getAllPosts().filter((post) => {
+    const searchableFields = [
+      post.title,
+      post.excerpt,
+      post.categoryLabel,
+      post.author.name,
+      post.author.title,
+      getStrippedContent(post),
+      ...post.tags,
+    ]
+
+    return searchableFields.some((field) =>
+      field.toLowerCase().includes(normalizedQuery)
+    )
+  })
 }

@@ -23,16 +23,10 @@ export default function Logo({ size = 40, invert = false }: LogoProps) {
         <circle cx="26" cy="22" r="2" fill={eyeBg} />
       </svg>
       <div className="flex flex-col gap-0.5 leading-none">
-        <span
-          className="font-display font-black text-xl tracking-tight"
-          style={{ color: fg }}
-        >
+        <span className="font-display text-xl font-black tracking-tight" style={{ color: fg }}>
           نظرة قانونية
         </span>
-        <span
-          className="text-[10.5px] font-medium tracking-[0.15em]"
-          style={{ color: accent }}
-        >
+        <span className="text-[10.5px] font-medium tracking-[0.15em]" style={{ color: accent }}>
           QANON · SA
         </span>
       </div>

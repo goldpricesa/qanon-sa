@@ -1,12 +1,9 @@
 import { getAllPosts } from '@/lib/posts'
 import { stripHtml } from '@/lib/utils'
+import { SITE_NAME, SITE_URL, getLastUpdatedDate } from '@/lib/site'
 
-export const revalidate = 86400
-
-const SITE_URL = 'https://qanon-sa.com'
-const SITE_TITLE = 'نظرة قانونية'
 const SITE_DESCRIPTION =
-  'مدونة قانونية سعودية متخصصة — نظام العمل، الأحوال الشخصية، العقود، الإيجار، الجرائم المعلوماتية.'
+  'مدونة قانونية سعودية متخصصة في نظام العمل، الأحوال الشخصية، العقود، الإيجار، والجرائم المعلوماتية.'
 
 function escapeXml(input: string): string {
   return input
@@ -19,7 +16,9 @@ function escapeXml(input: string): string {
 
 export function GET() {
   const posts = getAllPosts().slice(0, 20)
-  const lastBuildDate = new Date().toUTCString()
+  const lastBuildDate = new Date(
+    getLastUpdatedDate(...posts.map((post) => post.dateModified ?? post.reviewedAt ?? post.date)) ?? posts[0]?.date ?? new Date().toISOString()
+  ).toUTCString()
 
   const items = posts
     .map((post) => {
@@ -47,7 +46,7 @@ export function GET() {
      xmlns:atom="http://www.w3.org/2005/Atom"
      xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
-    <title>${escapeXml(SITE_TITLE)}</title>
+    <title>${escapeXml(SITE_NAME)}</title>
     <link>${SITE_URL}</link>
     <description>${escapeXml(SITE_DESCRIPTION)}</description>
     <language>ar-SA</language>

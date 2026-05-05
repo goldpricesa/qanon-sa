@@ -1,96 +1,95 @@
 import type { MetadataRoute } from 'next'
-import { getAllPosts, getAllCategories, getPostsByCategory } from '@/lib/posts'
 import { getAllAuthors } from '@/data/authors'
-import type { BlogPost } from '@/types'
-
-// Fixed revision date for legal/static pages. Bump manually when these
-// pages are meaningfully edited so search engines see a real change.
-const STATIC_PAGE_LAST_MODIFIED = new Date('2025-01-01T00:00:00.000Z')
-
-function postLastModified(post: BlogPost): Date {
-  return new Date(post.dateModified ?? post.date)
-}
-
-function latestDate(posts: BlogPost[], fallback: Date): Date {
-  if (posts.length === 0) return fallback
-  return posts.reduce<Date>((max, p) => {
-    const d = postLastModified(p)
-    return d > max ? d : max
-  }, new Date(0))
-}
+import { getAllCategories, getAllPosts, getPostsByCategory } from '@/lib/posts'
+import { STATIC_PAGE_LAST_MODIFIED, SITE_URL, getLastUpdatedDate } from '@/lib/site'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://qanon-sa.com'
   const posts = getAllPosts()
   const categories = getAllCategories()
-  const authors = getAllAuthors().filter((a) => a.slug)
-
-  const latestPostDate = latestDate(posts, STATIC_PAGE_LAST_MODIFIED)
+  const authors = getAllAuthors().filter((author) => author.slug)
 
   const postEntries: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: `${baseUrl}/blog/${encodeURI(post.slug)}`,
-    lastModified: postLastModified(post),
+    url: `${SITE_URL}/blog/${encodeURI(post.slug)}`,
+    lastModified: new Date(post.dateModified ?? post.reviewedAt ?? post.date),
     changeFrequency: 'monthly',
     priority: post.featured ? 0.9 : 0.8,
   }))
 
-  const categoryEntries: MetadataRoute.Sitemap = categories.map((cat) => ({
-    url: `${baseUrl}/category/${encodeURI(cat.slug)}`,
-    lastModified: latestDate(getPostsByCategory(cat.slug), STATIC_PAGE_LAST_MODIFIED),
-    changeFrequency: 'weekly',
-    priority: 0.6,
-  }))
+  const categoryEntries: MetadataRoute.Sitemap = categories.map((category) => {
+    const lastModified = getLastUpdatedDate(
+      ...getPostsByCategory(category.slug).map((post) => post.dateModified ?? post.reviewedAt ?? post.date)
+    )
 
-  const authorEntries: MetadataRoute.Sitemap = authors.map((a) => ({
-    url: `${baseUrl}/author/${a.slug}`,
-    lastModified: latestDate(
-      posts.filter((p) => p.author.slug === a.slug),
-      STATIC_PAGE_LAST_MODIFIED
-    ),
-    changeFrequency: 'monthly',
-    priority: 0.5,
-  }))
+    return {
+      url: `${SITE_URL}/category/${encodeURI(category.slug)}`,
+      lastModified: new Date(lastModified ?? STATIC_PAGE_LAST_MODIFIED.blog),
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    }
+  })
+
+  const authorEntries: MetadataRoute.Sitemap = authors.map((author) => {
+    const lastModified = getLastUpdatedDate(
+      ...posts
+        .filter((post) => post.author.slug === author.slug)
+        .map((post) => post.dateModified ?? post.reviewedAt ?? post.date),
+      STATIC_PAGE_LAST_MODIFIED.author
+    )
+
+    return {
+      url: `${SITE_URL}/author/${author.slug}`,
+      lastModified: new Date(lastModified),
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    }
+  })
 
   const staticEntries: MetadataRoute.Sitemap = [
     {
-      url: baseUrl,
-      lastModified: latestPostDate,
+      url: SITE_URL,
+      lastModified: new Date(STATIC_PAGE_LAST_MODIFIED.home),
       changeFrequency: 'daily',
       priority: 1,
     },
     {
-      url: `${baseUrl}/blog`,
-      lastModified: latestPostDate,
+      url: `${SITE_URL}/blog`,
+      lastModified: new Date(STATIC_PAGE_LAST_MODIFIED.blog),
       changeFrequency: 'daily',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/calculator`,
-      lastModified: STATIC_PAGE_LAST_MODIFIED,
+      url: `${SITE_URL}/calculator`,
+      lastModified: new Date(STATIC_PAGE_LAST_MODIFIED.calculator),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/about`,
-      lastModified: STATIC_PAGE_LAST_MODIFIED,
+      url: `${SITE_URL}/author`,
+      lastModified: new Date(STATIC_PAGE_LAST_MODIFIED.author),
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+    {
+      url: `${SITE_URL}/about`,
+      lastModified: new Date(STATIC_PAGE_LAST_MODIFIED.about),
       changeFrequency: 'yearly',
       priority: 0.4,
     },
     {
-      url: `${baseUrl}/contact`,
-      lastModified: STATIC_PAGE_LAST_MODIFIED,
+      url: `${SITE_URL}/contact`,
+      lastModified: new Date(STATIC_PAGE_LAST_MODIFIED.contact),
       changeFrequency: 'yearly',
       priority: 0.4,
     },
     {
-      url: `${baseUrl}/privacy`,
-      lastModified: STATIC_PAGE_LAST_MODIFIED,
+      url: `${SITE_URL}/privacy`,
+      lastModified: new Date(STATIC_PAGE_LAST_MODIFIED.privacy),
       changeFrequency: 'yearly',
       priority: 0.3,
     },
     {
-      url: `${baseUrl}/terms`,
-      lastModified: STATIC_PAGE_LAST_MODIFIED,
+      url: `${SITE_URL}/terms`,
+      lastModified: new Date(STATIC_PAGE_LAST_MODIFIED.terms),
       changeFrequency: 'yearly',
       priority: 0.3,
     },
