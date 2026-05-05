@@ -1,79 +1,49 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { getAllPosts, getFeaturedPost, searchPosts } from '@/lib/posts'
+import { getFeaturedPost, searchPosts, getCategoryCounts } from '@/lib/posts'
 import FeaturedPost from '@/components/blog/FeaturedPost'
 import BlogGrid from '@/components/blog/BlogGrid'
 import Sidebar from '@/components/sidebar/Sidebar'
 import CategoryGrid from '@/components/home/CategoryGrid'
-import { SITE_URL } from '@/lib/site'
+
+export const metadata: Metadata = {
+  title: 'الرئيسية',
+  description:
+    'مدونة قانونية متخصصة في الشأن السعودي — نظام العمل، العقارات، الشركات، والأحوال الشخصية. مقالات موثوقة يكتبها محامون معتمدون.',
+  alternates: { canonical: 'https://qanon-sa.com' },
+}
 
 interface HomePageProps {
-  searchParams?: Promise<{
-    q?: string | string[]
-  }>
+  searchParams?: { q?: string }
 }
 
-export async function generateMetadata({ searchParams }: HomePageProps): Promise<Metadata> {
-  const resolvedSearchParams = (await searchParams) ?? {}
-  const queryValue = Array.isArray(resolvedSearchParams.q)
-    ? resolvedSearchParams.q[0]
-    : resolvedSearchParams.q
-  const query = queryValue?.trim() ?? ''
-
-  return {
-    title: query ? `نتائج البحث عن "${query}"` : 'الرئيسية',
-    description:
-      'مدونة قانونية متخصصة في الشأن السعودي، مع شروحات قانونية موثقة ومحتوى تحريري يراجع دورياً.',
-    alternates: { canonical: SITE_URL },
-    ...(query && {
-      robots: {
-        index: false,
-        follow: true,
-        googleBot: {
-          index: false,
-          follow: true,
-        },
-      },
-    }),
-  }
-}
-
-export default async function HomePage({ searchParams }: HomePageProps) {
-  const resolvedSearchParams = (await searchParams) ?? {}
-  const queryValue = Array.isArray(resolvedSearchParams.q)
-    ? resolvedSearchParams.q[0]
-    : resolvedSearchParams.q
-  const query = queryValue?.trim() ?? ''
+export default function HomePage({ searchParams }: HomePageProps) {
+  const query = searchParams?.q?.trim() ?? ''
   const featured = getFeaturedPost()
   const allPosts = searchPosts(query)
   const visiblePosts = query
     ? allPosts
     : allPosts.filter((post) => post.slug !== featured.slug)
 
-  const counts: Record<string, number> = {}
-  for (const post of getAllPosts()) {
-    counts[post.category] = (counts[post.category] ?? 0) + 1
-  }
+  const counts = getCategoryCounts()
 
   return (
     <>
       {!query && <FeaturedPost post={featured} />}
       {!query && <CategoryGrid counts={counts} />}
 
-      <div className="max-w-7xl mx-auto px-4 py-14 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-10 lg:flex-row">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <div className="flex flex-col lg:flex-row gap-10">
           <div className="flex-1 min-w-0">
-            <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div className="flex flex-col gap-3 mb-6 md:flex-row md:items-end md:justify-between">
               <div>
                 {query ? (
-                  <h1 className="font-display text-2xl font-black tracking-tight text-ink-2">نتائج البحث</h1>
+                  <h1 className="font-display text-2xl font-black text-ink-2 tracking-tight">نتائج البحث</h1>
                 ) : (
-                  <h2 className="font-display text-[26px] font-black tracking-tight text-ink-2">
-                    أحدث المقالات
-                  </h2>
+                  <h2 className="font-display text-[26px] font-black text-ink-2 tracking-tight">أحدث المقالات</h2>
                 )}
                 {query && (
-                  <p className="mt-1 text-sm" style={{ color: 'var(--muted)' }}>
+                  <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>
                     عرض النتائج المطابقة لعبارة &quot;{query}&quot;
                   </p>
                 )}
@@ -82,13 +52,24 @@ export default async function HomePage({ searchParams }: HomePageProps) {
               <div className="flex items-center gap-3 text-sm" style={{ color: 'var(--muted)' }}>
                 <span>{visiblePosts.length} مقال</span>
                 {query && (
-                  <Link href="/" className="font-medium text-primary-700 transition-colors hover:text-primary-800">
+                  <Link href="/" className="font-medium text-primary-700 hover:text-primary-800 transition-colors">
                     مسح البحث
                   </Link>
                 )}
               </div>
             </div>
-            <BlogGrid posts={visiblePosts} />
+            {query && visiblePosts.length === 0 ? (
+              <div className="rounded-2xl border border-warm-200 bg-white p-10 text-center text-stone-700">
+                <p className="text-base font-medium text-navy-800 mb-2">
+                  لا توجد نتائج مطابقة
+                </p>
+                <p className="text-sm" style={{ color: 'var(--muted)' }}>
+                  جرّب كلمات أخرى أو تصفّح <Link href="/blog" className="text-primary-700 hover:text-primary-800 underline">المدونة</Link> أو <Link href="/" className="text-primary-700 hover:text-primary-800 underline">الرئيسية</Link>.
+                </p>
+              </div>
+            ) : (
+              <BlogGrid posts={visiblePosts} />
+            )}
           </div>
 
           <div className="lg:w-80 shrink-0">

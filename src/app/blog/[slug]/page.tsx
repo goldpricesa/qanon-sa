@@ -1,52 +1,61 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import { notFound, redirect } from 'next/navigation'
+import Image from 'next/image'
+import {
+  getAllPosts,
+  getPostBySlug,
+  getPostByAnySlug,
+  getRelatedPosts,
+  getAdjacentPosts,
+} from '@/lib/posts'
 import { getAuthorBySlug } from '@/data/authors'
-import { getAllPosts, getPostByAnySlug, getPostBySlug, getRelatedPosts } from '@/lib/posts'
+import CategoryBadge from '@/components/ui/CategoryBadge'
+import Sidebar from '@/components/sidebar/Sidebar'
+import BlogCard from '@/components/blog/BlogCard'
+import Breadcrumbs from '@/components/ui/Breadcrumbs'
+import Faq from '@/components/blog/Faq'
+import TableOfContents from '@/components/blog/TableOfContents'
+import ReadingProgressBar from '@/components/blog/ReadingProgressBar'
+import ShareButtons from '@/components/blog/ShareButtons'
+import AuthorCard from '@/components/blog/AuthorCard'
+import PostNavigation from '@/components/blog/PostNavigation'
 import {
   formatDate,
   formatReadingTime,
   sanitizeArticleHtml,
   stripHtml,
 } from '@/lib/utils'
-import BlogCard from '@/components/blog/BlogCard'
-import AuthorCard from '@/components/blog/AuthorCard'
-import Faq from '@/components/blog/Faq'
-import ReadingProgressBar from '@/components/blog/ReadingProgressBar'
-import ShareButtons from '@/components/blog/ShareButtons'
-import TableOfContents from '@/components/blog/TableOfContents'
-import EditorialNote from '@/components/content/EditorialNote'
-import Sidebar from '@/components/sidebar/Sidebar'
-import CategoryBadge from '@/components/ui/CategoryBadge'
-import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import AdUnit from '@/components/ui/AdUnit'
-import {
-  SITE_PHONE_DISPLAY,
-  SITE_PHONE_TEL,
-  SITE_URL,
-  SITE_WHATSAPP_URL,
-  getAbsoluteUrl,
-} from '@/lib/site'
 
 interface Props {
-  params: Promise<{ slug: string }>
+  params: { slug: string }
 }
+
+export const revalidate = 86400
 
 export function generateStaticParams() {
   return getAllPosts().map((post) => ({ slug: post.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug: rawSlug } = await params
-  const slug = decodeURIComponent(rawSlug)
+  const slug = decodeURIComponent(params.slug)
   const post = getPostBySlug(slug)
-  if (!post) {
-    return {}
-  }
+  if (!post) return {}
 
-  const url = getAbsoluteUrl(`/blog/${post.slug}`)
+  const url = `https://qanon-sa.com/blog/${post.slug}`
   const metaTitle = post.seoTitle || post.title
   const metaDescription = post.seoDescription || post.excerpt
+  // SVG covers do not render reliably in social previews; fall back to the
+  // dynamically generated /opengraph-image PNG sibling route.
+  const ogImageUrl = post.coverImage.endsWith('.svg')
+    ? `${url}/opengraph-image`
+    : `https://qanon-sa.com${post.coverImage}`
+  const ogImage = {
+    url: ogImageUrl,
+    width: 1200,
+    height: 630,
+    alt: post.title,
+  }
 
   return {
     title: metaTitle,
@@ -61,24 +70,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: metaDescription,
       locale: 'ar_SA',
       publishedTime: post.date,
-      modifiedTime: post.dateModified ?? post.reviewedAt ?? post.date,
+      modifiedTime: post.dateModified ?? post.date,
       authors: [post.author.name],
       section: post.categoryLabel,
       tags: post.tags,
+      images: [ogImage],
     },
     twitter: {
       card: 'summary_large_image',
       title: metaTitle,
       description: metaDescription,
+      images: [ogImageUrl],
     },
   }
 }
 
-export default async function BlogPostPage({ params }: Props) {
-  const { slug: rawSlug } = await params
-  const slug = decodeURIComponent(rawSlug)
+export default function BlogPostPage({ params }: Props) {
+  const slug = decodeURIComponent(params.slug)
   let post = getPostBySlug(slug)
-
   if (!post) {
     const legacyMatch = getPostByAnySlug(slug)
     if (legacyMatch && legacyMatch.slug !== slug) {
@@ -88,28 +97,28 @@ export default async function BlogPostPage({ params }: Props) {
   }
 
   const related = getRelatedPosts(post)
+  const adjacent = getAdjacentPosts(post)
   const safeContent = sanitizeArticleHtml(post.content)
-  const canonicalAuthor = (post.author.slug && getAuthorBySlug(post.author.slug)) || post.author
-  const articleUrl = getAbsoluteUrl(`/blog/${post.slug}`)
+  const canonicalAuthor =
+    (post.author.slug && getAuthorBySlug(post.author.slug)) || post.author
+  const articleUrl = `https://qanon-sa.com/blog/${post.slug}`
+
   const articleImage = post.coverImage.endsWith('.svg')
-    ? getAbsoluteUrl(`/blog/${post.slug}/opengraph-image`)
-    : getAbsoluteUrl(post.coverImage)
+    ? `https://qanon-sa.com/blog/${post.slug}/opengraph-image`
+    : `https://qanon-sa.com${post.coverImage}`
 
   const authorJsonLd: Record<string, unknown> = {
     '@type': 'Person',
     name: canonicalAuthor.name,
     jobTitle: canonicalAuthor.title,
   }
-
   if (canonicalAuthor.slug) {
-    authorJsonLd['@id'] = getAbsoluteUrl(`/author/${canonicalAuthor.slug}#person`)
-    authorJsonLd.url = getAbsoluteUrl(`/author/${canonicalAuthor.slug}`)
+    authorJsonLd['@id'] = `https://qanon-sa.com/author/${canonicalAuthor.slug}#person`
+    authorJsonLd.url = `https://qanon-sa.com/author/${canonicalAuthor.slug}`
   }
-
   if (canonicalAuthor.credential) {
     authorJsonLd.description = canonicalAuthor.credential
   }
-
   if (canonicalAuthor.sameAs && canonicalAuthor.sameAs.length > 0) {
     authorJsonLd.sameAs = canonicalAuthor.sameAs
   }
@@ -117,23 +126,22 @@ export default async function BlogPostPage({ params }: Props) {
   const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
+    '@id': `${articleUrl}#article`,
+    url: articleUrl,
     headline: post.title,
     description: post.excerpt,
     datePublished: post.date,
-    dateModified: post.dateModified ?? post.reviewedAt ?? post.date,
+    dateModified: post.dateModified ?? post.date,
     image: articleImage,
     inLanguage: 'ar',
     author: authorJsonLd,
-    publisher: { '@id': `${SITE_URL}/#organization` },
-    isPartOf: { '@id': `${SITE_URL}/#website` },
+    publisher: { '@id': 'https://qanon-sa.com/#organization' },
+    isPartOf: { '@id': 'https://qanon-sa.com/#website' },
     about: { '@type': 'Thing', name: post.categoryLabel },
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': articleUrl,
     },
-    ...(post.sources && post.sources.length > 0 && {
-      citation: post.sources.map((source) => source.url),
-    }),
     keywords: post.tags.join(', '),
     articleSection: post.categoryLabel,
     wordCount: stripHtml(safeContent).split(/\s+/).filter(Boolean).length,
@@ -148,11 +156,11 @@ export default async function BlogPostPage({ params }: Props) {
         description: post.excerpt,
         inLanguage: 'ar',
         totalTime: `PT${post.readingTime}M`,
-        step: post.howToSteps.map((step, index) => ({
+        step: post.howToSteps.map((s, idx) => ({
           '@type': 'HowToStep',
-          position: index + 1,
-          name: step.name,
-          text: step.text,
+          position: idx + 1,
+          name: s.name,
+          text: s.text,
         })),
       }
     : null
@@ -160,9 +168,15 @@ export default async function BlogPostPage({ params }: Props) {
   return (
     <>
       <ReadingProgressBar />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       {howToJsonLd && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+        />
       )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -175,9 +189,11 @@ export default async function BlogPostPage({ params }: Props) {
           ]}
         />
 
-        <div className="flex flex-col gap-10 lg:flex-row">
+        <div className="flex flex-col lg:flex-row gap-10">
+          {/* Article */}
           <article className="flex-1 min-w-0">
-            <div className="relative mb-8 h-64 overflow-hidden rounded-2xl md:h-80">
+            {/* Cover Image */}
+            <div className="relative h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
               <Image
                 src={post.coverImage}
                 alt={post.title}
@@ -188,30 +204,33 @@ export default async function BlogPostPage({ params }: Props) {
               />
             </div>
 
-            <div className="mb-4 flex flex-wrap items-center gap-3">
+            {/* Meta */}
+            <div className="flex flex-wrap items-center gap-3 mb-4">
               <CategoryBadge category={post.category} label={post.categoryLabel} />
               {post.tags.slice(0, 4).map((tag) => (
-                <span key={tag} className="rounded-full bg-warm-100 px-2 py-1 text-xs text-stone-700">
+                <span key={tag} className="text-xs text-stone-700 bg-warm-100 px-2 py-1 rounded-full">
                   #{tag}
                 </span>
               ))}
             </div>
 
+            {/* Title */}
             <h1 className="font-display text-2xl md:text-3xl font-bold text-navy-800 leading-relaxed mb-5">
               {post.title}
             </h1>
 
-            <div className="mb-6 flex flex-wrap items-center gap-4 border-b border-warm-200 pb-6">
+            {/* Date & reading time row */}
+            <div className="flex items-center gap-4 pb-6 mb-6 border-b border-warm-200 flex-wrap">
               <time dateTime={post.date} className="text-sm text-stone-700">
                 {formatDate(post.date)}
               </time>
-              {(post.dateModified || post.reviewedAt) && (
+              {post.dateModified && post.dateModified !== post.date && (
                 <span className="text-xs text-stone-600">
-                  (آخر مراجعة: {formatDate(post.reviewedAt ?? post.dateModified ?? post.date)})
+                  (آخر تحديث: {formatDate(post.dateModified)})
                 </span>
               )}
               <span className="text-stone-600">|</span>
-              <span className="flex items-center gap-1 text-sm text-stone-700">
+              <span className="text-sm text-stone-700 flex items-center gap-1">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -219,66 +238,35 @@ export default async function BlogPostPage({ params }: Props) {
               </span>
             </div>
 
+            {/* Share */}
             <ShareButtons url={articleUrl} title={post.title} />
 
-            {(post.reviewedAt || (post.sources && post.sources.length > 0)) && (
-              <div className="mt-6">
-                <EditorialNote
-                  reviewedAt={post.reviewedAt ?? post.dateModified}
-                  sources={post.sources}
-                  note="روابط هذه البطاقة تشير إلى المراجع الرسمية التي استند إليها التحديث التحريري لهذه المادة. لا تغني المادة عن الاستشارة القانونية المتخصصة عند وجود نزاع أو إجراء رسمي."
-                />
-              </div>
-            )}
-
+            {/* Table of Contents */}
             <div className="mt-6">
               <TableOfContents />
             </div>
 
-            <AdUnit slot="1459279297" format="horizontal" className="mb-6 mt-6" />
+            {/* Ad — above content */}
+            <AdUnit slot="1459279297" format="horizontal" className="mb-6" />
 
+            {/* Content */}
             <div
               data-article-content
               className="prose prose-lg max-w-none"
               dangerouslySetInnerHTML={{ __html: safeContent }}
             />
 
-            <section className="mt-8 rounded-xl border border-primary-100 bg-primary-50 p-5 print:hidden">
-              <h2 className="text-base font-bold text-navy-800">للتواصل وطلبات التصحيح</h2>
-              <p className="mt-2 text-sm leading-relaxed text-stone-700">
-                للتواصل التحريري أو طلبات الخصوصية أو تصحيح معلومة في المقال، استخدم الرقم:
-                {' '}
-                <a href={`tel:${SITE_PHONE_TEL}`} className="font-semibold text-primary-700 hover:underline">
-                  {SITE_PHONE_DISPLAY}
-                </a>
-              </p>
-              <div className="mt-4 flex flex-wrap gap-3">
-                <a
-                  href={SITE_WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-700"
-                >
-                  تواصل واتساب
-                </a>
-                <a
-                  href={`tel:${SITE_PHONE_TEL}`}
-                  className="rounded-lg border border-primary-200 bg-white px-4 py-2 text-sm font-semibold text-primary-700 transition-colors hover:bg-primary-50"
-                >
-                  اتصال مباشر
-                </a>
-              </div>
-            </section>
-
+            {/* FAQ Section */}
             {post.faq && post.faq.length > 0 && <Faq items={post.faq} />}
 
-            <div className="mt-10 border-t border-warm-200 pt-6 print:hidden">
-              <h3 className="mb-3 text-sm font-semibold text-stone-700">الوسوم:</h3>
+            {/* Tags */}
+            <div className="mt-10 pt-6 border-t border-warm-200 print:hidden">
+              <h3 className="text-sm font-semibold text-stone-700 mb-3">الوسوم:</h3>
               <div className="flex flex-wrap gap-2">
                 {post.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="cursor-default rounded-full bg-warm-100 px-3 py-1.5 text-xs text-stone-700 transition-colors hover:bg-warm-200"
+                    className="text-xs text-stone-700 bg-warm-100 hover:bg-warm-200 px-3 py-1.5 rounded-full transition-colors cursor-default"
                   >
                     #{tag}
                   </span>
@@ -286,22 +274,29 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
             </div>
 
+            {/* Author Card */}
             <AuthorCard author={canonicalAuthor} />
+
+            {/* Prev / Next */}
+            <PostNavigation previous={adjacent.previous} next={adjacent.next} />
           </article>
 
+          {/* Sidebar */}
           <div className="lg:w-80 shrink-0 print:hidden">
             <Sidebar />
           </div>
         </div>
 
+        {/* Ad — below article */}
         <AdUnit slot="9202037944" format="auto" className="mt-10" />
 
+        {/* Related Posts */}
         {related.length > 0 && (
           <section className="mt-16 print:hidden">
-            <h2 className="mb-8 text-xl font-bold text-navy-800">مقالات ذات صلة</h2>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {related.map((relatedPost) => (
-                <BlogCard key={relatedPost.id} post={relatedPost} />
+            <h2 className="text-xl font-bold text-navy-800 mb-8">مقالات ذات صلة</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {related.map((rp) => (
+                <BlogCard key={rp.id} post={rp} />
               ))}
             </div>
           </section>

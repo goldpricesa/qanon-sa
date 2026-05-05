@@ -1,34 +1,33 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import { getAllAuthors, getAuthorBySlug } from '@/data/authors'
 import { getAllPosts } from '@/lib/posts'
 import BlogCard from '@/components/blog/BlogCard'
 import AuthorCard from '@/components/blog/AuthorCard'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
-import { SITE_PHONE_DISPLAY, SITE_PHONE_TEL, SITE_URL, SITE_WHATSAPP_URL, getAbsoluteUrl } from '@/lib/site'
 
 interface Props {
-  params: Promise<{ slug: string }>
+  params: { slug: string }
 }
+
+export const revalidate = 86400
 
 export function generateStaticParams() {
   return getAllAuthors()
-    .filter((author) => author.slug)
-    .map((author) => ({ slug: author.slug! }))
+    .filter((a) => a.slug)
+    .map((a) => ({ slug: a.slug! }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
-  const author = getAuthorBySlug(slug)
-  if (!author) {
-    return {}
-  }
+  const author = getAuthorBySlug(params.slug)
+  if (!author) return {}
 
-  const url = getAbsoluteUrl(`/author/${author.slug}`)
+  const url = `https://qanon-sa.com/author/${author.slug}`
   const title = `${author.name} — ${author.title}`
-  const description =
-    author.bio ?? `مقالات الكاتب ${author.name} — ${author.title} على مدونة نظرة قانونية.`
+  const description = author.bio ?? `مقالات الكاتب ${author.name} — ${author.title} على مدونة نظرة قانونية.`
+
+  const ogImageUrl = `${url}/opengraph-image`
 
   return {
     title,
@@ -40,24 +39,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       locale: 'ar_SA',
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: title }],
     },
     twitter: {
-      card: 'summary',
+      card: 'summary_large_image',
       title,
       description,
+      images: [ogImageUrl],
     },
   }
 }
 
-export default async function AuthorPage({ params }: Props) {
-  const { slug } = await params
-  const author = getAuthorBySlug(slug)
-  if (!author) {
-    notFound()
-  }
+export default function AuthorPage({ params }: Props) {
+  const author = getAuthorBySlug(params.slug)
+  if (!author) notFound()
 
-  const posts = getAllPosts().filter((post) => post.author.slug === author.slug)
-  const url = getAbsoluteUrl(`/author/${author.slug}`)
+  const posts = getAllPosts().filter((p) => p.author.slug === author.slug)
+  const url = `https://qanon-sa.com/author/${author.slug}`
 
   const personJsonLd = {
     '@context': 'https://schema.org',
@@ -70,9 +68,11 @@ export default async function AuthorPage({ params }: Props) {
       alumniOf: { '@type': 'EducationalOrganization', name: author.alumniOf },
     }),
     ...(author.expertise && { knowsAbout: author.expertise }),
+    ...(author.email && { email: author.email }),
+    ...(author.telephone && { telephone: author.telephone }),
     ...(author.sameAs && author.sameAs.length > 0 && { sameAs: author.sameAs }),
     url,
-    worksFor: { '@id': `${SITE_URL}/#organization` },
+    worksFor: { '@id': 'https://qanon-sa.com/#organization' },
     inLanguage: 'ar',
   }
 
@@ -87,8 +87,14 @@ export default async function AuthorPage({ params }: Props) {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageJsonLd) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageJsonLd) }}
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Breadcrumbs
@@ -102,44 +108,42 @@ export default async function AuthorPage({ params }: Props) {
 
         <AuthorCard author={author} variant="full" />
 
-        <div className="mt-6 rounded-2xl border border-warm-200 bg-white p-5">
-          <h2 className="text-base font-bold text-navy-800">قناة التواصل التحريري</h2>
-          <p className="mt-2 text-sm leading-relaxed text-stone-700">
-            لا ننشر وسائل اتصال شخصية للكتّاب في الصفحة العامة. للملاحظات التحريرية أو طلبات
-            التصحيح أو الاستفسارات العامة، تواصل عبر{' '}
-            <a href={`tel:${SITE_PHONE_TEL}`} className="font-medium text-primary-600 hover:underline">
-              {SITE_PHONE_DISPLAY}
-            </a>{' '}
-            أو عبر{' '}
-            <a
-              href={SITE_WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-primary-600 hover:underline"
-            >
-              واتساب
-            </a>{' '}
-            أو من خلال{' '}
-            <Link href="/contact" className="font-medium text-primary-600 hover:underline">
-              صفحة التواصل
-            </Link>
-            .
-          </p>
-        </div>
+        {(author.email || author.telephone) && (
+          <div className="mt-6 flex flex-wrap gap-4 text-sm">
+            {author.telephone && (
+              <a
+                href={`tel:${author.telephone}`}
+                className="inline-flex items-center gap-2 bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+              >
+                📞 {author.telephone}
+              </a>
+            )}
+            {author.email && (
+              <a
+                href={`mailto:${author.email}`}
+                className="inline-flex items-center gap-2 bg-white text-navy-800 px-4 py-2 rounded-lg border border-warm-200 hover:bg-warm-100 transition-colors"
+              >
+                ✉️ {author.email}
+              </a>
+            )}
+          </div>
+        )}
 
         <section className="mt-12">
-          <h2 className="mb-6 text-xl font-bold text-navy-800">مقالات الكاتب ({posts.length})</h2>
+          <h2 className="text-xl font-bold text-navy-800 mb-6">
+            مقالات الكاتب ({posts.length})
+          </h2>
           {posts.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {posts.map((post) => (
-                <BlogCard key={post.id} post={post} />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {posts.map((p) => (
+                <BlogCard key={p.id} post={p} />
               ))}
             </div>
           ) : (
-            <div className="rounded-xl border border-warm-200 bg-warm-50 p-8 text-center text-stone-700">
-              لا توجد مقالات منشورة حاليًا لهذا الكاتب.
+            <div className="bg-warm-50 border border-warm-200 rounded-xl p-8 text-center text-stone-700">
+              لا توجد مقالات منشورة حالياً لهذا الكاتب.
               <div className="mt-3">
-                <Link href="/" className="font-medium text-primary-600 hover:text-primary-700">
+                <Link href="/" className="text-primary-600 hover:text-primary-700 font-medium">
                   العودة إلى الرئيسية ←
                 </Link>
               </div>

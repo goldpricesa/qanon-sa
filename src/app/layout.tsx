@@ -1,89 +1,68 @@
 import type { Metadata, Viewport } from 'next'
 import localFont from 'next/font/local'
+import { GoogleAnalytics } from '@next/third-parties/google'
 import Script from 'next/script'
 import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
-import BackToTop from '@/components/ui/BackToTop'
-import ConsentBanner from '@/components/consent/ConsentBanner'
-import { ConsentProvider } from '@/components/consent/ConsentProvider'
-import TrackingScripts from '@/components/consent/TrackingScripts'
-import { CONSENT_STORAGE_KEY } from '@/lib/consent'
-import {
-  SITE_LOGO_URL,
-  SITE_NAME,
-  SITE_PHONE_DISPLAY,
-  SITE_PHONE_TEL,
-  SITE_SOCIALS,
-  SITE_URL,
-} from '@/lib/site'
+import { getAllCategories } from '@/lib/posts'
 
 const thmanyahSans = localFont({
   src: [
-    { path: '../../public/fonts/thmanyah/thmanyahsans-Light.woff2', weight: '300', style: 'normal' },
     { path: '../../public/fonts/thmanyah/thmanyahsans-Regular.woff2', weight: '400', style: 'normal' },
     { path: '../../public/fonts/thmanyah/thmanyahsans-Medium.woff2', weight: '500', style: 'normal' },
     { path: '../../public/fonts/thmanyah/thmanyahsans-Bold.woff2', weight: '700', style: 'normal' },
-    { path: '../../public/fonts/thmanyah/thmanyahsans-Black.woff2', weight: '900', style: 'normal' },
   ],
   display: 'swap',
   variable: '--font-thmanyah-sans',
+  preload: true,
 })
 
 const thmanyahDisplay = localFont({
   src: [
-    { path: '../../public/fonts/thmanyah/thmanyahserifdisplay-Regular.woff2', weight: '400', style: 'normal' },
     { path: '../../public/fonts/thmanyah/thmanyahserifdisplay-Bold.woff2', weight: '700', style: 'normal' },
     { path: '../../public/fonts/thmanyah/thmanyahserifdisplay-Black.woff2', weight: '900', style: 'normal' },
   ],
   display: 'swap',
   variable: '--font-thmanyah-display',
+  preload: false,
 })
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#0f766e' },
-    { media: '(prefers-color-scheme: dark)', color: '#0c1e3c' },
-  ],
+  themeColor: '#0f766e',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  applicationName: SITE_NAME,
+  metadataBase: new URL('https://qanon-sa.com'),
+  applicationName: 'نظرة قانونية',
   referrer: 'origin-when-cross-origin',
   formatDetection: { telephone: false, address: false, email: false },
   verification: {
     google: 'v8ablWgD-CRVtO_toxgDNiaW3UQUXPY8lNL0I4zcNTY',
   },
   title: {
-    default: `${SITE_NAME} | مدونة قانونية سعودية متخصصة`,
-    template: `%s | ${SITE_NAME}`,
+    default: 'نظرة قانونية | مدونة قانونية سعودية متخصصة',
+    template: '%s | نظرة قانونية',
   },
   description:
-    'مدونة قانونية سعودية متخصصة في الشأن السعودي. شروحات قانونية موثقة عن نظام العمل، الأحوال الشخصية، العقود، الإيجار، الجرائم المعلوماتية، وتأسيس الشركات.',
+    'مدونة قانونية سعودية متخصصة — شروحات نظام العمل، الأحوال الشخصية، العقود، الإيجار، الجرائم المعلوماتية، تأسيس الشركات. مقالات يكتبها محامون مرخصون من وزارة العدل.',
   keywords: [
     'قانون سعودي',
-    'محامي سعودي',
-    'محامي الرياض',
-    'استشارة قانونية',
+    'استشارات قانونية',
     'نظام العمل السعودي',
-    'الفصل التعسفي',
-    'مكافأة نهاية الخدمة',
     'الأحوال الشخصية',
-    'الحضانة في السعودية',
-    'منصة إيجار',
-    'تأسيس شركة',
     'الجرائم المعلوماتية',
-    'محكمة عمالية',
-    'محكمة تجارية',
+    'القانون التجاري',
+    'محامي سعودي',
+    'مدونة قانونية',
   ],
   category: 'law',
-  authors: [{ name: SITE_NAME, url: SITE_URL }],
-  creator: SITE_NAME,
-  publisher: SITE_NAME,
+  authors: [{ name: 'نظرة قانونية', url: 'https://qanon-sa.com' }],
+  creator: 'نظرة قانونية',
+  publisher: 'نظرة قانونية',
   robots: {
     index: true,
     follow: true,
@@ -98,41 +77,45 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'ar_SA',
-    url: SITE_URL,
-    siteName: SITE_NAME,
-    title: `${SITE_NAME} | مدونة قانونية سعودية متخصصة`,
+    url: 'https://qanon-sa.com',
+    siteName: 'نظرة قانونية',
+    title: 'نظرة قانونية | مدونة قانونية سعودية متخصصة',
     description:
-      'مدونة قانونية سعودية متخصصة في نظام العمل، الأحوال الشخصية، العقود، الإيجار، والجرائم المعلوماتية، بمحتوى يراجعه مختصون.',
+      'مدونة قانونية سعودية متخصصة — نظام العمل، الأحوال الشخصية، العقود، الإيجار، الجرائم المعلوماتية. يكتبها محامون مرخصون.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${SITE_NAME} | مدونة قانونية سعودية متخصصة`,
-    description: 'محتوى قانوني سعودي موثق يراجعه مختصون في الأنظمة السعودية.',
+    title: 'نظرة قانونية | مدونة قانونية سعودية متخصصة',
+    description:
+      'محتوى قانوني سعودي موثوق يكتبه محامون مرخصون من وزارة العدل.',
     creator: '@qanon_sa',
     site: '@qanon_sa',
   },
   alternates: {
-    canonical: SITE_URL,
-    languages: { 'ar-SA': SITE_URL },
+    canonical: 'https://qanon-sa.com',
+    languages: {
+      'ar-SA': 'https://qanon-sa.com',
+      'x-default': 'https://qanon-sa.com',
+    },
   },
 }
 
 const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  '@id': `${SITE_URL}/#website`,
-  name: SITE_NAME,
-  alternateName: 'QANON SA',
-  url: SITE_URL,
+  '@id': 'https://qanon-sa.com/#website',
+  name: 'نظرة قانونية',
+  alternateName: 'Qanon SA',
+  url: 'https://qanon-sa.com',
   description:
-    'مدونة قانونية سعودية متخصصة في الشأن السعودي، مع شروحات قانونية وتحليلات عملية وروابط إلى المصادر الرسمية.',
+    'مدونة قانونية سعودية متخصصة — نظام العمل، الأحوال الشخصية، العقود، الإيجار، الجرائم المعلوماتية.',
   inLanguage: 'ar-SA',
-  publisher: { '@id': `${SITE_URL}/#organization` },
+  publisher: { '@id': 'https://qanon-sa.com/#organization' },
   potentialAction: {
     '@type': 'SearchAction',
     target: {
       '@type': 'EntryPoint',
-      urlTemplate: `${SITE_URL}/?q={search_term_string}`,
+      urlTemplate: 'https://qanon-sa.com/?q={search_term_string}',
     },
     'query-input': 'required name=search_term_string',
   },
@@ -140,21 +123,22 @@ const websiteJsonLd = {
 
 const organizationJsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
-  '@id': `${SITE_URL}/#organization`,
-  name: SITE_NAME,
-  alternateName: 'QANON SA',
-  url: SITE_URL,
+  // Use both Organization and LegalService so the entity is recognized
+  // both as the publisher and as a legal-information service.
+  '@type': ['Organization', 'LegalService'],
+  '@id': 'https://qanon-sa.com/#organization',
+  name: 'نظرة قانونية',
+  alternateName: 'Qanon SA',
+  url: 'https://qanon-sa.com',
   logo: {
     '@type': 'ImageObject',
-    url: SITE_LOGO_URL,
-    width: 560,
-    height: 150,
+    url: 'https://qanon-sa.com/icon-512',
+    width: 512,
+    height: 512,
   },
-  image: SITE_LOGO_URL,
-  telephone: SITE_PHONE_TEL,
+  image: 'https://qanon-sa.com/icon-512',
   description:
-    'منصة محتوى قانوني سعودي متخصصة في تبسيط الأنظمة واللوائح السعودية وإحالة القارئ إلى المصادر الرسمية ذات الصلة.',
+    'مدونة قانونية سعودية متخصصة في الشأن السعودي يكتبها محامون مرخصون من وزارة العدل.',
   areaServed: {
     '@type': 'Country',
     name: 'المملكة العربية السعودية',
@@ -168,65 +152,33 @@ const organizationJsonLd = {
     'الجرائم المعلوماتية',
     'القانون المدني',
   ],
-  sameAs: [SITE_SOCIALS.twitter],
+  serviceType: 'محتوى قانوني تثقيفي',
+  sameAs: ['https://twitter.com/qanon_sa'],
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'customer support',
-    telephone: SITE_PHONE_DISPLAY,
+    email: 'contact@qanon-sa.com',
     availableLanguage: 'Arabic',
     areaServed: 'SA',
   },
 }
-
-const googleConsentBootstrap = `
-  (function () {
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ window.dataLayer.push(arguments); }
-    window.gtag = window.gtag || gtag;
-    gtag('consent', 'default', {
-      analytics_storage: 'denied',
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
-      functionality_storage: 'granted',
-      security_storage: 'granted',
-      wait_for_update: 500
-    });
-
-    try {
-      var raw = window.localStorage.getItem('${CONSENT_STORAGE_KEY}');
-      if (!raw) return;
-
-      var parsed = JSON.parse(raw);
-      if (typeof parsed.analytics !== 'boolean' || typeof parsed.ads !== 'boolean') {
-        return;
-      }
-
-      gtag('consent', 'update', {
-        analytics_storage: parsed.analytics ? 'granted' : 'denied',
-        ad_storage: parsed.ads ? 'granted' : 'denied',
-        ad_user_data: parsed.ads ? 'granted' : 'denied',
-        ad_personalization: parsed.ads ? 'granted' : 'denied'
-      });
-    } catch (error) {
-      // Ignore malformed stored preferences and keep the secure defaults.
-    }
-  })();
-`
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const categories = getAllCategories()
   return (
     <html lang="ar" dir="rtl" className={`${thmanyahSans.variable} ${thmanyahDisplay.variable}`}>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: googleConsentBootstrap }} />
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link
           rel="alternate"
           type="application/rss+xml"
-          title={`${SITE_NAME} — آخر المقالات`}
+          title="نظرة قانونية — آخر المقالات"
           href="/feed.xml"
         />
       </head>
@@ -241,14 +193,28 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
-        <ConsentProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <BackToTop />
-          <ConsentBanner />
-          <TrackingScripts />
-        </ConsentProvider>
+        <Header categories={categories} />
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary-700 focus:text-white focus:rounded-md"
+        >
+          انتقل إلى المحتوى الرئيسي
+        </a>
+        <main id="main" className="flex-1">{children}</main>
+        <Footer categories={categories} />
+        <GoogleAnalytics gaId="G-84090DMG89" />
+        <Script
+          id="plausible-analytics"
+          strategy="lazyOnload"
+          defer
+          data-domain="qanon-sa.com"
+          src="https://plausible.io/js/script.js"
+        />
+        <Script
+          strategy="lazyOnload"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3611815443789107"
+          crossOrigin="anonymous"
+        />
       </body>
     </html>
   )
