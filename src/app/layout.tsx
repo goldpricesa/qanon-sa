@@ -219,6 +219,10 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={`${thmanyahSans.variable} ${thmanyahDisplay.variable}`}>
       <head>
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://www.google-analytics.com" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <script dangerouslySetInnerHTML={{ __html: googleConsentBootstrap }} />
         <link
           rel="alternate"

@@ -115,13 +115,15 @@ export default async function BlogPostPage({ params }: Props) {
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'LegalArticle',
     headline: post.title,
     description: post.excerpt,
+    url: articleUrl,
     datePublished: post.date,
     dateModified: post.dateModified ?? post.reviewedAt ?? post.date,
     image: articleImage,
     inLanguage: 'ar',
+    isAccessibleForFree: true,
     author: authorJsonLd,
     publisher: { '@id': `${SITE_URL}/#organization` },
     isPartOf: { '@id': `${SITE_URL}/#website` },
@@ -129,6 +131,10 @@ export default async function BlogPostPage({ params }: Props) {
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': articleUrl,
+    },
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1', '.article-excerpt'],
     },
     ...(post.sources && post.sources.length > 0 && {
       citation: post.sources.map((source) => source.url),

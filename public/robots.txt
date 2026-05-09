@@ -27,5 +27,5 @@ Disallow: /
 User-agent: Google-Extended
 Disallow: /
 
-Sitemap: https://qanon-sa.com/sitemap.xml
-Host: https://qanon-sa.com
+Sitemap: https://www.qanon-sa.com/sitemap.xml
+Host: https://www.qanon-sa.com

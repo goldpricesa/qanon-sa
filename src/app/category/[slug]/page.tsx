@@ -58,6 +58,15 @@ export default async function CategoryPage({ params }: Props) {
     description: `جميع المقالات في تصنيف ${category.label}`,
     url,
     inLanguage: 'ar',
+    hasPart: posts.map((post, idx) => ({
+      '@type': 'LegalArticle',
+      position: idx + 1,
+      url: getAbsoluteUrl(`/blog/${post.slug}`),
+      name: post.title,
+      description: post.excerpt,
+      datePublished: post.date,
+      dateModified: post.dateModified ?? post.reviewedAt ?? post.date,
+    })),
   }
 
   return (
