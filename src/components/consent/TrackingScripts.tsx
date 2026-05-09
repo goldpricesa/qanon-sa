@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import Script from 'next/script'
 import { useConsent } from '@/components/consent/ConsentProvider'
-import { ADSENSE_CLIENT, GA_MEASUREMENT_ID, PLAUSIBLE_DOMAIN } from '@/lib/site'
+import { GA_MEASUREMENT_ID, PLAUSIBLE_DOMAIN } from '@/lib/site'
 
 declare global {
   interface Window {
@@ -15,7 +15,6 @@ declare global {
 export default function TrackingScripts() {
   const { preferences } = useConsent()
   const analyticsEnabled = preferences?.analytics ?? false
-  const adsEnabled = preferences?.ads ?? false
 
   useEffect(() => {
     if (typeof window.gtag !== 'function') {
@@ -24,11 +23,11 @@ export default function TrackingScripts() {
 
     window.gtag('consent', 'update', {
       analytics_storage: analyticsEnabled ? 'granted' : 'denied',
-      ad_storage: adsEnabled ? 'granted' : 'denied',
-      ad_user_data: adsEnabled ? 'granted' : 'denied',
-      ad_personalization: adsEnabled ? 'granted' : 'denied',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
     })
-  }, [adsEnabled, analyticsEnabled])
+  }, [analyticsEnabled])
 
   return (
     <>
@@ -61,14 +60,6 @@ export default function TrackingScripts() {
         </>
       )}
 
-      {adsEnabled && (
-        <Script
-          id="adsense-loader"
-          strategy="afterInteractive"
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-          crossOrigin="anonymous"
-        />
-      )}
     </>
   )
 }

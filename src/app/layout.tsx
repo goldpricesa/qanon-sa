@@ -198,15 +198,12 @@ const googleConsentBootstrap = `
       if (!raw) return;
 
       var parsed = JSON.parse(raw);
-      if (typeof parsed.analytics !== 'boolean' || typeof parsed.ads !== 'boolean') {
+      if (typeof parsed.analytics !== 'boolean') {
         return;
       }
 
       gtag('consent', 'update', {
         analytics_storage: parsed.analytics ? 'granted' : 'denied',
-        ad_storage: parsed.ads ? 'granted' : 'denied',
-        ad_user_data: parsed.ads ? 'granted' : 'denied',
-        ad_personalization: parsed.ads ? 'granted' : 'denied'
       });
     } catch (error) {
       // Ignore malformed stored preferences and keep the secure defaults.

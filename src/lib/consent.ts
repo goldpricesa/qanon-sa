@@ -1,6 +1,5 @@
 export type ConsentPreferences = {
   analytics: boolean
-  ads: boolean
   updatedAt: string
 }
 
@@ -14,7 +13,6 @@ export function isConsentPreferences(value: unknown): value is ConsentPreference
   const candidate = value as Record<string, unknown>
   return (
     typeof candidate.analytics === 'boolean' &&
-    typeof candidate.ads === 'boolean' &&
     typeof candidate.updatedAt === 'string'
   )
 }
