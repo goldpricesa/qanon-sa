@@ -5,6 +5,7 @@ import {
   EDITORIAL_REVIEW_DATE,
   LABOR_LEAVE_SOURCES,
   LABOR_RELATIONS_SOURCES,
+  SITE_URL,
   getAbsoluteUrl,
 } from '@/lib/site'
 
@@ -56,9 +57,19 @@ export default function CalculatorPage() {
     })),
   }
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'الرئيسية', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: title, item: url },
+    ],
+  }
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
       <div className="bg-white border-b border-warm-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
