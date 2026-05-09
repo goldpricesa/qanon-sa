@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { useConsent } from '@/components/consent/ConsentProvider'
+import { ADSENSE_CLIENT } from '@/lib/site'
 
 declare global {
   interface Window {
@@ -37,7 +38,7 @@ export default function AdUnit({ slot, format = 'auto', className = '' }: AdUnit
       <ins
         className="adsbygoogle"
         style={{ display: 'block' }}
-        data-ad-client="ca-pub-3611815443789107"
+        data-ad-client={ADSENSE_CLIENT}
         data-ad-slot={slot}
         data-ad-format={format}
         data-full-width-responsive="true"

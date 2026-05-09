@@ -8,7 +8,6 @@ const categories = [
   { href: '/category/جنائي', label: 'قانون جنائي' },
   { href: '/category/عقاري', label: 'قانون عقاري' },
   { href: '/category/تجاري', label: 'قانون تجاري' },
-  { href: '/category/رقمي', label: 'قانون رقمي' },
   { href: '/category/مدني', label: 'قانون مدني' },
 ]
 
