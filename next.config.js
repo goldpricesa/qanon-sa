@@ -45,7 +45,8 @@ const nextConfig = {
       { source: '/category/jinai', destination: '/category/جنائي', permanent: true },
       { source: '/category/aqari', destination: '/category/عقاري', permanent: true },
       { source: '/category/tijari', destination: '/category/تجاري', permanent: true },
-      { source: '/category/raqami', destination: '/category/رقمي', permanent: true },
+      { source: '/category/raqami', destination: '/category/جنائي', permanent: true },
+      { source: '/category/رقمي', destination: '/category/جنائي', permanent: true },
       { source: '/category/madani', destination: '/category/مدني', permanent: true },
       { source: '/category/ahwal', destination: '/category/أحوال-شخصية', permanent: true },
     ]
