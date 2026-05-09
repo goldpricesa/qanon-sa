@@ -19,7 +19,6 @@ import EditorialNote from '@/components/content/EditorialNote'
 import Sidebar from '@/components/sidebar/Sidebar'
 import CategoryBadge from '@/components/ui/CategoryBadge'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
-import AdUnit from '@/components/ui/AdUnit'
 import {
   SITE_PHONE_DISPLAY,
   SITE_PHONE_TEL,
@@ -235,8 +234,6 @@ export default async function BlogPostPage({ params }: Props) {
               <TableOfContents />
             </div>
 
-            <AdUnit slot="1459279297" format="horizontal" className="mb-6 mt-6" />
-
             <div
               data-article-content
               className="prose prose-lg max-w-none"
@@ -293,8 +290,6 @@ export default async function BlogPostPage({ params }: Props) {
             <Sidebar />
           </div>
         </div>
-
-        <AdUnit slot="9202037944" format="auto" className="mt-10" />
 
         {related.length > 0 && (
           <section className="mt-16 print:hidden">

@@ -95,11 +95,10 @@ export default function TermsPage() {
               الجهات أو أي تغيير يطرأ على محتواها لاحقًا.
             </p>
 
-            <h2>6. التحليلات والإعلانات</h2>
+            <h2>6. التحليلات</h2>
             <p>
-              قد يستخدم الموقع أدوات تحليل مثل Google Analytics وPlausible، وخدمات إعلانية
-              مثل Google AdSense، لكنها لا تُحمّل افتراضيًا قبل موافقة المستخدم على الفئة
-              المناسبة. راجع{' '}
+              قد يستخدم الموقع أدوات تحليل مثل Google Analytics وPlausible، لكنها لا تُحمّل
+              افتراضيًا قبل موافقة المستخدم. راجع{' '}
               <Link href="/privacy" className="text-primary-600 hover:underline">
                 سياسة الخصوصية
               </Link>{' '}
