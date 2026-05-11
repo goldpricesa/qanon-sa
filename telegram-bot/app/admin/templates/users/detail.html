@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}مستخدم {{ user.telegram_id }}{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">المستخدم {{ user.telegram_id }}</h1>
+<div class="bg-white p-4 rounded shadow mb-4 grid grid-cols-2 gap-2 text-sm">
+  <div><span class="text-slate-500">اسم المستخدم:</span> {{ user.username or "—" }}</div>
+  <div><span class="text-slate-500">الاسم:</span> {{ user.full_name or "—" }}</div>
+  <div><span class="text-slate-500">المخالفات:</span> {{ user.total_violations }}</div>
+  <div>
+    <span class="text-slate-500">حالة الكتم:</span>
+    {% if user.muted_until and user.muted_until > now %}
+      <span class="text-red-600">حتى {{ user.muted_until.strftime('%Y-%m-%d %H:%M') }}</span>
+    {% else %}—{% endif %}
+  </div>
+  <div><span class="text-slate-500">محظور:</span> {{ "نعم" if user.is_banned else "لا" }}</div>
+  <div><span class="text-slate-500">آخر ظهور:</span> {{ user.last_seen_at.strftime('%Y-%m-%d %H:%M') }}</div>
+</div>
+
+<div class="flex flex-wrap gap-2 mb-6">
+  <form method="post" action="{{ base_path }}/users/{{ user.telegram_id }}/mute" class="flex items-center gap-2">
+    <input type="hidden" name="csrf" value="{{ csrf_token }}" />
+    <input type="number" name="hours" value="12" min="1" max="720" class="border rounded p-1 text-sm w-20" />
+    <button class="bg-amber-600 text-white rounded px-3 py-1 text-sm" type="submit">كتم</button>
+  </form>
+  <form method="post" action="{{ base_path }}/users/{{ user.telegram_id }}/unmute">
+    <input type="hidden" name="csrf" value="{{ csrf_token }}" />
+    <button class="bg-emerald-600 text-white rounded px-3 py-1 text-sm" type="submit">رفع الكتم + تصفير المخالفات</button>
+  </form>
+  <form method="post" action="{{ base_path }}/users/{{ user.telegram_id }}/ban">
+    <input type="hidden" name="csrf" value="{{ csrf_token }}" />
+    <button class="bg-red-600 text-white rounded px-3 py-1 text-sm" type="submit">
+      {{ "إلغاء الحظر" if user.is_banned else "حظر دائم" }}
+    </button>
+  </form>
+</div>
+
+<h2 class="text-lg font-bold mb-2">آخر المخالفات</h2>
+<div class="bg-white rounded shadow overflow-x-auto">
+  <table class="min-w-full text-sm">
+    <thead class="bg-slate-100 text-slate-600">
+      <tr>
+        <th class="p-2 text-right">التاريخ</th>
+        <th class="p-2 text-right">القروب</th>
+        <th class="p-2 text-right">السبب</th>
+        <th class="p-2 text-right">الإجراء</th>
+        <th class="p-2 text-right">مقتطف</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for v in violations %}
+      <tr class="border-t">
+        <td class="p-2">{{ v.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td class="p-2">{{ v.chat_id }}</td>
+        <td class="p-2">{{ v.reason }}</td>
+        <td class="p-2">{{ v.action_taken }}</td>
+        <td class="p-2 text-slate-500">{{ v.message_excerpt or "—" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}الكلمات المحظورة{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">الكلمات والأنماط المحظورة</h1>
+
+<form method="post" action="{{ base_path }}/banned-words" class="bg-white p-4 rounded shadow mb-4 grid grid-cols-1 md:grid-cols-4 gap-2 items-end">
+  <input type="hidden" name="csrf" value="{{ csrf_token }}" />
+  <div class="md:col-span-2">
+    <label class="block text-xs mb-1">النمط</label>
+    <input class="w-full border rounded p-2 text-sm" name="pattern" required />
+  </div>
+  <div>
+    <label class="block text-xs mb-1">فئة</label>
+    <input class="w-full border rounded p-2 text-sm" name="category" />
+  </div>
+  <label class="text-sm flex items-center gap-2">
+    <input type="checkbox" name="is_regex" /> regex؟
+  </label>
+  <button class="md:col-span-4 bg-slate-800 text-white rounded px-3 py-2 text-sm" type="submit">إضافة</button>
+</form>
+
+<div class="bg-white rounded shadow overflow-x-auto">
+  <table class="min-w-full text-sm">
+    <thead class="bg-slate-100">
+      <tr>
+        <th class="p-2 text-right">#</th>
+        <th class="p-2 text-right">النمط</th>
+        <th class="p-2 text-right">regex؟</th>
+        <th class="p-2 text-right">فئة</th>
+        <th class="p-2 text-right">نشط</th>
+        <th class="p-2 text-right"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr class="border-t">
+        <td class="p-2">{{ r.id }}</td>
+        <td class="p-2 font-mono">{{ r.pattern }}</td>
+        <td class="p-2">{{ "نعم" if r.is_regex else "لا" }}</td>
+        <td class="p-2">{{ r.category or "—" }}</td>
+        <td class="p-2">{{ "نعم" if r.is_active else "لا" }}</td>
+        <td class="p-2">
+          <form method="post" action="{{ base_path }}/banned-words/{{ r.id }}/delete">
+            <input type="hidden" name="csrf" value="{{ csrf_token }}" />
+            <button class="text-red-600 text-xs" type="submit">حذف</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

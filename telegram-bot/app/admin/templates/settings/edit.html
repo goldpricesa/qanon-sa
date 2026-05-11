@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}الإعدادات{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">الإعدادات</h1>
+<form method="post" action="{{ base_path }}/settings" class="bg-white p-4 rounded shadow space-y-3">
+  <input type="hidden" name="csrf" value="{{ csrf_token }}" />
+  {% for item in items %}
+  <div class="grid grid-cols-12 gap-2 items-center">
+    <label class="col-span-4 text-sm font-mono">{{ item.key }}</label>
+    {% if item.type == 'bool' %}
+      <select name="{{ item.key }}" class="col-span-8 border rounded p-2 text-sm">
+        <option value="true" {% if item.value in ['true','1','yes','on'] %}selected{% endif %}>true</option>
+        <option value="false" {% if item.value not in ['true','1','yes','on'] %}selected{% endif %}>false</option>
+      </select>
+    {% else %}
+      <input name="{{ item.key }}" value="{{ item.value }}" class="col-span-8 border rounded p-2 text-sm font-mono" />
+    {% endif %}
+  </div>
+  {% endfor %}
+  <button class="bg-slate-800 text-white rounded px-4 py-2 text-sm" type="submit">حفظ</button>
+</form>
+{% endblock %}

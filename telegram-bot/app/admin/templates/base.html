@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>{% block title %}لوحة تحكم البوت القانوني{% endblock %}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="{{ base_path }}/static/js/htmx.min.js" defer></script>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+{% if current_admin %}
+<header class="bg-white shadow">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <a href="{{ base_path }}/" class="text-lg font-bold">لوحة تحكم البوت القانوني</a>
+    <nav class="text-sm flex items-center gap-3">
+      <a class="hover:underline" href="{{ base_path }}/">الرئيسية</a>
+      <a class="hover:underline" href="{{ base_path }}/users">المستخدمون</a>
+      <a class="hover:underline" href="{{ base_path }}/violations">المخالفات</a>
+      <a class="hover:underline" href="{{ base_path }}/questions">الأسئلة</a>
+      <a class="hover:underline" href="{{ base_path }}/appeals">الاستئنافات</a>
+      <a class="hover:underline" href="{{ base_path }}/banned-words">كلمات محظورة</a>
+      <a class="hover:underline" href="{{ base_path }}/canned-messages">الردود</a>
+      <a class="hover:underline" href="{{ base_path }}/settings">الإعدادات</a>
+      <a class="hover:underline" href="{{ base_path }}/kb">قاعدة المعرفة</a>
+      {% if current_admin.r == 'superadmin' %}
+      <a class="hover:underline" href="{{ base_path }}/admins">المشرفون</a>
+      {% endif %}
+      <form action="{{ base_path }}/logout" method="post" class="inline">
+        <button class="text-red-600 hover:underline" type="submit">خروج</button>
+      </form>
+    </nav>
+  </div>
+</header>
+{% endif %}
+<main class="max-w-6xl mx-auto px-4 py-6">
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>
