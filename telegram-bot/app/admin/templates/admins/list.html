@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}المشرفون{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">المشرفون</h1>
+
+<form method="post" action="{{ base_path }}/admins" class="bg-white p-4 rounded shadow mb-4 grid grid-cols-1 md:grid-cols-4 gap-2 items-end">
+  <input type="hidden" name="csrf" value="{{ csrf_token }}" />
+  <div>
+    <label class="block text-xs mb-1">اسم المستخدم</label>
+    <input class="w-full border rounded p-2 text-sm" name="web_username" required />
+  </div>
+  <div>
+    <label class="block text-xs mb-1">كلمة المرور (≥10)</label>
+    <input class="w-full border rounded p-2 text-sm" type="password" name="password" required />
+  </div>
+  <div>
+    <label class="block text-xs mb-1">الدور</label>
+    <select name="role" class="w-full border rounded p-2 text-sm">
+      <option value="admin">admin</option>
+      <option value="superadmin">superadmin</option>
+      <option value="viewer">viewer</option>
+    </select>
+  </div>
+  <button class="bg-slate-800 text-white rounded px-3 py-2 text-sm" type="submit">إضافة</button>
+</form>
+
+<div class="bg-white rounded shadow overflow-x-auto">
+  <table class="min-w-full text-sm">
+    <thead class="bg-slate-100">
+      <tr>
+        <th class="p-2 text-right">#</th>
+        <th class="p-2 text-right">اسم المستخدم</th>
+        <th class="p-2 text-right">الدور</th>
+        <th class="p-2 text-right">نشط</th>
+        <th class="p-2 text-right">آخر دخول</th>
+        <th class="p-2 text-right"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr class="border-t">
+        <td class="p-2">{{ r.id }}</td>
+        <td class="p-2">{{ r.web_username }}</td>
+        <td class="p-2">{{ r.role }}</td>
+        <td class="p-2">{{ "نعم" if r.is_active else "لا" }}</td>
+        <td class="p-2">{{ r.last_login_at.strftime('%Y-%m-%d %H:%M') if r.last_login_at else "—" }}</td>
+        <td class="p-2">
+          {% if r.id != current_admin.id %}
+          <form method="post" action="{{ base_path }}/admins/{{ r.id }}/disable">
+            <input type="hidden" name="csrf" value="{{ csrf_token }}" />
+            <button class="text-xs {% if r.is_active %}text-red-600{% else %}text-emerald-700{% endif %}" type="submit">
+              {{ "تعطيل" if r.is_active else "تفعيل" }}
+            </button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

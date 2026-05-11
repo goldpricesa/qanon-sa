@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}الرئيسية{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">الإحصائيات (آخر 24 ساعة)</h1>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+  {% set cards = [
+    ("الرسائل المحذوفة", counters.deleted_24h),
+    ("إجمالي المخالفات", counters.violations_24h),
+    ("المستخدمون المكتومون حاليًا", counters.currently_muted),
+    ("الأسئلة القانونية", counters.questions_24h),
+    ("متوسط زمن الرد (ms)", counters.avg_latency_ms_24h|round(0)|int),
+    ("محاولات تجاوز التعليمات", counters.jailbreak_attempts_24h),
+  ] %}
+  {% for label, value in cards %}
+  <div class="bg-white p-5 rounded shadow">
+    <div class="text-sm text-slate-500">{{ label }}</div>
+    <div class="text-3xl font-bold mt-2">{{ value }}</div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

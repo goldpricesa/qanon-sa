@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}الاستئنافات{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">الاستئنافات</h1>
+<form method="get" action="{{ base_path }}/appeals" class="mb-4">
+  <select name="status_filter" class="border rounded p-2 text-sm">
+    <option value="">الكل</option>
+    {% for s in ["open","reviewed","approved","rejected"] %}
+    <option value="{{ s }}" {% if status_filter == s %}selected{% endif %}>{{ s }}</option>
+    {% endfor %}
+  </select>
+  <button class="bg-slate-800 text-white rounded px-3 py-2 text-sm" type="submit">تصفية</button>
+</form>
+
+<div class="bg-white rounded shadow divide-y">
+  {% for r in rows %}
+  <a class="block p-3 hover:bg-slate-50" href="{{ base_path }}/appeals/{{ r.id }}">
+    <div class="text-xs text-slate-500">{{ r.created_at.strftime('%Y-%m-%d %H:%M') }} — مستخدم {{ r.user_id }} — {{ r.status }}</div>
+    <div class="truncate">{{ r.appeal_text }}</div>
+  </a>
+  {% endfor %}
+</div>
+{% endblock %}
