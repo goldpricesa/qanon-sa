@@ -144,6 +144,41 @@ export const CRIMINAL_LAW_SOURCES: SourceReference[] = [
   },
 ]
 
+export const AML_SOURCES: SourceReference[] = [
+  {
+    title: 'نظام مكافحة غسل الأموال (هيئة الخبراء بمجلس الوزراء)',
+    url: 'https://laws.boe.gov.sa',
+  },
+]
+
+export const CIVIL_PROCEDURE_SOURCES: SourceReference[] = [
+  {
+    title: 'نظام المرافعات الشرعية (هيئة الخبراء بمجلس الوزراء)',
+    url: 'https://laws.boe.gov.sa',
+  },
+]
+
+export const BANKRUPTCY_SOURCES: SourceReference[] = [
+  {
+    title: 'نظام الإفلاس (هيئة الخبراء بمجلس الوزراء)',
+    url: 'https://laws.boe.gov.sa',
+  },
+]
+
+export const TRADEMARK_SOURCES: SourceReference[] = [
+  {
+    title: 'الهيئة السعودية للملكية الفكرية — العلامات التجارية',
+    url: 'https://www.saip.gov.sa',
+  },
+]
+
+export const VAT_SOURCES: SourceReference[] = [
+  {
+    title: 'هيئة الزكاة والضريبة والجمارك — ضريبة القيمة المضافة',
+    url: 'https://zatca.gov.sa',
+  },
+]
+
 export function getAbsoluteUrl(path = ''): string {
   if (!path || path === '/') {
     return SITE_URL
