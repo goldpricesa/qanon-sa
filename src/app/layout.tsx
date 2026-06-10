@@ -10,6 +10,7 @@ import { ConsentProvider } from '@/components/consent/ConsentProvider'
 import TrackingScripts from '@/components/consent/TrackingScripts'
 import { CONSENT_STORAGE_KEY } from '@/lib/consent'
 import {
+  ADSENSE_PUBLISHER_ID,
   SITE_LOGO_URL,
   SITE_NAME,
   SITE_PHONE_DISPLAY,
@@ -202,8 +203,12 @@ const googleConsentBootstrap = `
         return;
       }
 
+      var adsGranted = parsed.ads === true;
       gtag('consent', 'update', {
         analytics_storage: parsed.analytics ? 'granted' : 'denied',
+        ad_storage: adsGranted ? 'granted' : 'denied',
+        ad_user_data: adsGranted ? 'granted' : 'denied',
+        ad_personalization: adsGranted ? 'granted' : 'denied',
       });
     } catch (error) {
       // Ignore malformed stored preferences and keep the secure defaults.
@@ -223,6 +228,8 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <script dangerouslySetInnerHTML={{ __html: googleConsentBootstrap }} />
         <link
           rel="alternate"
@@ -241,6 +248,14 @@ export default function RootLayout({
           id="org-jsonld"
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        {/* يُحمَّل دائمًا حتى يتمكن زاحف مراجعة AdSense من رؤية الكود؛ الإعلانات تبقى
+            غير مخصصة ما دام Consent Mode على الوضع الافتراضي (مرفوض). */}
+        <Script
+          id="adsense-loader"
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_PUBLISHER_ID}`}
+          strategy="afterInteractive"
+          crossOrigin="anonymous"
         />
         <ConsentProvider>
           <Header />

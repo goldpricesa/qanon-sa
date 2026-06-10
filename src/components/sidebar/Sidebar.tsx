@@ -1,3 +1,5 @@
+import AdUnit from '@/components/ads/AdUnit'
+import { AD_SLOTS } from '@/components/ads/slots'
 import SearchBar from '@/components/ui/SearchBar'
 import CategoryList from './CategoryList'
 import RecentPosts from './RecentPosts'
@@ -18,6 +20,9 @@ export default function Sidebar() {
 
       {/* Recent Posts */}
       <RecentPosts />
+
+      {/* Ad */}
+      <AdUnit slot={AD_SLOTS.sidebar} minHeight={250} className="print:hidden" />
 
       {/* Advisory */}
       <div className="bg-primary-50 rounded-xl p-5 border border-primary-100">

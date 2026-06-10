@@ -9,6 +9,8 @@ import {
   sanitizeArticleHtml,
   stripHtml,
 } from '@/lib/utils'
+import AdUnit from '@/components/ads/AdUnit'
+import { AD_SLOTS } from '@/components/ads/slots'
 import BlogCard from '@/components/blog/BlogCard'
 import AuthorCard from '@/components/blog/AuthorCard'
 import Faq from '@/components/blog/Faq'
@@ -240,11 +242,15 @@ export default async function BlogPostPage({ params }: Props) {
               <TableOfContents />
             </div>
 
+            <AdUnit slot={AD_SLOTS.articleTop} className="my-6 print:hidden" />
+
             <div
               data-article-content
               className="prose prose-lg max-w-none"
               dangerouslySetInnerHTML={{ __html: safeContent }}
             />
+
+            <AdUnit slot={AD_SLOTS.articleBottom} className="mt-8 print:hidden" />
 
             <section className="mt-8 rounded-xl border border-primary-100 bg-primary-50 p-5 print:hidden">
               <h2 className="text-base font-bold text-navy-800">للتواصل وطلبات التصحيح</h2>

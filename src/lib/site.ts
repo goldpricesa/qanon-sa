@@ -15,6 +15,7 @@ export const SITE_SOCIALS = {
 export const SITE_LOGO_URL = `${SITE_URL}/logo.png`
 export const PLAUSIBLE_DOMAIN = 'qanon-sa.com'
 export const GA_MEASUREMENT_ID = 'G-84090DMG89'
+export const ADSENSE_PUBLISHER_ID = 'ca-pub-3611815443789107'
 export const EDITORIAL_REVIEW_DATE = '2026-04-24'
 
 export const STATIC_PAGE_LAST_MODIFIED = {
@@ -23,9 +24,10 @@ export const STATIC_PAGE_LAST_MODIFIED = {
   calculator: '2026-04-24',
   about: '2026-04-24',
   contact: '2026-04-24',
-  privacy: '2026-04-24',
+  privacy: '2026-06-10',
   terms: '2026-04-24',
   author: '2026-04-24',
+  disclaimer: '2026-06-10',
 } as const
 
 export const LABOR_RELATIONS_SOURCES: SourceReference[] = [

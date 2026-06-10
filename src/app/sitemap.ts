@@ -93,6 +93,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'yearly',
       priority: 0.3,
     },
+    {
+      url: `${SITE_URL}/disclaimer`,
+      lastModified: new Date(STATIC_PAGE_LAST_MODIFIED.disclaimer),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
   ]
 
   return [...staticEntries, ...postEntries, ...categoryEntries, ...authorEntries]
