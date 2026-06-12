@@ -12,9 +12,11 @@ export default function ConsentBanner() {
     closePreferences,
   } = useConsent()
   const [analytics, setAnalytics] = useState(preferences?.analytics ?? false)
+  const [ads, setAds] = useState(preferences?.ads ?? false)
 
   useEffect(() => {
     setAnalytics(preferences?.analytics ?? false)
+    setAds(preferences?.ads ?? false)
   }, [preferences, isBannerOpen])
 
   if (!isBannerOpen) {
@@ -30,9 +32,10 @@ export default function ConsentBanner() {
               إعدادات القياس
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-stone-700">
-              نستخدم ملفات تعريف ارتباط وتقنيات مشابهة فقط بعد اختيارك، وذلك لقياس الأداء
-              عبر Google Analytics وPlausible. يبقى الموقع قابلاً للتصفح حتى لو رفضت جميع
-              الخيارات غير الضرورية.
+              نستخدم ملفات تعريف ارتباط وتقنيات مشابهة لقياس الأداء عبر Google Analytics
+              وPlausible، وعرض إعلانات Google AdSense. عند رفض الخيارات غير الضرورية تبقى
+              الإعلانات غير مخصصة ولا تُستخدم ملفات ارتباط إعلانية، ويبقى الموقع قابلاً
+              للتصفح بالكامل.
             </p>
           </div>
 
@@ -47,7 +50,7 @@ export default function ConsentBanner() {
           )}
         </div>
 
-        <div className="mt-6">
+        <div className="mt-6 space-y-3">
           <label className="flex items-start gap-3 rounded-xl border border-warm-200 p-4">
             <input
               type="checkbox"
@@ -62,26 +65,41 @@ export default function ConsentBanner() {
               </span>
             </span>
           </label>
+          <label className="flex items-start gap-3 rounded-xl border border-warm-200 p-4">
+            <input
+              type="checkbox"
+              checked={ads}
+              onChange={(event) => setAds(event.target.checked)}
+              className="mt-1 h-4 w-4 rounded border-warm-300 text-primary-600 focus:ring-primary-500"
+            />
+            <span>
+              <span className="block text-sm font-semibold text-navy-800">إعلانات مخصصة</span>
+              <span className="mt-1 block text-sm leading-relaxed text-stone-600">
+                السماح لـ Google AdSense باستخدام ملفات الارتباط لعرض إعلانات أكثر ملاءمة.
+                عند الرفض تظهر إعلانات غير مخصصة فقط.
+              </span>
+            </span>
+          </label>
         </div>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <button
             type="button"
-            onClick={() => savePreferences({ analytics: true })}
+            onClick={() => savePreferences({ analytics: true, ads: true })}
             className="rounded-xl bg-primary-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-700"
           >
             قبول الكل
           </button>
           <button
             type="button"
-            onClick={() => savePreferences({ analytics })}
+            onClick={() => savePreferences({ analytics, ads })}
             className="rounded-xl border border-warm-200 px-5 py-3 text-sm font-semibold text-navy-800 transition-colors hover:bg-warm-50"
           >
             حفظ الاختيارات
           </button>
           <button
             type="button"
-            onClick={() => savePreferences({ analytics: false })}
+            onClick={() => savePreferences({ analytics: false, ads: false })}
             className="rounded-xl border border-warm-200 px-5 py-3 text-sm font-semibold text-stone-700 transition-colors hover:bg-warm-50"
           >
             رفض غير الضروري

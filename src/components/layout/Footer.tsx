@@ -9,6 +9,7 @@ const categories = [
   { href: '/category/عقاري', label: 'قانون عقاري' },
   { href: '/category/تجاري', label: 'قانون تجاري' },
   { href: '/category/مدني', label: 'قانون مدني' },
+  { href: '/category/أحوال-شخصية', label: 'أحوال شخصية' },
 ]
 
 const siteLinks = [
@@ -19,6 +20,7 @@ const siteLinks = [
   { href: '/contact', label: 'تواصل معنا' },
   { href: '/privacy', label: 'سياسة الخصوصية' },
   { href: '/terms', label: 'الشروط والأحكام' },
+  { href: '/disclaimer', label: 'إخلاء المسؤولية' },
 ]
 
 export default function Footer() {
@@ -116,6 +118,14 @@ export default function Footer() {
               المعلومات الواردة في هذه المدونة لأغراض تثقيفية عامة فقط، ولا تُعدّ استشارة
               قانونية. يُنصح بالتواصل مع محامٍ مرخص للحصول على مشورة قانونية متخصصة.
             </p>
+            <Link
+              href="/disclaimer"
+              className="mt-3 inline-flex items-center gap-2 text-sm transition-colors hover:text-white"
+              style={{ color: '#E4CE9E' }}
+            >
+              اقرأ النص الكامل
+              <span>›</span>
+            </Link>
           </div>
         </div>
 

@@ -15,6 +15,7 @@ declare global {
 export default function TrackingScripts() {
   const { preferences } = useConsent()
   const analyticsEnabled = preferences?.analytics ?? false
+  const adsEnabled = preferences?.ads ?? false
 
   useEffect(() => {
     if (typeof window.gtag !== 'function') {
@@ -23,11 +24,11 @@ export default function TrackingScripts() {
 
     window.gtag('consent', 'update', {
       analytics_storage: analyticsEnabled ? 'granted' : 'denied',
-      ad_storage: 'denied',
-      ad_user_data: 'denied',
-      ad_personalization: 'denied',
+      ad_storage: adsEnabled ? 'granted' : 'denied',
+      ad_user_data: adsEnabled ? 'granted' : 'denied',
+      ad_personalization: adsEnabled ? 'granted' : 'denied',
     })
-  }, [analyticsEnabled])
+  }, [analyticsEnabled, adsEnabled])
 
   return (
     <>
