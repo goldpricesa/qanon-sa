@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}سؤال #{{ row.id }}{% endblock %}
+{% block content %}
+<a class="text-blue-700 text-sm" href="{{ base_path }}/questions">&larr; رجوع</a>
+<h1 class="text-xl font-bold mt-2 mb-4">سؤال #{{ row.id }}</h1>
+
+<div class="bg-white p-4 rounded shadow mb-4">
+  <div class="text-xs text-slate-500 mb-1">
+    {{ row.created_at.strftime('%Y-%m-%d %H:%M') }} — مستخدم {{ row.user_id }} — قروب {{ row.chat_id }} — فئة {{ row.category or "—" }} — {{ row.latency_ms or 0 }} ms — {{ row.model or "—" }}
+  </div>
+  <h2 class="text-sm text-slate-500">السؤال</h2>
+  <p class="whitespace-pre-wrap">{{ row.question }}</p>
+  <h2 class="text-sm text-slate-500 mt-3">الإجابة</h2>
+  <p class="whitespace-pre-wrap">{{ row.answer }}</p>
+</div>
+
+{% if chunks %}
+<h2 class="text-lg font-bold mb-2">المراجع المسترجعة</h2>
+<div class="space-y-3">
+  {% for c in chunks %}
+  <div class="bg-white p-3 rounded shadow">
+    <div class="text-xs text-slate-500">[{{ c.category }}] {{ c.title }}</div>
+    <p class="text-sm whitespace-pre-wrap">{{ c.content[:600] }}{% if c.content|length > 600 %}...{% endif %}</p>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
