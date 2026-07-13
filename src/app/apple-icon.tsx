@@ -1,10 +1,11 @@
 import { ImageResponse } from 'next/og'
+import { getOgFonts } from '@/lib/og-fonts'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 export const size = { width: 180, height: 180 }
 export const contentType = 'image/png'
 
-export default function AppleIcon() {
+export default async function AppleIcon() {
   return new ImageResponse(
     (
       <div
@@ -24,6 +25,6 @@ export default function AppleIcon() {
         ق
       </div>
     ),
-    { ...size }
+    { ...size, fonts: await getOgFonts() }
   )
 }

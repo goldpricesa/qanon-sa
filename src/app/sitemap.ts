@@ -38,7 +38,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
     return {
       url: `${SITE_URL}/author/${author.slug}`,
-      lastModified: new Date(lastModified),
+      lastModified: new Date(lastModified ?? STATIC_PAGE_LAST_MODIFIED.author),
       changeFrequency: 'monthly',
       priority: 0.5,
     }

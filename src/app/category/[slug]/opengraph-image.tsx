@@ -1,4 +1,6 @@
 import { ImageResponse } from 'next/og'
+import { getOgFonts } from '@/lib/og-fonts'
+import { RtlText } from '@/lib/og-rtl'
 import { getAllCategories, getPostsByCategory } from '@/lib/posts'
 
 export const runtime = 'nodejs'
@@ -7,14 +9,17 @@ export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
 interface Props {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 export default async function OGImage({ params }: Props) {
-  const slug = decodeURIComponent(params.slug)
+  const { slug: rawSlug } = await params
+  const slug = decodeURIComponent(rawSlug)
   const cat = getAllCategories().find((c) => c.slug === slug)
   const label = cat?.label ?? slug
   const count = cat ? cat.count : getPostsByCategory(slug).length
+  // "قانون أحوال شخصية" صياغة ركيكة؛ التسمية وحدها تكفي لهذا التصنيف.
+  const heading = slug === 'أحوال-شخصية' ? label : `قانون ${label}`
 
   return new ImageResponse(
     (
@@ -31,8 +36,16 @@ export default async function OGImage({ params }: Props) {
           color: 'white',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row-reverse',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <RtlText
+            text="تصنيف"
             style={{
               fontSize: 32,
               fontWeight: 700,
@@ -41,44 +54,38 @@ export default async function OGImage({ params }: Props) {
               backgroundColor: 'rgba(255,255,255,0.18)',
               border: '2px solid rgba(255,255,255,0.35)',
             }}
-          >
-            تصنيف
-          </div>
-          <div style={{ fontSize: 28, opacity: 0.9, fontWeight: 600 }}>نظرة قانونية</div>
+          />
+          <RtlText text="نظرة قانونية" style={{ fontSize: 28, opacity: 0.9, fontWeight: 600 }} />
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <div
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 20 }}>
+          <RtlText
+            text={heading}
             style={{
               fontSize: 96,
               fontWeight: 800,
               letterSpacing: -2,
               lineHeight: 1.1,
             }}
-          >
-            قانون {label}
-          </div>
-          <div style={{ fontSize: 36, opacity: 0.85 }}>
-            {count} مقال متخصص
-          </div>
+          />
+          <RtlText text={`${count} مقال متخصص`} style={{ fontSize: 36, opacity: 0.85 }} />
         </div>
 
         <div
           style={{
             display: 'flex',
+            flexDirection: 'row-reverse',
             alignItems: 'center',
             justifyContent: 'space-between',
             borderTop: '2px solid rgba(255,255,255,0.25)',
             paddingTop: 30,
           }}
         >
-          <div style={{ fontSize: 26, opacity: 0.85 }}>
-            مدونة قانونية سعودية متخصصة
-          </div>
+          <RtlText text="مدونة قانونية سعودية متخصصة" style={{ fontSize: 26, opacity: 0.85 }} />
           <div style={{ fontSize: 26, fontWeight: 600 }}>qanon-sa.com</div>
         </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts: await getOgFonts() }
   )
 }

@@ -239,13 +239,13 @@ export default function RootLayout({
         />
       </head>
       <body className={`${thmanyahSans.className} min-h-screen flex flex-col bg-warm-50 font-arabic`}>
-        <Script
-          id="website-jsonld"
+        {/* JSON-LD يُدرج كوسم script عادي حتى يظهر في HTML الأولي لكل الزواحف،
+            بدلًا من next/script الذي يحقنه بعد الـ hydration. */}
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
-        <Script
-          id="org-jsonld"
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />

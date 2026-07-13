@@ -1,10 +1,11 @@
 import { ImageResponse } from 'next/og'
+import { getOgFonts } from '@/lib/og-fonts'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 export const size = { width: 32, height: 32 }
 export const contentType = 'image/png'
 
-export default function Icon() {
+export default async function Icon() {
   return new ImageResponse(
     (
       <div
@@ -24,6 +25,6 @@ export default function Icon() {
         ق
       </div>
     ),
-    { ...size }
+    { ...size, fonts: await getOgFonts() }
   )
 }

@@ -1,4 +1,6 @@
 import { ImageResponse } from 'next/og'
+import { getOgFonts } from '@/lib/og-fonts'
+import { RtlText } from '@/lib/og-rtl'
 import { getAuthorBySlug } from '@/data/authors'
 
 export const runtime = 'nodejs'
@@ -7,11 +9,12 @@ export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
 interface Props {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 export default async function OGImage({ params }: Props) {
-  const author = getAuthorBySlug(params.slug)
+  const { slug } = await params
+  const author = getAuthorBySlug(slug)
   const name = author?.name ?? 'كاتب'
   const role = author?.title ?? 'محامي مرخص'
 
@@ -30,8 +33,16 @@ export default async function OGImage({ params }: Props) {
           color: 'white',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row-reverse',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <RtlText
+            text="الكاتب"
             style={{
               fontSize: 32,
               fontWeight: 700,
@@ -40,14 +51,13 @@ export default async function OGImage({ params }: Props) {
               backgroundColor: 'rgba(255,255,255,0.18)',
               border: '2px solid rgba(255,255,255,0.35)',
             }}
-          >
-            الكاتب
-          </div>
-          <div style={{ fontSize: 28, opacity: 0.9, fontWeight: 600 }}>نظرة قانونية</div>
+          />
+          <RtlText text="نظرة قانونية" style={{ fontSize: 28, opacity: 0.9, fontWeight: 600 }} />
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <div
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 20 }}>
+          <RtlText
+            text={name}
             style={{
               fontSize: 84,
               fontWeight: 800,
@@ -55,30 +65,25 @@ export default async function OGImage({ params }: Props) {
               lineHeight: 1.15,
               maxWidth: 1040,
             }}
-          >
-            {name}
-          </div>
-          <div style={{ fontSize: 36, opacity: 0.85, maxWidth: 1040 }}>
-            {role}
-          </div>
+          />
+          <RtlText text={role} style={{ fontSize: 36, opacity: 0.85, maxWidth: 1040 }} />
         </div>
 
         <div
           style={{
             display: 'flex',
+            flexDirection: 'row-reverse',
             alignItems: 'center',
             justifyContent: 'space-between',
             borderTop: '2px solid rgba(255,255,255,0.25)',
             paddingTop: 30,
           }}
         >
-          <div style={{ fontSize: 26, opacity: 0.85 }}>
-            مدونة قانونية سعودية متخصصة
-          </div>
+          <RtlText text="مدونة قانونية سعودية متخصصة" style={{ fontSize: 26, opacity: 0.85 }} />
           <div style={{ fontSize: 26, fontWeight: 600 }}>qanon-sa.com</div>
         </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts: await getOgFonts() }
   )
 }
