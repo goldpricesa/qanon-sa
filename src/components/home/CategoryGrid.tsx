@@ -2,19 +2,20 @@ import Link from 'next/link'
 
 interface Category {
   slug: string
-  label: string
+  title: string
   count: number
   color: string
-  icon: 'briefcase' | 'shield' | 'home' | 'chart' | 'chip' | 'scale'
+  icon: 'briefcase' | 'shield' | 'home' | 'chart' | 'chip' | 'scale' | 'family'
   desc: string
 }
 
 const categories: Category[] = [
-  { slug: 'عمالي', label: 'عمالي', count: 0, color: '#0D8075', icon: 'briefcase', desc: 'نظام العمل، الأجور، الفصل، الإجازات، نهاية الخدمة' },
-  { slug: 'جنائي', label: 'جنائي', count: 0, color: '#B45A3C', icon: 'shield', desc: 'الجرائم، العقوبات، التهديد، السب، الاحتيال' },
-  { slug: 'عقاري', label: 'عقاري', count: 0, color: '#8A6A2E', icon: 'home', desc: 'الإيجار، التسجيل العيني، الملكية، النزاعات' },
-  { slug: 'تجاري', label: 'تجاري', count: 0, color: '#2E5F8A', icon: 'chart', desc: 'الشركات، العقود، الشرط الجزائي، الإفلاس' },
-  { slug: 'مدني', label: 'مدني', count: 0, color: '#3A6B5C', icon: 'scale', desc: 'الالتزامات، التعويض، الأحوال الشخصية، الميراث' },
+  { slug: 'عمالي', title: 'قانون عمالي', count: 0, color: '#0D8075', icon: 'briefcase', desc: 'نظام العمل، الأجور، الفصل، الإجازات، نهاية الخدمة' },
+  { slug: 'جنائي', title: 'قانون جنائي', count: 0, color: '#B45A3C', icon: 'shield', desc: 'الجرائم، العقوبات، التهديد، السب، الاحتيال' },
+  { slug: 'عقاري', title: 'قانون عقاري', count: 0, color: '#8A6A2E', icon: 'home', desc: 'الإيجار، التسجيل العيني، الملكية، النزاعات' },
+  { slug: 'تجاري', title: 'قانون تجاري', count: 0, color: '#2E5F8A', icon: 'chart', desc: 'الشركات، العقود، الشرط الجزائي، الإفلاس' },
+  { slug: 'مدني', title: 'قانون مدني', count: 0, color: '#3A6B5C', icon: 'scale', desc: 'الالتزامات، العقود، التعويض، المسؤولية المدنية' },
+  { slug: 'أحوال-شخصية', title: 'أحوال شخصية', count: 0, color: '#9E2A6B', icon: 'family', desc: 'الزواج، الطلاق، الحضانة، النفقة، الميراث' },
 ]
 
 function CatIcon({ name, color }: { name: Category['icon']; color: string }) {
@@ -76,6 +77,15 @@ function CatIcon({ name, color }: { name: Category['icon']; color: string }) {
           <path d="M18 8l-3 6a3 3 0 0 0 6 0L18 8z" />
         </svg>
       )
+    case 'family':
+      return (
+        <svg viewBox="0 0 24 24" {...iconProps}>
+          <circle cx="9" cy="8" r="3" />
+          <path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3a4.5 4.5 0 0 1 4.5 4.5V20" />
+          <circle cx="17" cy="9.5" r="2.3" />
+          <path d="M16.5 14.2a3.8 3.8 0 0 1 4.5 3.7V20" />
+        </svg>
+      )
   }
 }
 
@@ -114,7 +124,7 @@ export default function CategoryGrid({ counts = {} }: CategoryGridProps) {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline justify-between gap-2">
                     <h3 className="font-display text-[19px] font-bold text-ink-2">
-                      قانون {category.label}
+                      {category.title}
                     </h3>
                     <span
                       className="rounded-md px-2 py-0.5 text-xs font-bold tabular-nums"

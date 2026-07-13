@@ -53,7 +53,7 @@ export default function BlogIndexPage() {
       '@type': 'BlogPosting',
       headline: post.title,
       description: post.excerpt,
-      url: getAbsoluteUrl(`/blog/${post.slug}`),
+      url: getAbsoluteUrl(`/blog/${encodeURI(post.slug)}`),
       datePublished: post.date,
       dateModified: post.dateModified ?? post.reviewedAt ?? post.date,
       author: {

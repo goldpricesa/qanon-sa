@@ -1,11 +1,13 @@
 import { ImageResponse } from 'next/og'
+import { getOgFonts } from '@/lib/og-fonts'
+import { RtlText } from '@/lib/og-rtl'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 export const alt = 'نظرة قانونية — مدونة قانونية سعودية متخصصة'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
   return new ImageResponse(
     (
       <div
@@ -31,38 +33,38 @@ export default function OpenGraphImage() {
             color: 'white',
           }}
         >
-          <div
+          <RtlText
+            text="نظرة قانونية"
             style={{
               fontSize: 96,
               fontWeight: 700,
               marginBottom: 24,
               letterSpacing: -2,
+              justifyContent: 'center',
             }}
-          >
-            نظرة قانونية
-          </div>
-          <div
+          />
+          <RtlText
+            text="مدونة قانونية سعودية متخصصة"
             style={{
               fontSize: 42,
               fontWeight: 400,
               opacity: 0.95,
               maxWidth: 900,
               lineHeight: 1.4,
+              justifyContent: 'center',
             }}
-          >
-            مدونة قانونية سعودية متخصصة
-          </div>
-          <div
+          />
+          <RtlText
+            text="نظام العمل · العقارات · الشركات · القانون الرقمي · الأحوال الشخصية"
             style={{
               fontSize: 28,
               fontWeight: 400,
               opacity: 0.8,
               marginTop: 40,
               maxWidth: 900,
+              justifyContent: 'center',
             }}
-          >
-            نظام العمل · العقارات · الشركات · القانون الرقمي · الأحوال الشخصية
-          </div>
+          />
           <div
             style={{
               fontSize: 24,
@@ -78,6 +80,6 @@ export default function OpenGraphImage() {
         </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts: await getOgFonts() }
   )
 }

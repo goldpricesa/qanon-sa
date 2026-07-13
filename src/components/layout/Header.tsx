@@ -56,14 +56,14 @@ export default function Header() {
 
           <SearchBar
             className="hidden min-w-[220px] md:block"
-            inputClassName="rounded-lg border border-line bg-paper-2 py-2 pe-3 ps-10 text-sm text-ink placeholder:text-stone-500 focus:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-200/60"
+            inputClassName="rounded-lg border border-line bg-paper-2 py-2 pr-3 pl-10 text-sm text-ink placeholder:text-stone-500 focus:border-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-200/60"
             buttonClassName="text-stone-600 hover:text-primary-700"
           />
 
           <button
             className="rounded-md p-2 text-ink-3 hover:bg-primary-50 hover:text-primary-700 lg:hidden"
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="فتح القائمة"
+            aria-label={menuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
             aria-expanded={menuOpen}
           >
             {menuOpen ? (

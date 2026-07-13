@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og'
+import { getOgFonts } from '@/lib/og-fonts'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 const SIZE = 512
 
@@ -23,6 +24,6 @@ export async function GET() {
         ق
       </div>
     ),
-    { width: SIZE, height: SIZE }
+    { width: SIZE, height: SIZE, fonts: await getOgFonts() }
   )
 }

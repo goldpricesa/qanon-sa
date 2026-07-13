@@ -189,7 +189,9 @@ export function getAbsoluteUrl(path = ''): string {
   return `${SITE_URL}${path.startsWith('/') ? path : `/${path}`}`
 }
 
-export function getLastUpdatedDate(...values: Array<string | undefined>): string {
+export function getLastUpdatedDate(
+  ...values: Array<string | undefined>
+): string | undefined {
   return values
     .filter((value): value is string => Boolean(value))
     .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0]

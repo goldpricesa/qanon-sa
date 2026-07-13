@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {}
   }
 
-  const url = getAbsoluteUrl(`/category/${category.slug}`)
+  const url = getAbsoluteUrl(`/category/${encodeURI(category.slug)}`)
   const title = `مقالات ${category.label}`
   const description = `تصفح جميع المقالات في تصنيف ${category.label} على مدونة نظرة قانونية — ${category.count} مقال متخصص في القانون السعودي.`
 
@@ -61,7 +61,7 @@ export default async function CategoryPage({ params }: Props) {
     hasPart: posts.map((post, idx) => ({
       '@type': 'LegalArticle',
       position: idx + 1,
-      url: getAbsoluteUrl(`/blog/${post.slug}`),
+      url: getAbsoluteUrl(`/blog/${encodeURI(post.slug)}`),
       name: post.title,
       description: post.excerpt,
       datePublished: post.date,

@@ -2,7 +2,13 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound, redirect } from 'next/navigation'
 import { getAuthorBySlug } from '@/data/authors'
-import { getAllPosts, getPostByAnySlug, getPostBySlug, getRelatedPosts } from '@/lib/posts'
+import {
+  getAdjacentPosts,
+  getAllPosts,
+  getPostByAnySlug,
+  getPostBySlug,
+  getRelatedPosts,
+} from '@/lib/posts'
 import {
   formatDate,
   formatReadingTime,
@@ -14,6 +20,7 @@ import { AD_SLOTS } from '@/components/ads/slots'
 import BlogCard from '@/components/blog/BlogCard'
 import AuthorCard from '@/components/blog/AuthorCard'
 import Faq from '@/components/blog/Faq'
+import PostNavigation from '@/components/blog/PostNavigation'
 import ReadingProgressBar from '@/components/blog/ReadingProgressBar'
 import ShareButtons from '@/components/blog/ShareButtons'
 import TableOfContents from '@/components/blog/TableOfContents'
@@ -45,7 +52,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {}
   }
 
-  const url = getAbsoluteUrl(`/blog/${post.slug}`)
+  // نفس الترميز المستخدم في sitemap وfeed حتى تتطابق روابط canonical معها.
+  const url = getAbsoluteUrl(`/blog/${encodeURI(post.slug)}`)
   const metaTitle = post.seoTitle || post.title
   const metaDescription = post.seoDescription || post.excerpt
 
@@ -89,11 +97,12 @@ export default async function BlogPostPage({ params }: Props) {
   }
 
   const related = getRelatedPosts(post)
+  const { previous, next } = getAdjacentPosts(post)
   const safeContent = sanitizeArticleHtml(post.content)
   const canonicalAuthor = (post.author.slug && getAuthorBySlug(post.author.slug)) || post.author
-  const articleUrl = getAbsoluteUrl(`/blog/${post.slug}`)
+  const articleUrl = getAbsoluteUrl(`/blog/${encodeURI(post.slug)}`)
   const articleImage = post.coverImage.endsWith('.svg')
-    ? getAbsoluteUrl(`/blog/${post.slug}/opengraph-image`)
+    ? getAbsoluteUrl(`/blog/${encodeURI(post.slug)}/opengraph-image`)
     : getAbsoluteUrl(post.coverImage)
 
   const authorJsonLd: Record<string, unknown> = {
@@ -294,6 +303,8 @@ export default async function BlogPostPage({ params }: Props) {
                 ))}
               </div>
             </div>
+
+            <PostNavigation previous={previous} next={next} />
 
             <AuthorCard author={canonicalAuthor} />
           </article>
