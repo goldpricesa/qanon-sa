@@ -860,7 +860,7 @@ export const personalStatusPosts: BlogPost[] = [
       <p>سارع بعد الوفاة إلى استخراج صك حصر الورثة وحصر الأصول والديون، وقدّم الديون والوصايا على القسمة، ووثّق أي اتفاق قسمة كتابةً، ولا تتردد في طلب القسمة القضائية وتعيين مصفٍّ عند التعطيل. فالتأخير يفتح باب استنزاف التركة والنزاعات العائلية الطويلة.</p>
       ${legalDisclaimer}
     `,
-    coverImage: '/covers/ahwal-cover.svg',
+    coverImage: '/covers/inheritance-cover.svg',
     date: NEW_PUBLISH_DATE,
     dateModified: CONTENT_UPDATE_DATE,
     reviewedAt: CONTENT_UPDATE_DATE,
@@ -1028,7 +1028,7 @@ export const personalStatusPosts: BlogPost[] = [
       <p>الوصية باب عظيم للخير والعدل إذا ضُبطت: التزم حد الثلث، ولا توصِ لوارث إلا عالمًا بتوقفها على الإجازة، ووثّقها إلكترونيًا عبر ناجز وعيّن ناظرًا أمينًا يعلم مكان الوثيقة، وحدّثها كلما تغيرت أموالك أو أحوال الموصى لهم. فوصية موثقة واضحة تُنفَّذ في أسابيع، ووصية مفقودة أو منكَرة قد تستهلك الورثة سنوات في التقاضي.</p>
       ${legalDisclaimer}
     `,
-    coverImage: '/covers/personal-status.svg',
+    coverImage: '/covers/inheritance-cover.svg',
     date: NEW_PUBLISH_DATE,
     dateModified: CONTENT_UPDATE_DATE,
     reviewedAt: CONTENT_UPDATE_DATE,

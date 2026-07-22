@@ -12,6 +12,7 @@ const navLinks = [
   { href: '/category/عقاري', label: 'عقاري' },
   { href: '/category/تجاري', label: 'تجاري' },
   { href: '/category/مدني', label: 'مدني' },
+  { href: '/category/أحوال-شخصية', label: 'أحوال شخصية' },
   { href: '/calculator', label: 'الحاسبة' },
 ]
 

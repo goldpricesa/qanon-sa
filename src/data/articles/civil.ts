@@ -413,7 +413,7 @@ export const civilPosts: BlogPost[] = [
       <p>نظام التنفيذ منح الدائن أدوات حاسمة: سبعة أنواع من السندات تدخل التنفيذ مباشرة، ومهلة خمسة أيام بعدها تتوالى أدوات الإلزام من الإفصاح إلى الحبس التنفيذي. اختر مسارك بذكاء: إن كان بيدك سند تنفيذي فلا تطل الطريق بدعوى موضوعية، وحدد نوع تنفيذك (مباشر أو غير مباشر) لتعرف أدواته، وإن كنت مدينًا متعثرًا حقيقة فبادر بدعوى الإعسار وأثبت وضعك بشفافية بدل انتظار المنع من السفر والحبس التنفيذي.</p>
       ${legalDisclaimer}
     `,
-    coverImage: '/covers/madani-cover.svg',
+    coverImage: '/covers/enforcement-cover.svg',
     date: PUBLISH_DATE,
     dateModified: CONTENT_UPDATE_DATE,
     reviewedAt: CONTENT_UPDATE_DATE,
@@ -559,7 +559,7 @@ export const civilPosts: BlogPost[] = [
       <p>الوكالة أداة لا غنى عنها لكنها سلاح ذو حدين: فسّرها النظام تفسيرًا ضيقًا وأخضع خطير التصرفات لنص صريح، وأتاح ناجز إصدارها وإلغاءها والتحقق منها في دقائق. اقصر وكالاتك على البند والمدة اللازمين، وحدد صفتها بأجر أو بغيره، وافصل بين صلاحية التعاقد وصلاحية قبض المال أو الصرف، وألغِ ما انتهى غرضه فورًا عبر ناجز، وتحقق إلكترونيًا من كل وكالة تتعامل معها لحظة التعامل لا من نسخة ورقية — فمعظم مآسي الوكالات سببها التساهل لا قصور النظام.</p>
       ${legalDisclaimer}
     `,
-    coverImage: '/covers/madani-cover.svg',
+    coverImage: '/covers/contract-cover.svg',
     date: PUBLISH_DATE,
     dateModified: CONTENT_UPDATE_DATE,
     reviewedAt: CONTENT_UPDATE_DATE,
@@ -706,7 +706,7 @@ export const civilPosts: BlogPost[] = [
       <p>العقد الصحيح تراضٍ حر من ذوي أهلية على محل مشروع بسبب مشروع. والنظام يحمي المخدوع والمكرَه والمستغَل بحق الإبطال، ويضبط الشرط الجزائي بميزان الضرر الفعلي. اقرأ قبل أن توقّع ولا سيما بنود الفسخ والجزاءات والاختصاص، ووثّق كل اتفاق كتابة أو إلكترونيًا، واعلم أن عقود الإذعان الإلكترونية لا تنفذ شروطها التعسفية بإطلاق، وسارع بالتمسك بحقك فور اكتشاف العيب قبل أن يسقط بالإجازة الضمنية أو بالتقادم.</p>
       ${legalDisclaimer}
     `,
-    coverImage: '/covers/madani-cover.svg',
+    coverImage: '/covers/contract-cover.svg',
     date: PUBLISH_DATE,
     dateModified: CONTENT_UPDATE_DATE,
     reviewedAt: CONTENT_UPDATE_DATE,
@@ -853,7 +853,7 @@ export const civilPosts: BlogPost[] = [
       <p>التحكيم قضاء خاص سريع وسري ومتخصص، لكنه يقوم كله على جودة اتفاق التحكيم: اكتبه بدقة، واختر مركزًا مؤسسيًا ومحكمين أكفاء، واعلم أن الحكم نهائي لا يُراجع إلا بدعوى بطلان ضيقة خلال ستين يومًا. رتّب مسارات الحل تصاعديًا في عقودك (تفاوض ثم وساطة ثم تحكيم)، ونظّم نطاق السرية وما يُستثنى منها، ووازن كلفة التحكيم مع حجم نزاعاتك المحتملة قبل اعتماده شرطًا في عقودك، فهو ممتاز للكبيرة ومكلف للصغيرة.</p>
       ${legalDisclaimer}
     `,
-    coverImage: '/covers/madani-cover.svg',
+    coverImage: '/covers/arbitration-cover.svg',
     date: PUBLISH_DATE,
     dateModified: CONTENT_UPDATE_DATE,
     reviewedAt: CONTENT_UPDATE_DATE,
