@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
-type TabId = 'eos' | 'vacation' | 'salary'
+type TabId = 'eos' | 'vacation' | 'overtime' | 'salary'
 type EosReason = 'terminate' | 'resign' | 'forceMajeure' | 'marriage' | 'childbirth'
 
 interface EosResult {
@@ -21,6 +21,12 @@ interface SalaryResult {
   daysWorked: number
   dailyRate: number
   amount: number
+}
+
+interface OvertimeResult {
+  hourlyRate: number
+  overtimeHourRate: number
+  totalAmount: number
 }
 
 function formatSAR(amount: number): string {
@@ -480,6 +486,110 @@ function VacationCalculator() {
   )
 }
 
+function OvertimeCalculator() {
+  const [salary, setSalary] = useState('')
+  const [dailyHours, setDailyHours] = useState('8')
+  const [overtimeHours, setOvertimeHours] = useState('')
+  const [result, setResult] = useState<OvertimeResult | null>(null)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  function handleCalculate() {
+    const nextErrors: Record<string, string> = {}
+    const parsedSalary = parseFloat(salary)
+    const parsedDailyHours = parseFloat(dailyHours)
+    const parsedOvertime = parseFloat(overtimeHours)
+
+    if (!salary || Number.isNaN(parsedSalary) || parsedSalary <= 0) {
+      nextErrors.salary = 'يرجى إدخال راتب أساسي صحيح'
+    }
+    if (!dailyHours || Number.isNaN(parsedDailyHours) || parsedDailyHours <= 0 || parsedDailyHours > 12) {
+      nextErrors.dailyHours = 'يرجى إدخال عدد ساعات العمل اليومية المعتادة (1 إلى 12)'
+    }
+    if (!overtimeHours || Number.isNaN(parsedOvertime) || parsedOvertime < 0) {
+      nextErrors.overtimeHours = 'يرجى إدخال عدد ساعات العمل الإضافية'
+    }
+
+    setErrors(nextErrors)
+    if (Object.keys(nextErrors).length > 0) {
+      return
+    }
+
+    // أجر الساعة الأساسي = الراتب الشهري ÷ 30 يومًا ÷ ساعات العمل اليومية
+    const hourlyRate = round2(parsedSalary / 30 / parsedDailyHours)
+    // أجر الساعة الإضافية = أجر الساعة + 50% من الأجر الأساسي (المادة 107)
+    const overtimeHourRate = round2(hourlyRate * 1.5)
+    const totalAmount = round2(overtimeHourRate * parsedOvertime)
+    setResult({ hourlyRate, overtimeHourRate, totalAmount })
+  }
+
+  function handleReset() {
+    setSalary('')
+    setDailyHours('8')
+    setOvertimeHours('')
+    setResult(null)
+    setErrors({})
+  }
+
+  return (
+    <div>
+      <p className="mb-6 text-sm leading-relaxed text-stone-600">
+        تحسب هذه الأداة أجر العمل الإضافي وفق المادة <strong>107</strong> من نظام العمل
+        السعودي، حيث يستحق العامل عن الساعة الإضافية أجر الساعة مضافًا إليه{' '}
+        <strong>50% من أجره الأساسي</strong> (أي 150% من أجر الساعة الأساسي).
+      </p>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <InputField
+          id="ot-salary"
+          label="الأجر الأساسي الشهري (ريال)"
+          value={salary}
+          onChange={setSalary}
+          placeholder="مثال: 6000"
+          error={errors.salary}
+        />
+        <InputField
+          id="ot-daily-hours"
+          label="ساعات العمل اليومية المعتادة"
+          value={dailyHours}
+          onChange={setDailyHours}
+          placeholder="8"
+          error={errors.dailyHours}
+          step="0.5"
+        />
+        <InputField
+          id="ot-hours"
+          label="عدد ساعات العمل الإضافية"
+          value={overtimeHours}
+          onChange={setOvertimeHours}
+          placeholder="مثال: 20"
+          error={errors.overtimeHours}
+          step="0.5"
+        />
+      </div>
+
+      <AssumptionBox>
+        يُحسب أجر الساعة الأساسي بقسمة الأجر الشهري على 30 يومًا ثم على عدد ساعات العمل
+        اليومية المعتادة. ويُعد عملًا إضافيًا كذلك العمل في أيام الراحة والأعياد. لا تشمل
+        الأداة البدلات المتغيرة أو الاتفاقات الخاصة على إجازة تعويضية بدل الأجر الإضافي.
+      </AssumptionBox>
+
+      <ActionButtons onCalculate={handleCalculate} onReset={handleReset} />
+
+      {result && (
+        <ResultCard
+          items={[
+            { label: 'أجر الساعة الأساسي', value: formatSAR(result.hourlyRate) },
+            { label: 'أجر الساعة الإضافية (150%)', value: formatSAR(result.overtimeHourRate) },
+            { label: 'عدد ساعات العمل الإضافية', value: `${overtimeHours} ساعة` },
+          ]}
+          total={formatSAR(result.totalAmount)}
+          totalLabel="إجمالي أجر العمل الإضافي"
+        />
+      )}
+    </div>
+  )
+}
+
 function SalaryCalculator() {
   const [salary, setSalary] = useState('')
   const [monthStart, setMonthStart] = useState('')
@@ -602,7 +712,8 @@ function Disclaimer() {
 
 const TABS: { id: TabId; label: string }[] = [
   { id: 'eos', label: 'مكافأة نهاية الخدمة' },
-  { id: 'vacation', label: 'رصيد الإجازات' },
+  { id: 'vacation', label: 'بدل الإجازة السنوية' },
+  { id: 'overtime', label: 'أجر العمل الإضافي' },
   { id: 'salary', label: 'الراتب المتبقي' },
 ]
 
@@ -633,6 +744,7 @@ export default function EndOfServiceCalculator() {
       <div className="rounded-xl border border-warm-200 bg-white p-6 shadow-sm">
         {activeTab === 'eos' && <EosCalculator />}
         {activeTab === 'vacation' && <VacationCalculator />}
+        {activeTab === 'overtime' && <OvertimeCalculator />}
         {activeTab === 'salary' && <SalaryCalculator />}
       </div>
 

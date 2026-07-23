@@ -9,6 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 export function sanitizeArticleHtml(html: string): string {
   return sanitizeHtml(html, {
     allowedTags: [
+      'a',
       'blockquote',
       'br',
       'em',
@@ -27,6 +28,7 @@ export function sanitizeArticleHtml(html: string): string {
       'ul',
     ],
     allowedAttributes: {
+      a: ['href', 'title'],
       td: ['colspan', 'rowspan'],
       th: ['colspan', 'rowspan'],
     },

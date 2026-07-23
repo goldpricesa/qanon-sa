@@ -16,7 +16,7 @@ export const SITE_LOGO_URL = `${SITE_URL}/logo.png`
 export const PLAUSIBLE_DOMAIN = 'qanon-sa.com'
 export const GA_MEASUREMENT_ID = 'G-84090DMG89'
 export const ADSENSE_PUBLISHER_ID = 'ca-pub-3611815443789107'
-export const EDITORIAL_REVIEW_DATE = '2026-04-24'
+export const EDITORIAL_REVIEW_DATE = '2026-07-15'
 
 export const STATIC_PAGE_LAST_MODIFIED = {
   home: '2026-04-24',
